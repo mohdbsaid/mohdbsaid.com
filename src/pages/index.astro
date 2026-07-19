@@ -3,54 +3,42 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import Tag from '../components/Tag.astro';
 import Button from '../components/Button.astro';
 import StatGrid from '../components/StatGrid.astro';
 import FeatureGrid from '../components/FeatureGrid.astro';
 import { selectedWork } from '../data/selectedWork';
 
-const title = 'Mohammed Al-Jabri — 3D Printing & Additive Manufacturing Specialist';
+const title = 'Mohammed Al-Jabri — Additive Manufacturing Specialist';
 const description =
-	'Mohammed Al-Jabri helps organizations adopt digital fabrication — 3D printing training, maintenance, calibration, and applied engineering.';
+	'Mohammed Al-Jabri is an additive manufacturing and 3D printing specialist based in Oman, working across printer operation, maintenance, CAD design, and technical training.';
 const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
 
-// TODO: replace with the real WhatsApp number before launch.
-const whatsappHref = 'https://wa.me/00000000000';
-
 const stats = [
-	{ value: '6', label: 'Years of experience' },
+	{ value: '6+', label: 'Years of experience' },
 	{ value: '63', label: 'Workshops delivered' },
 	{ value: '1,340+', label: 'People trained' },
 ];
 
-const specialties = ['Maintenance', 'Calibration', 'Training', 'Design', 'Post-processing'];
-
 const expertise = [
 	{
-		title: '3D Printing',
-		description: 'Running printers, preparing print files, and troubleshooting during production.',
-	},
-	{
-		title: 'CAD Design',
-		description: 'Designing and optimizing parts to print efficiently and hold up in real use.',
-	},
-	{
-		title: 'Printer Maintenance',
+		title: 'Additive Manufacturing',
 		description:
-			'Diagnosing faults, routine calibration, and part replacement to extend printer life.',
+			'Practical experience in FDM 3D printing, material selection, slicing, production planning, and quality control.',
 	},
 	{
-		title: 'Training',
-		description: 'Hands-on workshops for beginners and enthusiasts, from setup to troubleshooting.',
-	},
-	{
-		title: 'Digital Systems',
-		description: 'Building tools and digital workflows that support design and manufacturing.',
-	},
-	{
-		title: 'Engineering Content',
+		title: 'Maintenance & Calibration',
 		description:
-			'Documenting hands-on experience and lessons learned in a practical, applicable way.',
+			'Printer diagnostics, preventive maintenance, calibration, troubleshooting, and operational readiness.',
+	},
+	{
+		title: 'CAD & Prototyping',
+		description:
+			'Turning ideas and functional requirements into manufacturable models, prototypes, and replacement parts.',
+	},
+	{
+		title: 'Technical Training',
+		description:
+			'Designing and delivering practical learning experiences for educators, students, and technical teams.',
 	},
 ];
 
@@ -60,7 +48,7 @@ const jsonLd = [
 		name: 'Mohammed Al-Jabri',
 		url: siteUrl,
 		description,
-		jobTitle: '3D Printing & Additive Manufacturing Specialist',
+		jobTitle: 'Additive Manufacturing Specialist',
 	},
 	{
 		'@type': 'WebSite',
@@ -81,39 +69,46 @@ const jsonLd = [
 	locale="en_US"
 >
 	<Hero
-		eyebrow="Hi, I'm"
+		eyebrow="Additive Manufacturing · Oman"
 		name="Mohammed Al-Jabri"
-		intro="A 3D printing & additive manufacturing specialist helping organizations adopt digital fabrication — through hands-on training, maintenance, and applied engineering."
-		primaryCta={{ label: 'Selected work', href: '#work' }}
-		secondaryCta={{ label: 'Get in touch', href: '#contact' }}
+		intro="Designing, building, and teaching digital manufacturing — I help turn ideas into physical products through additive manufacturing, engineering workflows, technical training, and practical experimentation."
+		primaryCta={{ label: 'View selected work', href: '#work' }}
+		secondaryCta={{ label: 'Contact me', href: '#contact' }}
 		initials="MA"
 	/>
 
-	<Section id="profile">
+	<Section id="about">
 		<SectionHeading
-			id="profile-heading"
-			eyebrow="Professional profile"
-			title="6 years of hands-on experience in 3D printing & additive manufacturing"
-			description="Across maintenance, calibration, training, design, and post-processing."
+			id="about-heading"
+			eyebrow="About"
+			title="Building practical systems around physical production."
 		/>
 
 		<div class="stats-block">
 			<StatGrid stats={stats} />
 		</div>
 
-		<ul class="tag-list">
-			{
-				specialties.map((specialty) => (
-					<li>
-						<Tag label={specialty} />
-					</li>
-				))
-			}
-		</ul>
+		<div class="about-copy">
+			<p>
+				I am an additive manufacturing and 3D printing specialist with hands-on experience in
+				printer operation, maintenance, calibration, CAD design, technical training, and
+				post-processing.
+			</p>
+
+			<p>
+				My work focuses on making advanced manufacturing tools more practical, understandable, and
+				useful for workshops, educators, businesses, and individual creators.
+			</p>
+		</div>
 	</Section>
 
 	<Section id="expertise" surface>
-		<SectionHeading id="expertise-heading" eyebrow="What I do" title="Areas of expertise" />
+		<SectionHeading
+			id="expertise-heading"
+			eyebrow="Expertise"
+			title="What I work on."
+			description="A combination of technical execution, systems thinking, and practical education."
+		/>
 		<FeatureGrid items={expertise} />
 	</Section>
 
@@ -121,17 +116,18 @@ const jsonLd = [
 		<SectionHeading
 			id="work-heading"
 			eyebrow="Selected work"
-			title="Recent client engagements"
-			description="A few organizations I've worked with — details coming soon."
+			title="Projects in development."
+			description="A selection of systems and engineering products currently being designed, tested, or documented."
 		/>
 
 		<ul class="work-grid">
 			{
 				selectedWork.map((item) => (
 					<li>
-						<span class="client">{item.client}</span>
+						<span class="label">{item.label}</span>
 						<h3>{item.title}</h3>
 						<p>{item.description}</p>
+						<span class="status">{item.status}</span>
 					</li>
 				))
 			}
@@ -141,11 +137,15 @@ const jsonLd = [
 	<Section id="contact" surface>
 		<SectionHeading
 			id="contact-heading"
-			eyebrow="Get in touch"
-			title="Let's build something"
-			description="Reach out on WhatsApp — happy to talk training, maintenance, or a new project."
+			eyebrow="Contact"
+			title="Have a project, collaboration, or technical challenge?"
+			description="I am open to discussions related to additive manufacturing, technical training, prototyping, and digital manufacturing systems."
 		/>
-		<Button href={whatsappHref} variant="primary">Message on WhatsApp</Button>
+
+		<div class="contact-actions">
+			<Button href="mailto:hello@mohdbsaid.com" variant="primary">Send an email</Button>
+			<Button href="https://github.com/mohdbsaid" variant="secondary">View GitHub</Button>
+		</div>
 	</Section>
 </Layout>
 
@@ -154,13 +154,14 @@ const jsonLd = [
 		margin: var(--space-4) 0;
 	}
 
-	.tag-list {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-1);
-		margin: 0;
-		padding: 0;
-		list-style: none;
+	.about-copy p {
+		margin: 0 0 var(--space-3);
+		color: var(--color-muted);
+		font-size: 1.05rem;
+	}
+
+	.about-copy p:last-child {
+		margin-bottom: 0;
 	}
 
 	.work-grid {
@@ -173,13 +174,15 @@ const jsonLd = [
 	}
 
 	.work-grid li {
+		display: flex;
+		flex-direction: column;
 		padding: var(--space-3);
 		background: var(--color-background);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-medium);
 	}
 
-	.work-grid .client {
+	.work-grid .label {
 		color: var(--color-primary);
 		font-size: 0.8rem;
 		font-weight: 700;
@@ -194,6 +197,20 @@ const jsonLd = [
 		margin: 0;
 		color: var(--color-muted);
 		font-size: 0.95rem;
+	}
+
+	.work-grid .status {
+		margin-top: auto;
+		padding-top: var(--space-3);
+		color: var(--color-muted);
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+
+	.contact-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
 	}
 
 	@media (max-width: 800px) {
