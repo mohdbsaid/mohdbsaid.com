@@ -39,7 +39,13 @@ function requireAltWithCover<T extends WithCover>(schema: T) {
 
 const blog = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
-	schema: (ctx) => requireAltWithCover(baseSchema(ctx)),
+	schema: (ctx) =>
+		requireAltWithCover(
+			baseSchema(ctx).extend({
+				category: z.string(),
+				tags: z.array(z.string()).default([]),
+			}),
+		),
 });
 
 const projects = defineCollection({

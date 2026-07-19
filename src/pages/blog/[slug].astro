@@ -1,0 +1,319 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Card from '../../components/Card.astro';
+import Tag from '../../components/Tag.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import CopyLinkButton from '../../components/CopyLinkButton.astro';
+import { getAdjacentEntries, getRelatedPosts } from '../../lib/content';
+import { formatArabicDate } from '../../utils/formatDate';
+import { estimateReadingTime, estimateReadingMinutesISO } from '../../utils/readingTime';
+import type { BreadcrumbItem } from '../../types';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, category, tags, publishDate, cover, coverAlt } = post.data;
+
+const { Content, headings } = await render(post);
+
+const [{ previous, next }, related] = await Promise.all([
+	getAdjacentEntries('blog', post.id),
+	getRelatedPosts(post),
+]);
+
+const readingTime = estimateReadingTime(post.body ?? '');
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+
+const breadcrumbItems: BreadcrumbItem[] = [
+	{ label: 'الرئيسية', href: '/' },
+	{ label: 'المدونة', href: '/blog' },
+	{ label: category, href: `/blog/category/${encodeURIComponent(category)}` },
+	{ label: title },
+];
+
+const articleJsonLd = {
+	'@type': 'Article',
+	headline: title,
+	description,
+	url: canonicalUrl,
+	mainEntityOfPage: canonicalUrl,
+	datePublished: publishDate.toISOString(),
+	inLanguage: 'ar',
+	articleSection: category,
+	keywords: [category, ...tags].join('، '),
+	timeRequired: estimateReadingMinutesISO(post.body ?? ''),
+	...(cover && { image: new URL(cover.src, Astro.site).toString() }),
+	author: { '@type': 'Person', name: 'محمد الجابري' },
+};
+
+const breadcrumbJsonLd = {
+	'@type': 'BreadcrumbList',
+	itemListElement: breadcrumbItems.map((item, index) => ({
+		'@type': 'ListItem',
+		position: index + 1,
+		name: item.label,
+		item: item.href ? new URL(item.href, Astro.site).toString() : canonicalUrl,
+	})),
+};
+---
+
+<PageLayout
+	title={title}
+	description={description}
+	eyebrow={category}
+	image={cover?.src}
+	imageAlt={coverAlt}
+	jsonLd={[articleJsonLd, breadcrumbJsonLd]}
+>
+	<Breadcrumbs items={breadcrumbItems} />
+
+	<div class="meta-row">
+		<span class="reading-time">{readingTime}</span>
+		<span class="separator" aria-hidden="true">·</span>
+		<time class="publish-date" datetime={publishDate.toISOString()}>
+			{formatArabicDate(publishDate)}
+		</time>
+		<CopyLinkButton />
+	</div>
+
+	{
+		cover && (
+			<Image
+				class="cover"
+				src={cover}
+				alt={coverAlt ?? ''}
+				widths={[600, 1100]}
+				sizes="(max-width: 800px) 100vw, 1100px"
+				width={1100}
+				height={619}
+			/>
+		)
+	}
+
+	<TableOfContents headings={headings} />
+
+	<div class="article-body">
+		<Content />
+	</div>
+
+	{
+		tags.length > 0 && (
+			<div class="tags-row">
+				{tags.map((tag) => (
+					<Tag label={tag} href={`/blog/tags/${encodeURIComponent(tag)}`} />
+				))}
+			</div>
+		)
+	}
+
+	{
+		(previous || next) && (
+			<nav class="prev-next" aria-label="التنقل بين المقالات">
+				{previous && (
+					<a class="prev-next-link" href={`/blog/${previous.id}`}>
+						<span class="direction">المقال السابق</span>
+						<span class="link-title">{previous.data.title}</span>
+					</a>
+				)}
+				{next && (
+					<a class="prev-next-link" href={`/blog/${next.id}`}>
+						<span class="direction">المقال التالي</span>
+						<span class="link-title">{next.data.title}</span>
+					</a>
+				)}
+			</nav>
+		)
+	}
+
+	{
+		related.length > 0 && (
+			<div id="related-posts" aria-labelledby="related-posts-heading">
+				<SectionHeading id="related-posts-heading" title="مقالات ذات صلة" />
+				<div class="card-grid">
+					{related.map((relatedPost) => (
+						<Card
+							kind="مقالة"
+							title={relatedPost.data.title}
+							description={relatedPost.data.description}
+							meta={`${relatedPost.data.category} · ${formatArabicDate(relatedPost.data.publishDate)}`}
+							href={`/blog/${relatedPost.id}`}
+							image={relatedPost.data.cover}
+							imageAlt={relatedPost.data.coverAlt}
+						/>
+					))}
+				</div>
+			</div>
+		)
+	}
+</PageLayout>
+
+<style>
+	.meta-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-2);
+		margin-bottom: var(--space-4);
+		color: var(--color-muted);
+		font-size: 0.9rem;
+	}
+
+	.separator {
+		color: var(--color-border);
+	}
+
+	.cover {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius-medium);
+		margin-bottom: var(--space-4);
+	}
+
+	.article-body {
+		max-width: 46rem;
+		margin-bottom: var(--space-5);
+	}
+
+	.article-body :global(h2) {
+		margin: var(--space-5) 0 var(--space-2);
+		font-size: 1.3rem;
+		line-height: 1.4;
+	}
+
+	.article-body :global(h3) {
+		margin: var(--space-4) 0 var(--space-2);
+		font-size: 1.1rem;
+		line-height: 1.4;
+	}
+
+	.article-body :global(h2:first-child),
+	.article-body :global(h3:first-child) {
+		margin-top: 0;
+	}
+
+	.article-body :global(p) {
+		margin: 0 0 var(--space-2);
+		color: var(--color-text);
+		line-height: 1.8;
+	}
+
+	.article-body :global(ul),
+	.article-body :global(ol) {
+		margin: 0 0 var(--space-2);
+		padding-inline-start: var(--space-4);
+		line-height: 1.8;
+	}
+
+	.article-body :global(blockquote) {
+		margin: 0 0 var(--space-2);
+		padding-inline-start: var(--space-2);
+		border-inline-start: 3px solid var(--color-primary);
+		color: var(--color-muted);
+	}
+
+	/* Code is inherently LTR content even inside an RTL page/paragraph. */
+	.article-body :global(pre) {
+		direction: ltr;
+		text-align: left;
+		padding: var(--space-3);
+		border-radius: var(--radius-medium);
+		overflow-x: auto;
+		margin: 0 0 var(--space-3);
+	}
+
+	.article-body :global(:not(pre) > code) {
+		direction: ltr;
+		unicode-bidi: embed;
+		padding-inline: 0.3em;
+		background: var(--color-surface);
+		border-radius: var(--radius-small);
+		font-size: 0.9em;
+	}
+
+	.tags-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1);
+		margin-bottom: var(--space-5);
+	}
+
+	.prev-next {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-3);
+		margin-bottom: var(--space-6);
+	}
+
+	.prev-next-link {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		padding: var(--space-3);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-medium);
+		transition: border-color 0.2s ease;
+	}
+
+	.prev-next-link:last-child {
+		grid-column: 2;
+		text-align: end;
+	}
+
+	.prev-next-link:only-child {
+		grid-column: 1 / -1;
+	}
+
+	.prev-next-link:hover,
+	.prev-next-link:focus-visible {
+		border-color: var(--color-primary);
+	}
+
+	.direction {
+		color: var(--color-muted);
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+
+	.link-title {
+		font-weight: 700;
+	}
+
+	.card-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-3);
+	}
+
+	@media (max-width: 800px) {
+		.prev-next {
+			grid-template-columns: 1fr;
+		}
+
+		.prev-next-link:last-child {
+			grid-column: 1;
+			text-align: start;
+		}
+
+		.card-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

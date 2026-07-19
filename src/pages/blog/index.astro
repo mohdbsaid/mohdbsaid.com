@@ -1,0 +1,105 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Card from '../../components/Card.astro';
+import Tag from '../../components/Tag.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getFeatured } from '../../lib/content';
+import { formatArabicDate } from '../../utils/formatDate';
+import type { BreadcrumbItem } from '../../types';
+
+const breadcrumbItems: BreadcrumbItem[] = [{ label: 'الرئيسية', href: '/' }, { label: 'المدونة' }];
+
+const title = 'المدونة';
+const description =
+	'ملاحظات وتجارب عملية من رحلتي في الطباعة ثلاثية الأبعاد، من اختيار الأدوات إلى حل مشاكل الطباعة اليومية.';
+
+const [featuredPosts, allPosts] = await Promise.all([
+	getFeatured('blog'),
+	getCollection('blog', ({ data }) => !data.draft),
+]);
+
+allPosts.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+
+const categories = [...new Set(allPosts.map((post) => post.data.category))];
+---
+
+<PageLayout title={title} description={description} eyebrow="المدونة">
+	<Breadcrumbs items={breadcrumbItems} />
+
+	{
+		categories.length > 0 && (
+			<div class="categories-row">
+				{categories.map((category) => (
+					<Tag label={category} href={`/blog/category/${encodeURIComponent(category)}`} />
+				))}
+			</div>
+		)
+	}
+
+	{
+		featuredPosts.length > 0 && (
+			<div id="featured-posts" aria-labelledby="featured-posts-heading">
+				<SectionHeading id="featured-posts-heading" title="مقالات مميزة" />
+				<div class="card-grid">
+					{featuredPosts.map((post) => (
+						<Card
+							kind="مقالة"
+							title={post.data.title}
+							description={post.data.description}
+							meta={`${post.data.category} · ${formatArabicDate(post.data.publishDate)}`}
+							href={`/blog/${post.id}`}
+							image={post.data.cover}
+							imageAlt={post.data.coverAlt}
+						/>
+					))}
+				</div>
+			</div>
+		)
+	}
+
+	<div id="all-posts" aria-labelledby="all-posts-heading">
+		<SectionHeading id="all-posts-heading" title="جميع المقالات" />
+		<div class="card-grid">
+			{
+				allPosts.map((post) => (
+					<Card
+						kind="مقالة"
+						title={post.data.title}
+						description={post.data.description}
+						meta={`${post.data.category} · ${formatArabicDate(post.data.publishDate)}`}
+						href={`/blog/${post.id}`}
+						image={post.data.cover}
+						imageAlt={post.data.coverAlt}
+					/>
+				))
+			}
+		</div>
+	</div>
+</PageLayout>
+
+<style>
+	.categories-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1);
+		margin-bottom: var(--space-6);
+	}
+
+	#featured-posts {
+		margin-bottom: var(--space-6);
+	}
+
+	.card-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-3);
+	}
+
+	@media (max-width: 800px) {
+		.card-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

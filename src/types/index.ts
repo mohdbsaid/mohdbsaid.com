@@ -9,6 +9,13 @@ export interface NavItem {
 	href: string;
 }
 
+// A breadcrumb trail item. The current/last item omits `href` (rendered as
+// plain text, not a link) — see Breadcrumbs.astro.
+export interface BreadcrumbItem {
+	label: string;
+	href?: string;
+}
+
 // Flattened props for the generic <Card> — used for Projects/Articles/
 // Resources/Courses homepage previews. Deliberately decoupled from any one
 // collection's schema: the page assembling a section supplies `kind`/`meta`,

@@ -4,14 +4,17 @@ interface Props {
 	eyebrow?: string;
 	title: string;
 	description?: string;
+	/** Use 1 for a page's single main heading (e.g. via PageLayout); defaults to 2 for section headings within a page. */
+	level?: 1 | 2;
 }
 
-const { id, eyebrow, title, description } = Astro.props;
+const { id, eyebrow, title, description, level = 2 } = Astro.props;
+const Heading = level === 1 ? 'h1' : 'h2';
 ---
 
 <div class="heading">
 	{eyebrow && <p class="eyebrow">{eyebrow}</p>}
-	<h2 id={id}>{title}</h2>
+	<Heading id={id}>{title}</Heading>
 	{description && <p class="description">{description}</p>}
 </div>
 
@@ -28,7 +31,7 @@ const { id, eyebrow, title, description } = Astro.props;
 		font-weight: 700;
 	}
 
-	h2 {
+	.heading :is(h1, h2) {
 		margin: 0;
 		font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
 		line-height: 1.3;
