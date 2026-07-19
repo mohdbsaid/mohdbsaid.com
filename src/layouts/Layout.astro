@@ -19,6 +19,16 @@ interface Props {
 	 * pages should leave this false to get the standard constrained <main>.
 	 */
 	fullBleed?: boolean;
+	/**
+	 * Override the language/direction of just <main>'s content, for a page
+	 * whose body content is in a different language than the rest of the
+	 * site (Header/Footer/skip-link stay in the site default). Omit for the
+	 * normal case — every other page inherits ar/rtl from <html>.
+	 */
+	mainLang?: string;
+	mainDir?: 'ltr' | 'rtl';
+	/** Forwarded to <SEO>'s og:locale; only needed when it differs from the site default. */
+	locale?: string;
 }
 
 const {
@@ -29,6 +39,9 @@ const {
 	noindex = false,
 	jsonLd,
 	fullBleed = false,
+	mainLang,
+	mainDir,
+	locale,
 } = Astro.props;
 ---
 
@@ -45,6 +58,7 @@ const {
 			imageAlt={imageAlt}
 			noindex={noindex}
 			jsonLd={jsonLd}
+			locale={locale}
 		/>
 
 		<link rel="icon" href="/favicon.ico" />
@@ -54,7 +68,7 @@ const {
 		<a class="skip-link" href="#main-content">تخطَّ إلى المحتوى الرئيسي</a>
 
 		<Header />
-		<main id="main-content" class={fullBleed ? '' : 'container'}>
+		<main id="main-content" class={fullBleed ? '' : 'container'} lang={mainLang} dir={mainDir}>
 			<slot />
 		</main>
 		<Footer />

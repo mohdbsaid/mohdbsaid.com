@@ -1,0 +1,166 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Section from '../components/Section.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Tag from '../components/Tag.astro';
+import Button from '../components/Button.astro';
+import StatGrid from '../components/StatGrid.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+
+const title = 'محمد الجابري — من أنا';
+const description =
+	'مهندس وصانع رقمي يعمل في الطباعة ثلاثية الأبعاد والتصنيع الإضافي منذ ست سنوات، بين تصميم القطع وصيانة الطابعات وتدريب المهتمين بالمجال.';
+const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
+
+const stats = [
+	{ value: '6', label: 'سنوات خبرة في الطباعة ثلاثية الأبعاد والتصنيع الإضافي' },
+	{ value: '63', label: 'ورشة تدريبية' },
+	{ value: '+1,340', label: 'مستفيدًا' },
+];
+
+const specialties = ['الصيانة', 'المعايرة', 'التدريب', 'التصميم', 'ما بعد المعالجة'];
+
+const focusAreas = [
+	{
+		title: 'الطباعة ثلاثية الأبعاد',
+		description: 'تشغيل الطابعات، إعداد ملفات الطباعة، وحل المشكلات الشائعة أثناء التنفيذ.',
+	},
+	{
+		title: 'تصميم CAD',
+		description: 'تصميم القطع وتحسينها لتُطبع بكفاءة وتُستخدم فعليًا، لا للعرض فقط.',
+	},
+	{
+		title: 'صيانة الطابعات',
+		description: 'تشخيص الأعطال، المعايرة الدورية، واستبدال القطع لإطالة عمر الطابعة.',
+	},
+	{
+		title: 'التدريب',
+		description: 'ورش عملية للمبتدئين والمهتمين، من أساسيات التشغيل إلى حل المشكلات.',
+	},
+	{
+		title: 'الأنظمة الرقمية',
+		description: 'بناء أدوات وسير عمل رقمية تدعم عملية التصميم والتصنيع.',
+	},
+	{
+		title: 'المحتوى الهندسي',
+		description: 'توثيق التجارب والدروس المستفادة بشكل عملي وقابل للتطبيق.',
+	},
+];
+
+const jsonLd = {
+	'@type': 'Person',
+	name: 'محمد الجابري',
+	url: `${siteUrl}/about`,
+	description,
+	jobTitle: 'مصمم وصانع رقمي',
+	knowsAbout: [
+		'الطباعة ثلاثية الأبعاد',
+		'التصنيع الإضافي',
+		'تصميم CAD',
+		'صيانة الطابعات',
+		'التدريب التقني',
+	],
+};
+---
+
+<PageLayout
+	title={title}
+	description={description}
+	eyebrow="مصمم وصانع رقمي متخصص في الطباعة ثلاثية الأبعاد"
+	jsonLd={jsonLd}
+>
+	<div class="avatar-placeholder" aria-hidden="true">
+		<span>م ج</span>
+	</div>
+
+	<Section id="profile">
+		<SectionHeading
+			id="profile-heading"
+			eyebrow="المسيرة المهنية"
+			title="خبرة عملية في الطباعة ثلاثية الأبعاد والتصنيع الإضافي"
+			description="ست سنوات من العمل المتواصل بين المشاريع الحقيقية والتدريب الميداني."
+		/>
+
+		<div class="stats-block">
+			<StatGrid stats={stats} />
+		</div>
+
+		<div class="specialties">
+			<h3>مجالات التخصص</h3>
+			<ul class="tag-list">
+				{
+					specialties.map((specialty) => (
+						<li>
+							<Tag label={specialty} />
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</Section>
+
+	<Section id="focus" surface>
+		<SectionHeading id="focus-heading" eyebrow="مجالات العمل" title="ماذا أعمل عليه" />
+
+		<FeatureGrid items={focusAreas} />
+	</Section>
+
+	<Section id="cta">
+		<SectionHeading
+			id="cta-heading"
+			eyebrow="الخطوة التالية"
+			title="تصفّح أعمالي أو تواصل معي"
+			description="سواء كنت تبحث عن مشروع محدد، تدوينة تقنية، أو تريد التعاون في فكرة جديدة."
+		/>
+
+		<div class="cta-row">
+			<Button href="/projects" variant="primary">المشاريع</Button>
+			<Button href="/blog" variant="secondary">المدونة</Button>
+			<Button href="/contact" variant="secondary">التواصل</Button>
+		</div>
+	</Section>
+</PageLayout>
+
+<style>
+	.avatar-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 112px;
+		aspect-ratio: 1;
+		margin-bottom: var(--space-4);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-large);
+	}
+
+	.avatar-placeholder span {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--color-muted);
+	}
+
+	.stats-block {
+		margin: var(--space-4) 0;
+	}
+
+	.specialties h3 {
+		margin: 0 0 var(--space-2);
+		font-size: 1rem;
+	}
+
+	.tag-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+</style>

@@ -19,9 +19,20 @@ interface Props {
 	 * the placeholder avatar below. Swap in once a photo is available. */
 	image?: ImageMetadata;
 	imageAlt?: string;
+	/** Initials shown in the placeholder avatar when no photo is set. */
+	initials?: string;
 }
 
-const { eyebrow, name, intro, primaryCta, secondaryCta, image, imageAlt } = Astro.props;
+const {
+	eyebrow,
+	name,
+	intro,
+	primaryCta,
+	secondaryCta,
+	image,
+	imageAlt,
+	initials = 'م ج',
+} = Astro.props;
 ---
 
 <section class="hero" aria-label={name}>
@@ -41,7 +52,7 @@ const { eyebrow, name, intro, primaryCta, secondaryCta, image, imageAlt } = Astr
 				<Image class="photo" src={image} alt={imageAlt ?? ''} width={280} height={280} />
 			) : (
 				<div class="photo-placeholder" aria-hidden="true">
-					<span>م ج</span>
+					<span>{initials}</span>
 				</div>
 			)
 		}

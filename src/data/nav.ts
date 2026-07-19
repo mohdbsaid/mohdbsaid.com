@@ -7,8 +7,6 @@ export const primaryNav: NavItem[] = [
 	{ label: 'من أنا', href: '/about' },
 	{ label: 'المشاريع', href: '/projects' },
 	{ label: 'المدونة', href: '/blog' },
-	{ label: 'المصادر', href: '/resources' },
-	{ label: 'الدورات', href: '/courses' },
 	{ label: 'تواصل', href: '/contact' },
 ];
 

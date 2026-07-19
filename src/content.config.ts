@@ -50,7 +50,19 @@ const blog = defineCollection({
 
 const projects = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
-	schema: (ctx) => requireAltWithCover(baseSchema(ctx).extend({ category: z.string() })),
+	schema: (ctx) =>
+		requireAltWithCover(
+			baseSchema(ctx).extend({
+				category: z.string(),
+				// Everything below is optional — only set it on an entry when the
+				// fact is actually known (see docs/CONTENT_STRATEGY.md); never
+				// fabricated to fill the field.
+				status: z.string().optional(),
+				technologies: z.array(z.string()).optional(),
+				githubUrl: z.url().optional(),
+				demoUrl: z.url().optional(),
+			}),
+		),
 });
 
 const resources = defineCollection({

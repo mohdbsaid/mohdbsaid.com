@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import Card from '../../components/Card.astro';
+import { getFeatured } from '../../lib/content';
+import { formatArabicDate } from '../../utils/formatDate';
+
+const title = 'المشاريع';
+const description =
+	'مجموعة من المشاريع التي صممتها وطبعتها بنفسي، من التعديلات الميكانيكية إلى الأدوات التعليمية والتصميم الوظيفي.';
+
+const [featuredProjects, allProjects] = await Promise.all([
+	getFeatured('projects'),
+	getCollection('projects', ({ data }) => !data.draft),
+]);
+
+allProjects.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+---
+
+<PageLayout title={title} description={description} eyebrow="أعمالي">
+	{
+		featuredProjects.length > 0 && (
+			<div id="featured-projects" aria-labelledby="featured-projects-heading">
+				<SectionHeading id="featured-projects-heading" title="مشاريع مميزة" />
+				<div class="card-grid">
+					{featuredProjects.map((project) => (
+						<Card
+							kind="مشروع"
+							title={project.data.title}
+							description={project.data.description}
+							meta={`${project.data.category} · ${formatArabicDate(project.data.publishDate)}`}
+							href={`/projects/${project.id}`}
+							image={project.data.cover}
+							imageAlt={project.data.coverAlt}
+						/>
+					))}
+				</div>
+			</div>
+		)
+	}
+
+	<div id="all-projects" aria-labelledby="all-projects-heading">
+		<SectionHeading id="all-projects-heading" title="جميع المشاريع" />
+		<div class="card-grid">
+			{
+				allProjects.map((project) => (
+					<Card
+						kind="مشروع"
+						title={project.data.title}
+						description={project.data.description}
+						meta={`${project.data.category} · ${formatArabicDate(project.data.publishDate)}`}
+						href={`/projects/${project.id}`}
+						image={project.data.cover}
+						imageAlt={project.data.coverAlt}
+					/>
+				))
+			}
+		</div>
+	</div>
+</PageLayout>
+
+<style>
+	#featured-projects {
+		margin-bottom: var(--space-6);
+	}
+
+	.card-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-3);
+	}
+
+	@media (max-width: 800px) {
+		.card-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
