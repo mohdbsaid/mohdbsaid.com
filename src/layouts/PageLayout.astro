@@ -1,0 +1,43 @@
+---
+// Standard layout for future content pages (/about, /blog/[slug], /projects,
+// etc.) — Layout's shell plus a consistent title/eyebrow/description
+// heading. Not used by the homepage, which has its own bespoke <Hero>
+// instead of a generic page heading. No page consumes this yet (only the
+// homepage exists so far); it's scaffolding so the next page built gets the
+// same heading treatment for free instead of re-implementing it.
+import Layout from './Layout.astro';
+import Section from '../components/Section.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	eyebrow?: string;
+	image?: string;
+	imageAlt?: string;
+	noindex?: boolean;
+	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description, eyebrow, image, imageAlt, noindex, jsonLd } = Astro.props;
+---
+
+<Layout
+	title={title}
+	description={description}
+	image={image}
+	imageAlt={imageAlt}
+	noindex={noindex}
+	jsonLd={jsonLd}
+	fullBleed
+>
+	<Section id="page-heading">
+		<SectionHeading
+			id="page-heading-heading"
+			eyebrow={eyebrow}
+			title={title}
+			description={description}
+		/>
+		<slot />
+	</Section>
+</Layout>

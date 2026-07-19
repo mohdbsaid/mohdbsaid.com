@@ -1,10 +1,188 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Card from '../components/Card.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+import { getFeatured } from '../lib/content';
+import { formatArabicDate } from '../utils/formatDate';
+
+const title = 'محمد الجابري';
+const description = 'موقع شخصي لتوثيق مشاريعي، مقالاتي، وأعمالي في الطباعة ثلاثية الأبعاد.';
+const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
+
+const [featuredProjects, latestArticles, resources, courses] = await Promise.all([
+	getFeatured('projects'),
+	getFeatured('blog'),
+	getFeatured('resources'),
+	getFeatured('courses'),
+]);
+
+const jsonLd = [
+	{
+		'@type': 'Person',
+		name: 'محمد الجابري',
+		url: siteUrl,
+		description,
+		jobTitle: 'مصمم وصانع رقمي',
+	},
+	{
+		'@type': 'WebSite',
+		name: 'محمد الجابري',
+		url: siteUrl,
+		inLanguage: 'ar',
+	},
+];
 ---
 
-<Layout>
-	<main>
-		<h1>Mohammed Al-Jabri</h1>
-		<p>موقع شخصي لتوثيق مشاريعي، مقالاتي، وأعمالي في الطباعة ثلاثية الأبعاد.</p>
-	</main>
+<Layout title={title} description={description} jsonLd={jsonLd} fullBleed>
+	<Hero
+		eyebrow="مرحباً، أنا"
+		name="محمد الجابري"
+		intro="مهندس وصانع رقمي أوثّق تجربتي في الطباعة ثلاثية الأبعاد؛ من تصميم القطع وتحسينها إلى تحويل الأفكار البسيطة إلى نماذج قابلة للطباعة والاستخدام الفعلي."
+		primaryCta={{ label: 'تصفح المشاريع', href: '/projects' }}
+		secondaryCta={{ label: 'تواصل معي', href: '/contact' }}
+	/>
+
+	<Section id="about">
+		<SectionHeading
+			id="about-heading"
+			eyebrow="من أنا"
+			title="شغف بالتصميم وحل المشكلات بالطباعة ثلاثية الأبعاد"
+			description="أوثّق هنا تجربتي العملية؛ من اختيار الطابعة المناسبة، مروراً بتصميم القطع باستخدام برامج CAD، وصولاً إلى حل المشكلات الشائعة أثناء الطباعة."
+		/>
+		<a class="text-link" href="/about">اقرأ المزيد عن قصتي ←</a>
+	</Section>
+
+	<Section id="projects" surface>
+		<SectionHeading
+			id="projects-heading"
+			eyebrow="أعمالي"
+			title="مشاريع مختارة"
+			description="نماذج من مشاريع صممتها وطبعتها، من التعديلات الميكانيكية إلى الأدوات التعليمية."
+		/>
+		<div class="card-grid">
+			{
+				featuredProjects.map((project) => (
+					<Card
+						kind="مشروع"
+						title={project.data.title}
+						description={project.data.description}
+						meta={project.data.category}
+						href={`/projects/${project.id}`}
+						image={project.data.cover}
+						imageAlt={project.data.coverAlt}
+					/>
+				))
+			}
+		</div>
+		<a class="text-link" href="/projects">عرض جميع المشاريع ←</a>
+	</Section>
+
+	<Section id="articles">
+		<SectionHeading
+			id="articles-heading"
+			eyebrow="المدونة"
+			title="أحدث المقالات"
+			description="ملاحظات وتجارب عملية من رحلتي في الطباعة ثلاثية الأبعاد."
+		/>
+		<div class="card-grid">
+			{
+				latestArticles.map((article) => (
+					<Card
+						kind="مقالة"
+						title={article.data.title}
+						description={article.data.description}
+						meta={formatArabicDate(article.data.publishDate)}
+						href={`/blog/${article.id}`}
+						image={article.data.cover}
+						imageAlt={article.data.coverAlt}
+					/>
+				))
+			}
+		</div>
+		<a class="text-link" href="/blog">عرض جميع المقالات ←</a>
+	</Section>
+
+	<Section id="resources" surface>
+		<SectionHeading
+			id="resources-heading"
+			eyebrow="مصادر"
+			title="أدوات وملفات جاهزة"
+			description="قوائم فحص وإعدادات جربتها بنفسي وتستحق المشاركة."
+		/>
+		<div class="card-grid">
+			{
+				resources.map((resource) => (
+					<Card
+						kind="مصدر"
+						title={resource.data.title}
+						description={resource.data.description}
+						meta={resource.data.format}
+						href={`/resources/${resource.id}`}
+						image={resource.data.cover}
+						imageAlt={resource.data.coverAlt}
+					/>
+				))
+			}
+		</div>
+		<a class="text-link" href="/resources">تصفح جميع المصادر ←</a>
+	</Section>
+
+	<Section id="courses">
+		<SectionHeading
+			id="courses-heading"
+			eyebrow="تعلّم"
+			title="دورات تدريبية"
+			description="من الأساسيات إلى تطبيق دورة عمل كاملة على مشروع حقيقي."
+		/>
+		<div class="card-grid">
+			{
+				courses.map((course) => (
+					<Card
+						kind="دورة"
+						title={course.data.title}
+						description={course.data.description}
+						meta={course.data.level}
+						href={`/courses/${course.id}`}
+						image={course.data.cover}
+						imageAlt={course.data.coverAlt}
+					/>
+				))
+			}
+		</div>
+		<a class="text-link" href="/courses">استعرض جميع الدورات ←</a>
+	</Section>
+
+	<Section id="newsletter" surface>
+		<SectionHeading
+			id="newsletter-heading"
+			eyebrow="النشرة البريدية"
+			title="لا تفوّت الجديد"
+			description="انضم إلى النشرة البريدية لتصلك المقالات والمشاريع الجديدة أولاً بأول، دون إزعاج."
+		/>
+		<NewsletterForm />
+	</Section>
 </Layout>
+
+<style>
+	.card-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-3);
+		margin-bottom: var(--space-3);
+	}
+
+	.text-link {
+		display: inline-block;
+		color: var(--color-primary);
+		font-weight: 700;
+	}
+
+	@media (max-width: 800px) {
+		.card-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

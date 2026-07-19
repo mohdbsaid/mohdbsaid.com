@@ -1,0 +1,39 @@
+---
+// Standard homepage section wrapper: consistent container width and vertical
+// rhythm, with an alternating background band for Apple-style visual
+// separation between sections (no new color tokens — just --color-surface
+// vs. the default --color-background).
+//
+// Pairs with <SectionHeading id={`${id}-heading`} .../> as the first child
+// so the section is correctly labelled for assistive tech.
+import Container from './Container.astro';
+
+interface Props {
+	id: string;
+	surface?: boolean;
+}
+
+const { id, surface = false } = Astro.props;
+---
+
+<section id={id} aria-labelledby={`${id}-heading`} class={surface ? 'surface' : ''}>
+	<Container>
+		<slot />
+	</Container>
+</section>
+
+<style>
+	section {
+		padding-block: var(--space-6);
+	}
+
+	.surface {
+		background: var(--color-surface);
+	}
+
+	@media (max-width: 800px) {
+		section {
+			padding-block: var(--space-5);
+		}
+	}
+</style>

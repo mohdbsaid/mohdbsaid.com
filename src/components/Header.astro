@@ -1,0 +1,29 @@
+---
+import { primaryNav } from '../data/nav';
+import Container from './Container.astro';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+	<Container class="header-container">
+		<a class="site-name" href="/">محمد الجابري</a>
+
+		<nav aria-label="التنقل الرئيسي">
+			{
+				primaryNav.map((item) => (
+					<a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+	</Container>
+</header>
+
+<style>
+	nav a[aria-current='page'] {
+		color: var(--color-text);
+		font-weight: 700;
+	}
+</style>

@@ -1,0 +1,15 @@
+---
+// Single reusable width-constraint wrapper — replaces the previously
+// hand-duplicated `.container` class usage across Section/Hero/Header/Footer.
+// Pass extra layout classes (flex/grid) via `class`; they're merged with the
+// base `.container` styling defined in src/styles/global.css.
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['container', className]}>
+	<slot />
+</div>

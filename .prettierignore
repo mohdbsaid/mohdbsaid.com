@@ -1,0 +1,15 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+public/fonts/
+
+# Editor/tool-specific settings, not project source
+.vscode/
+.claude/
+
+# src/styles/global.css has a pre-existing invalid-CSS syntax error
+# (malformed :root / @font-face nesting under the dark-mode media query)
+# that crashes Prettier's CSS parser. Tracked in docs/DECISIONS.md — fix in
+# a dedicated follow-up, not as part of unrelated formatting/config work.
+src/styles/global.css

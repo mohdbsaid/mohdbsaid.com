@@ -1,0 +1,136 @@
+---
+import { primaryNav, legalNav } from '../data/nav';
+import Container from './Container.astro';
+---
+
+<footer class="site-footer">
+	<Container class="footer-container">
+		<div class="footer-grid">
+			<div class="footer-brand">
+				<p class="footer-name">محمد الجابري</p>
+				<p class="footer-tagline">
+					موقع شخصي لتوثيق مشاريعي، مقالاتي، وأعمالي في الطباعة ثلاثية الأبعاد.
+				</p>
+			</div>
+
+			<nav class="footer-links" aria-label="روابط سريعة">
+				<p class="footer-heading">روابط سريعة</p>
+				<ul>
+					{
+						primaryNav.map((item) => (
+							<li>
+								<a href={item.href}>{item.label}</a>
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+
+			<nav class="footer-links" aria-label="روابط قانونية">
+				<p class="footer-heading">قانوني</p>
+				<ul>
+					{
+						legalNav.map((item) => (
+							<li>
+								<a href={item.href}>{item.label}</a>
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+		</div>
+
+		<div class="footer-bottom">
+			<p>© {new Date().getFullYear()} محمد الجابري. جميع الحقوق محفوظة.</p>
+			<a href="#top" class="back-to-top">العودة إلى الأعلى ↑</a>
+		</div>
+	</Container>
+</footer>
+
+<style>
+	.site-footer {
+		border-top: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.footer-container {
+		padding-block: var(--space-5);
+	}
+
+	.footer-grid {
+		display: grid;
+		grid-template-columns: 2fr 1fr 1fr;
+		gap: var(--space-4);
+	}
+
+	.footer-name {
+		margin: 0 0 var(--space-1);
+		font-weight: 700;
+	}
+
+	.footer-tagline {
+		margin: 0;
+		max-width: 26rem;
+		color: var(--color-muted);
+		font-size: 0.9rem;
+		line-height: 1.7;
+	}
+
+	.footer-heading {
+		margin: 0 0 var(--space-2);
+		font-size: 0.85rem;
+		font-weight: 700;
+	}
+
+	.footer-links ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.footer-links a {
+		color: var(--color-muted);
+		font-size: 0.9rem;
+		transition: color 0.2s ease;
+	}
+
+	.footer-links a:hover {
+		color: var(--color-text);
+	}
+
+	.footer-bottom {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-2);
+		margin-top: var(--space-5);
+		padding-top: var(--space-3);
+		border-top: 1px solid var(--color-border);
+		color: var(--color-muted);
+		font-size: 0.85rem;
+	}
+
+	.footer-bottom p {
+		margin: 0;
+	}
+
+	.back-to-top {
+		color: var(--color-muted);
+		transition: color 0.2s ease;
+	}
+
+	.back-to-top:hover {
+		color: var(--color-primary);
+	}
+
+	@media (max-width: 800px) {
+		.footer-grid {
+			grid-template-columns: 1fr;
+			gap: var(--space-4);
+		}
+	}
+</style>

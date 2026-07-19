@@ -1,0 +1,59 @@
+---
+// Single source of truth for every <head> SEO concern: title, description,
+// canonical, OpenGraph, Twitter Card, theme-color, RSS discovery, and
+// optional JSON-LD/robots noindex. Rendered once from Layout.astro, so every
+// page gets it automatically by using Layout — no page has to remember to
+// import this itself.
+interface Props {
+	title: string;
+	description: string;
+	/** Absolute or site-relative OG/Twitter image; omitted if not provided. */
+	image?: string;
+	imageAlt?: string;
+	/** Keep this page out of search indexes (e.g. a future draft-preview route). */
+	noindex?: boolean;
+	/** Structured data for this page — a single JSON-LD node or several (rendered as @graph). */
+	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description, image, imageAlt, noindex = false, jsonLd } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = image ? new URL(image, Astro.site) : undefined;
+
+const jsonLdPayload = jsonLd
+	? Array.isArray(jsonLd)
+		? { '@context': 'https://schema.org', '@graph': jsonLd }
+		: { '@context': 'https://schema.org', ...jsonLd }
+	: undefined;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<link rel="alternate" type="application/rss+xml" title="محمد الجابري — RSS" href="/rss.xml" />
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="ar_AR" />
+<meta property="og:site_name" content="محمد الجابري" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+{ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+{ogImageUrl && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+
+<meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+{
+	jsonLdPayload && (
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLdPayload)} is:inline />
+	)
+}

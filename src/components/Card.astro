@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import type { CardProps } from '../types';
+
+type Props = CardProps;
+
+const { kind, title, description, href, meta, image, imageAlt } = Astro.props;
+---
+
+<a class="card" href={href}>
+	{image && <Image class="card-image" src={image} alt={imageAlt ?? ''} width={400} height={225} />}
+	<span class="kind">{kind}</span>
+	<h3>{title}</h3>
+	<p class="description">{description}</p>
+	<span class="meta">{meta}</span>
+</a>
+
+<style>
+	.card {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		height: 100%;
+		padding: var(--space-3);
+		background: var(--color-background);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-medium);
+		color: inherit;
+		transition:
+			border-color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.card:hover,
+	.card:focus-visible {
+		border-color: var(--color-primary);
+		transform: translateY(-2px);
+	}
+
+	.card-image {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius-small);
+		margin-bottom: var(--space-1);
+	}
+
+	.kind {
+		color: var(--color-primary);
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+
+	h3 {
+		margin: 0;
+		font-size: 1.1rem;
+		line-height: 1.4;
+	}
+
+	.description {
+		margin: 0;
+		color: var(--color-muted);
+		font-size: 0.95rem;
+		line-height: 1.6;
+		flex-grow: 1;
+	}
+
+	.meta {
+		margin-top: var(--space-1);
+		color: var(--color-muted);
+		font-size: 0.85rem;
+	}
+</style>

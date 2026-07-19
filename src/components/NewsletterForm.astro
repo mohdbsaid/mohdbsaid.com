@@ -1,0 +1,82 @@
+---
+// UI-only signup form — no backend wired yet. Submitting reloads the page
+// with a harmless query string (no `action`/`method` set); replace with a
+// real email-provider integration before launch (see docs/ROADMAP.md).
+---
+
+<form class="newsletter-form">
+	<div class="field">
+		<label for="newsletter-email">البريد الإلكتروني</label>
+		<input
+			id="newsletter-email"
+			name="email"
+			type="email"
+			placeholder="you@example.com"
+			autocomplete="email"
+			required
+		/>
+	</div>
+	<button type="submit">اشتراك</button>
+</form>
+<p class="note">لن نشارك بريدك مع أي جهة، ويمكنك إلغاء الاشتراك في أي وقت.</p>
+
+<style>
+	.newsletter-form {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: end;
+		gap: var(--space-2);
+		max-width: 32rem;
+	}
+
+	.field {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		flex: 1 1 16rem;
+	}
+
+	label {
+		font-size: 0.85rem;
+		font-weight: 700;
+	}
+
+	input {
+		min-height: 44px;
+		padding-inline: var(--space-2);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-small);
+		background: var(--color-background);
+		color: var(--color-text);
+		font-family: inherit;
+		font-size: 1rem;
+	}
+
+	input:focus-visible {
+		border-color: var(--color-primary);
+	}
+
+	button {
+		min-height: 44px;
+		padding-inline: var(--space-3);
+		border: none;
+		border-radius: var(--radius-small);
+		background: var(--color-primary);
+		color: #fff;
+		font-family: inherit;
+		font-size: 0.95rem;
+		font-weight: 700;
+		cursor: pointer;
+		transition: background-color 0.2s ease;
+	}
+
+	button:hover {
+		background: color-mix(in srgb, var(--color-primary) 88%, black);
+	}
+
+	.note {
+		margin: var(--space-2) 0 0;
+		color: var(--color-muted);
+		font-size: 0.85rem;
+	}
+</style>
