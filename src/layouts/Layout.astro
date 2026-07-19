@@ -29,6 +29,22 @@ interface Props {
 	mainDir?: 'ltr' | 'rtl';
 	/** Forwarded to <SEO>'s og:locale; only needed when it differs from the site default. */
 	locale?: string;
+	/**
+	 * Override the whole page's <html lang dir> instead of just <main>'s —
+	 * for a page that is entirely in a different language than the rest of
+	 * the site (e.g. the English homepage on this Arabic-first site). Omit
+	 * for the normal case.
+	 */
+	htmlLang?: string;
+	htmlDir?: 'ltr' | 'rtl';
+	/**
+	 * Skip the global Arabic <Header>/<Footer> chrome so the page can render
+	 * its own page-specific equivalents instead — only for a page that fully
+	 * replaces that chrome itself (see the homepage). Omit for the normal case.
+	 */
+	hideChrome?: boolean;
+	/** Skip-link label; only relevant when htmlLang overrides the site default. */
+	skipLinkLabel?: string;
 }
 
 const {
@@ -42,11 +58,15 @@ const {
 	mainLang,
 	mainDir,
 	locale,
+	htmlLang = 'ar',
+	htmlDir = 'rtl',
+	hideChrome = false,
+	skipLinkLabel = 'تخطَّ إلى المحتوى الرئيسي',
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang={htmlLang} dir={htmlDir}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -65,12 +85,12 @@ const {
 	</head>
 
 	<body id="top">
-		<a class="skip-link" href="#main-content">تخطَّ إلى المحتوى الرئيسي</a>
+		<a class="skip-link" href="#main-content">{skipLinkLabel}</a>
 
-		<Header />
+		{!hideChrome && <Header />}
 		<main id="main-content" class={fullBleed ? '' : 'container'} lang={mainLang} dir={mainDir}>
 			<slot />
 		</main>
-		<Footer />
+		{!hideChrome && <Footer />}
 	</body>
 </html>

@@ -1,46 +1,18 @@
 ---
+// English/LTR minimal homepage — deliberately bypasses the site's global
+// Arabic <Header>/<Footer> chrome (via Layout's hideChrome) and renders its
+// own page-specific header/footer, per docs decision to scope this redesign
+// to the homepage only. See CLAUDE.md component rules.
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import Section from '../components/Section.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import Button from '../components/Button.astro';
-import StatGrid from '../components/StatGrid.astro';
-import FeatureGrid from '../components/FeatureGrid.astro';
+import Container from '../components/Container.astro';
 import { selectedWork } from '../data/selectedWork';
 
-const title = 'Mohammed Al-Jabri — Additive Manufacturing Specialist';
+const title = 'Mohammed Al-Jabri — Additive Manufacturing & 3D Printing Specialist';
 const description =
-	'Mohammed Al-Jabri is an additive manufacturing and 3D printing specialist based in Oman, working across printer operation, maintenance, CAD design, and technical training.';
+	'Mohammed Al-Jabri is an additive manufacturing and 3D printing specialist with six years of experience across printer operation, calibration, maintenance, CAD design, and technical training.';
 const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
-
-const stats = [
-	{ value: '6+', label: 'Years of experience' },
-	{ value: '63', label: 'Workshops delivered' },
-	{ value: '1,340+', label: 'People trained' },
-];
-
-const expertise = [
-	{
-		title: 'Additive Manufacturing',
-		description:
-			'Practical experience in FDM 3D printing, material selection, slicing, production planning, and quality control.',
-	},
-	{
-		title: 'Maintenance & Calibration',
-		description:
-			'Printer diagnostics, preventive maintenance, calibration, troubleshooting, and operational readiness.',
-	},
-	{
-		title: 'CAD & Prototyping',
-		description:
-			'Turning ideas and functional requirements into manufacturable models, prototypes, and replacement parts.',
-	},
-	{
-		title: 'Technical Training',
-		description:
-			'Designing and delivering practical learning experiences for educators, students, and technical teams.',
-	},
-];
+const email = 'mohdbsaid@outlook.com';
+const github = 'https://github.com/mohdbsaid';
 
 const jsonLd = [
 	{
@@ -48,7 +20,9 @@ const jsonLd = [
 		name: 'Mohammed Al-Jabri',
 		url: siteUrl,
 		description,
-		jobTitle: 'Additive Manufacturing Specialist',
+		jobTitle: 'Additive Manufacturing & 3D Printing Specialist',
+		email: `mailto:${email}`,
+		sameAs: [github],
 	},
 	{
 		'@type': 'WebSite',
@@ -64,158 +38,301 @@ const jsonLd = [
 	description={description}
 	jsonLd={jsonLd}
 	fullBleed
-	mainLang="en"
-	mainDir="ltr"
+	htmlLang="en"
+	htmlDir="ltr"
+	hideChrome
+	skipLinkLabel="Skip to main content"
 	locale="en_US"
 >
-	<Hero
-		eyebrow="Additive Manufacturing · Oman"
-		name="Mohammed Al-Jabri"
-		intro="Designing, building, and teaching digital manufacturing — I help turn ideas into physical products through additive manufacturing, engineering workflows, technical training, and practical experimentation."
-		primaryCta={{ label: 'View selected work', href: '#work' }}
-		secondaryCta={{ label: 'Contact me', href: '#contact' }}
-		initials="MA"
-	/>
+	<div class="minimal">
+		<header class="mini-header">
+			<Container class="mini-header-row">
+				<span class="mini-name">Mohammed Al-Jabri</span>
+				<nav aria-label="Primary">
+					<a href="#work">Work</a>
+					<a href="#about">About</a>
+					<a href="#contact">Contact</a>
+				</nav>
+			</Container>
+		</header>
 
-	<Section id="about">
-		<SectionHeading
-			id="about-heading"
-			eyebrow="About"
-			title="Building practical systems around physical production."
-		/>
+		<Container>
+			<section id="intro" class="intro" aria-label="Introduction">
+				<div class="intro-text">
+					<h1>Mohammed Al-Jabri</h1>
+					<p class="role">Additive Manufacturing &amp; 3D Printing Specialist</p>
+					<p class="intro-copy">
+						I work across printer operation, calibration, and CAD design, turning ideas into
+						physical parts. I also train educators, students, and teams to do the same.
+					</p>
+					<p class="intro-links">
+						<a href={`mailto:${email}`}>{email}</a>
+						<a href={github} target="_blank" rel="noopener noreferrer">GitHub</a>
+					</p>
+				</div>
 
-		<div class="stats-block">
-			<StatGrid stats={stats} />
-		</div>
+				<div class="portrait" aria-hidden="true">
+					<span>MA</span>
+				</div>
+			</section>
 
-		<div class="about-copy">
-			<p>
-				I am an additive manufacturing and 3D printing specialist with hands-on experience in
-				printer operation, maintenance, calibration, CAD design, technical training, and
-				post-processing.
-			</p>
+			<section id="work" aria-labelledby="work-heading">
+				<h2 id="work-heading">Selected Work</h2>
 
-			<p>
-				My work focuses on making advanced manufacturing tools more practical, understandable, and
-				useful for workshops, educators, businesses, and individual creators.
-			</p>
-		</div>
-	</Section>
+				<ul class="work-list">
+					{
+						selectedWork.map((item) => (
+							<li>
+								<span class="work-name">{item.title}</span>
+								<span class="work-desc">{item.description}</span>
+								<span class="work-status">{item.status}</span>
+							</li>
+						))
+					}
+				</ul>
+			</section>
 
-	<Section id="expertise" surface>
-		<SectionHeading
-			id="expertise-heading"
-			eyebrow="Expertise"
-			title="What I work on."
-			description="A combination of technical execution, systems thinking, and practical education."
-		/>
-		<FeatureGrid items={expertise} />
-	</Section>
+			<section id="about" aria-labelledby="about-heading">
+				<h2 id="about-heading">About</h2>
+				<p>
+					Six years of experience, 63 workshops delivered, and 1,340+ beneficiaries trained in
+					additive manufacturing. Hands-on experience in FDM printing, calibration, maintenance, CAD
+					design, training, and post-processing.
+				</p>
+			</section>
 
-	<Section id="work">
-		<SectionHeading
-			id="work-heading"
-			eyebrow="Selected work"
-			title="Projects in development."
-			description="A selection of systems and engineering products currently being designed, tested, or documented."
-		/>
+			<section id="contact" aria-labelledby="contact-heading">
+				<h2 id="contact-heading">Contact</h2>
+				<p>
+					Open to conversations about additive manufacturing, training, and collaboration — reach me
+					by <a href={`mailto:${email}`}>email</a> or on{' '}
+					<a href={github} target="_blank" rel="noopener noreferrer">GitHub</a>.
+				</p>
+			</section>
+		</Container>
 
-		<ul class="work-grid">
-			{
-				selectedWork.map((item) => (
-					<li>
-						<span class="label">{item.label}</span>
-						<h3>{item.title}</h3>
-						<p>{item.description}</p>
-						<span class="status">{item.status}</span>
-					</li>
-				))
-			}
-		</ul>
-	</Section>
-
-	<Section id="contact" surface>
-		<SectionHeading
-			id="contact-heading"
-			eyebrow="Contact"
-			title="Have a project, collaboration, or technical challenge?"
-			description="I am open to discussions related to additive manufacturing, technical training, prototyping, and digital manufacturing systems."
-		/>
-
-		<div class="contact-actions">
-			<Button href="mailto:hello@mohdbsaid.com" variant="primary">Send an email</Button>
-			<Button href="https://github.com/mohdbsaid" variant="secondary">View GitHub</Button>
-		</div>
-	</Section>
+		<footer class="mini-footer">
+			<Container>
+				<p>&copy; {new Date().getFullYear()} Mohammed Al-Jabri</p>
+			</Container>
+		</footer>
+	</div>
 </Layout>
 
 <style>
-	.stats-block {
-		margin: var(--space-4) 0;
+	.minimal {
+		font-family:
+			system-ui,
+			-apple-system,
+			'Segoe UI',
+			sans-serif;
 	}
 
-	.about-copy p {
-		margin: 0 0 var(--space-3);
+	/* Header */
+	.mini-header {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.mini-header-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-2);
+		padding-block: var(--space-3);
+	}
+
+	.mini-name {
+		font-weight: 600;
+	}
+
+	.mini-header nav {
+		display: flex;
+		gap: var(--space-3);
+	}
+
+	.mini-header nav a {
+		color: var(--color-muted);
+		font-size: 0.95rem;
+		transition: color 0.2s ease;
+	}
+
+	.mini-header nav a:hover,
+	.mini-header nav a:focus-visible {
+		color: var(--color-text);
+	}
+
+	/* Intro */
+	.intro {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--space-5);
+		padding-block: var(--space-6);
+	}
+
+	.intro-text {
+		max-width: 34rem;
+	}
+
+	.intro h1 {
+		margin: 0;
+		font-size: clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
+		font-weight: 600;
+		line-height: 1.2;
+	}
+
+	.role {
+		margin: var(--space-1) 0 0;
 		color: var(--color-muted);
 		font-size: 1.05rem;
 	}
 
-	.about-copy p:last-child {
-		margin-bottom: 0;
+	.intro-copy {
+		margin: var(--space-3) 0 0;
+		color: var(--color-text);
+		line-height: 1.7;
 	}
 
-	.work-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+	.intro-links {
+		display: flex;
+		flex-wrap: wrap;
 		gap: var(--space-3);
+		margin: var(--space-3) 0 0;
+	}
+
+	.intro-links a {
+		color: var(--color-primary);
+	}
+
+	.intro-links a:hover,
+	.intro-links a:focus-visible {
+		text-decoration: underline;
+	}
+
+	.portrait {
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 120px;
+		aspect-ratio: 1;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-medium);
+		background: var(--color-surface);
+	}
+
+	.portrait span {
+		color: var(--color-muted);
+		font-size: 1.25rem;
+		font-weight: 600;
+	}
+
+	/* Section headings shared by Work / About / Contact */
+	section[id] {
+		padding-block: var(--space-5);
+		border-top: 1px solid var(--color-border);
+	}
+
+	section[id] h2 {
+		margin: 0 0 var(--space-3);
+		font-size: 1.1rem;
+		font-weight: 600;
+	}
+
+	section[id] p {
+		margin: 0;
+		max-width: 40rem;
+		color: var(--color-muted);
+		line-height: 1.7;
+	}
+
+	section[id] p a {
+		color: var(--color-primary);
+	}
+
+	section[id] p a:hover,
+	section[id] p a:focus-visible {
+		text-decoration: underline;
+	}
+
+	/* Selected work rows */
+	.work-list {
+		display: flex;
+		flex-direction: column;
 		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
 
-	.work-grid li {
-		display: flex;
-		flex-direction: column;
-		padding: var(--space-3);
-		background: var(--color-background);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-medium);
-	}
-
-	.work-grid .label {
-		color: var(--color-primary);
-		font-size: 0.8rem;
-		font-weight: 700;
-	}
-
-	.work-grid h3 {
-		margin: var(--space-1) 0;
-		font-size: 1.05rem;
-	}
-
-	.work-grid p {
-		margin: 0;
-		color: var(--color-muted);
-		font-size: 0.95rem;
-	}
-
-	.work-grid .status {
-		margin-top: auto;
-		padding-top: var(--space-3);
-		color: var(--color-muted);
-		font-size: 0.8rem;
-		font-weight: 700;
-	}
-
-	.contact-actions {
+	.work-list li {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--space-2);
+		align-items: baseline;
+		gap: var(--space-1) var(--space-3);
+		padding-block: var(--space-2);
+		border-bottom: 1px solid var(--color-border);
 	}
 
-	@media (max-width: 800px) {
-		.work-grid {
-			grid-template-columns: 1fr;
+	.work-list li:first-child {
+		padding-top: 0;
+	}
+
+	.work-list li:last-child {
+		border-bottom: none;
+	}
+
+	.work-name {
+		flex: 0 0 auto;
+		min-width: 10rem;
+		font-weight: 600;
+	}
+
+	.work-desc {
+		flex: 1 1 20rem;
+		color: var(--color-muted);
+	}
+
+	.work-status {
+		flex: 0 0 auto;
+		color: var(--color-muted);
+		font-size: 0.85rem;
+	}
+
+	/* Footer */
+	.mini-footer {
+		border-top: 1px solid var(--color-border);
+	}
+
+	.mini-footer p {
+		margin: 0;
+		padding-block: var(--space-3);
+		color: var(--color-muted);
+		font-size: 0.85rem;
+	}
+
+	@media (max-width: 700px) {
+		.intro {
+			flex-direction: column-reverse;
+			text-align: center;
+		}
+
+		.intro-text {
+			max-width: none;
+		}
+
+		.intro-links {
+			justify-content: center;
+		}
+
+		.work-list li {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--space-1);
+		}
+
+		.work-desc {
+			flex: none;
 		}
 	}
 </style>
