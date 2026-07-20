@@ -1,10 +1,11 @@
 ---
-// English/LTR minimal homepage — deliberately bypasses the site's global
-// Arabic <Header>/<Footer> chrome (via Layout's hideChrome) and renders its
-// own page-specific header/footer, per docs decision to scope this redesign
-// to the homepage only. See CLAUDE.md component rules.
+// English/LTR homepage — deliberately bypasses the site's global Arabic
+// <Header>/<Footer> chrome (via Layout's hideChrome) and renders its own
+// page-specific header/footer. Visual language (dark animated gradient +
+// glassmorphism, hardcoded colors, Google Fonts + Font Awesome via CDN) is a
+// deliberate, explicitly-instructed one-off exception to the site's design
+// token system — see docs/DECISIONS.md ADR-015. Scoped to this page only.
 import Layout from '../layouts/Layout.astro';
-import Container from '../components/Container.astro';
 import { selectedWork } from '../data/selectedWork';
 
 const title = 'Mohammed Al-Jabri — Additive Manufacturing & 3D Printing Specialist';
@@ -12,7 +13,6 @@ const description =
 	'Mohammed Al-Jabri is an additive manufacturing and 3D printing specialist with six years of experience across printer operation, calibration, maintenance, CAD design, and technical training.';
 const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
 const email = 'mohdbsaid@outlook.com';
-const github = 'https://github.com/mohdbsaid';
 const whatsapp = 'https://wa.me/96891899818';
 
 const jsonLd = [
@@ -23,7 +23,6 @@ const jsonLd = [
 		description,
 		jobTitle: 'Additive Manufacturing & 3D Printing Specialist',
 		email: `mailto:${email}`,
-		sameAs: [github],
 	},
 	{
 		'@type': 'WebSite',
@@ -45,46 +44,64 @@ const jsonLd = [
 	skipLinkLabel="Skip to main content"
 	locale="en_US"
 >
-	<div class="minimal">
-		<header class="mini-header">
-			<Container class="mini-header-row">
+	<Fragment slot="head">
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=Cairo:wght@400;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+			integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+	</Fragment>
+
+	<div class="page-bg">
+		<div class="glass-container" id="main-glass">
+			<header class="mini-header">
 				<span class="mini-name">Mohammed Al-Jabri</span>
-				<nav aria-label="Primary">
+				<nav class="nav-links" aria-label="Primary">
 					<a href="#work">Work</a>
 					<a href="#about">About</a>
 					<a href="#contact">Contact</a>
 				</nav>
-			</Container>
-		</header>
+			</header>
 
-		<Container>
-			<section id="intro" class="intro" aria-label="Introduction">
+			<section class="intro visible" aria-label="Introduction">
 				<div class="intro-text">
 					<h1>Mohammed Al-Jabri</h1>
-					<p class="role">Additive Manufacturing &amp; 3D Printing Specialist</p>
+					<p class="role">
+						<i class="fas fa-print" aria-hidden="true"></i>Additive Manufacturing &amp; 3D Printing
+						Specialist
+					</p>
 					<p class="intro-copy">
 						I work across printer operation, calibration, and CAD design, turning ideas into
 						physical parts. I also train educators, students, and teams to do the same.
 					</p>
-					<p class="intro-links">
-						<a href={`mailto:${email}`}>{email}</a>
-						<a href={github} target="_blank" rel="noopener noreferrer">GitHub</a>
-					</p>
+					<div class="intro-links">
+						<a href={`mailto:${email}`}><i class="fas fa-envelope" aria-hidden="true"></i> Email</a>
+						<a href={whatsapp} target="_blank" rel="noopener noreferrer">
+							<i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp
+						</a>
+					</div>
 				</div>
-
-				<div class="portrait" aria-hidden="true">
-					<span>MA</span>
-				</div>
+				<div class="portrait" aria-hidden="true">MA</div>
 			</section>
 
 			<section id="work" aria-labelledby="work-heading">
-				<h2 id="work-heading">Selected Work</h2>
-
+				<h2 id="work-heading"><i class="fas fa-cubes" aria-hidden="true"></i> Selected Work</h2>
 				<ul class="work-list">
 					{
 						selectedWork.map((item) => (
 							<li>
-								<span class="work-name">{item.title}</span>
+								<span class="work-name">
+									<i class={`fas fa-${item.icon}`} aria-hidden="true" />
+									{item.title}
+								</span>
 								<span class="work-desc">{item.description}</span>
 								<span class="work-status">{item.status}</span>
 							</li>
@@ -94,247 +111,618 @@ const jsonLd = [
 			</section>
 
 			<section id="about" aria-labelledby="about-heading">
-				<h2 id="about-heading">About</h2>
-				<p>
-					Six years of experience, over 32 real-world projects delivered, 63 workshops facilitated,
-					and 1,340+ beneficiaries trained in additive manufacturing. Hands-on experience in FDM
-					printing, calibration, maintenance, CAD design, training, and post-processing.
+				<h2 id="about-heading"><i class="fas fa-user-astronaut" aria-hidden="true"></i> About</h2>
+				<p class="about-text">
+					Six years of experience, <strong>over 32 real-world projects</strong> delivered, <strong
+						>63 workshops</strong
+					> facilitated, and <strong>1,340+</strong> beneficiaries trained in additive manufacturing.
+					Hands-on experience in FDM printing, calibration, maintenance, CAD design, training, and post-processing.
 				</p>
+				<div class="about-grid">
+					<div class="stat-item">
+						<div class="stat-number" data-count="32">0</div>
+						<div class="stat-label">Projects</div>
+					</div>
+					<div class="stat-item">
+						<div class="stat-number" data-count="63">0</div>
+						<div class="stat-label">Workshops</div>
+					</div>
+					<div class="stat-item">
+						<div class="stat-number" data-count="1340">0</div>
+						<div class="stat-label">Beneficiaries</div>
+					</div>
+					<div class="stat-item">
+						<div class="stat-number" data-count="6">0</div>
+						<div class="stat-label">Years of Experience</div>
+					</div>
+				</div>
 			</section>
 
 			<section id="contact" aria-labelledby="contact-heading">
-				<h2 id="contact-heading">Contact</h2>
-				<p>
+				<h2 id="contact-heading"><i class="fas fa-paper-plane" aria-hidden="true"></i> Contact</h2>
+				<p class="contact-copy">
 					Open to conversations about additive manufacturing, training, and collaboration — reach me
-					by <a href={`mailto:${email}`}>email</a>,{' '}
-					<a href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a>, or on{' '}
-					<a href={github} target="_blank" rel="noopener noreferrer">GitHub</a>.
+					by email or WhatsApp.
 				</p>
+				<div class="contact-links">
+					<a href={`mailto:${email}`}><i class="fas fa-envelope" aria-hidden="true"></i> {email}</a>
+					<a href={whatsapp} target="_blank" rel="noopener noreferrer">
+						<i class="fab fa-whatsapp" aria-hidden="true"></i> +968 91899818
+					</a>
+				</div>
 			</section>
-		</Container>
 
-		<footer class="mini-footer">
-			<Container>
+			<footer class="mini-footer">
 				<p>&copy; {new Date().getFullYear()} Mohammed Al-Jabri</p>
-			</Container>
-		</footer>
+			</footer>
+		</div>
 	</div>
 </Layout>
 
 <style>
-	.minimal {
-		font-family:
-			system-ui,
-			-apple-system,
-			'Segoe UI',
-			sans-serif;
+	/* Page-specific reset scoped to this page's own tree only — global.css's
+	   sitewide reset doesn't zero every element, and this page intentionally
+	   uses a from-scratch visual language (see docs/DECISIONS.md ADR-015). */
+	.page-bg *,
+	.page-bg *::before,
+	.page-bg *::after {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
 	}
 
-	/* Header */
+	.page-bg {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+		background: linear-gradient(135deg, #0b0c2a, #1a1040, #2d1b69);
+		background-size: 400% 400%;
+		animation: gradientShift 15s ease infinite;
+		color: #fff;
+		line-height: 1.6;
+		font-family: 'Inter', 'Cairo', sans-serif;
+	}
+
+	@keyframes gradientShift {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	/* ---------- Glassmorphism Container ---------- */
+	.glass-container {
+		max-width: 1200px;
+		width: 100%;
+		background: rgba(255, 255, 255, 0.08);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border-radius: 2.5rem;
+		padding: 2rem 2.5rem;
+		box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		transition: all 0.3s ease;
+	}
+
+	/* ---------- Header / Nav ---------- */
 	.mini-header {
-		border-bottom: 1px solid var(--color-border);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-bottom: 1.5rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		flex-wrap: wrap;
+		gap: 1rem;
 	}
 
-	.mini-header-row {
+	.mini-name {
+		font-size: 1.2rem;
+		font-weight: 700;
+		letter-spacing: -0.5px;
+		background: linear-gradient(to right, #b0baff, #d4bfff);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.nav-links {
+		display: flex;
+		gap: 1.8rem;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.nav-links a {
+		color: rgba(255, 255, 255, 0.7);
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 0.95rem;
+		transition: all 0.3s ease;
+		position: relative;
+	}
+
+	.nav-links a::after {
+		content: '';
+		position: absolute;
+		bottom: -4px;
+		left: 0;
+		width: 0%;
+		height: 2px;
+		background: linear-gradient(90deg, #a78bfa, #7c3aed);
+		transition: width 0.3s ease;
+	}
+
+	.nav-links a:hover,
+	.nav-links a:focus-visible {
+		color: #fff;
+	}
+	.nav-links a:hover::after,
+	.nav-links a:focus-visible::after {
+		width: 100%;
+	}
+
+	/* ---------- Intro Section ---------- */
+	.intro {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-between;
-		gap: var(--space-2);
-		padding-block: var(--space-3);
-	}
-
-	.mini-name {
-		font-weight: 600;
-	}
-
-	.mini-header nav {
-		display: flex;
-		gap: var(--space-3);
-	}
-
-	.mini-header nav a {
-		color: var(--color-muted);
-		font-size: 0.95rem;
-		transition: color 0.2s ease;
-	}
-
-	.mini-header nav a:hover,
-	.mini-header nav a:focus-visible {
-		color: var(--color-text);
-	}
-
-	/* Intro */
-	.intro {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--space-5);
-		padding-block: var(--space-6);
+		padding: 2rem 0 3rem 0;
+		gap: 2rem;
 	}
 
 	.intro-text {
-		max-width: 34rem;
+		flex: 1 1 300px;
 	}
 
-	.intro h1 {
-		margin: 0;
-		font-size: clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
-		font-weight: 600;
-		line-height: 1.2;
+	.intro-text h1 {
+		font-size: 3rem;
+		font-weight: 700;
+		background: linear-gradient(135deg, #fff, #c4b5fd);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		margin-bottom: 0.25rem;
+		letter-spacing: -1px;
 	}
 
 	.role {
-		margin: var(--space-1) 0 0;
-		color: var(--color-muted);
-		font-size: 1.05rem;
+		font-size: 1.2rem;
+		color: #c4b5fd;
+		font-weight: 400;
+		margin-bottom: 0.75rem;
+	}
+
+	.role i {
+		margin-right: 8px;
+		color: #a78bfa;
 	}
 
 	.intro-copy {
-		margin: var(--space-3) 0 0;
-		color: var(--color-text);
-		line-height: 1.7;
+		font-size: 1rem;
+		color: rgba(255, 255, 255, 0.8);
+		max-width: 500px;
+		margin-bottom: 1.5rem;
 	}
 
 	.intro-links {
 		display: flex;
+		gap: 1.5rem;
 		flex-wrap: wrap;
-		gap: var(--space-3);
-		margin: var(--space-3) 0 0;
 	}
 
 	.intro-links a {
-		color: var(--color-primary);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: #fff;
+		background: rgba(255, 255, 255, 0.1);
+		padding: 0.6rem 1.2rem;
+		border-radius: 40px;
+		text-decoration: none;
+		font-weight: 500;
+		transition: all 0.3s ease;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		backdrop-filter: blur(4px);
+	}
+
+	.intro-links a i {
+		font-size: 1rem;
+		transition: transform 0.3s ease;
 	}
 
 	.intro-links a:hover,
 	.intro-links a:focus-visible {
-		text-decoration: underline;
+		background: rgba(255, 255, 255, 0.2);
+		transform: scale(1.05) translateY(-2px);
+		box-shadow: 0 12px 30px -10px rgba(124, 58, 237, 0.5);
+	}
+
+	.intro-links a:hover i,
+	.intro-links a:focus-visible i {
+		transform: rotate(8deg) scale(1.1);
 	}
 
 	.portrait {
-		flex-shrink: 0;
+		flex: 0 0 120px;
+		height: 120px;
+		border-radius: 50%;
+		background: linear-gradient(135deg, #7c3aed, #4f46e5);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 120px;
-		aspect-ratio: 1;
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-medium);
-		background: var(--color-surface);
+		font-size: 3rem;
+		font-weight: 700;
+		color: #fff;
+		box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.5);
+		border: 2px solid rgba(255, 255, 255, 0.15);
+		transition:
+			transform 0.4s ease,
+			box-shadow 0.4s ease;
+		animation: float 6s ease-in-out infinite;
 	}
 
-	.portrait span {
-		color: var(--color-muted);
-		font-size: 1.25rem;
-		font-weight: 600;
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-8px);
+		}
 	}
 
-	/* Section headings shared by Work / About / Contact */
-	section[id] {
-		padding-block: var(--space-5);
-		border-top: 1px solid var(--color-border);
+	.portrait:hover {
+		transform: scale(1.05) rotate(2deg);
+		box-shadow: 0 30px 50px -10px #7c3aed;
 	}
 
-	section[id] h2 {
-		margin: 0 0 var(--space-3);
-		font-size: 1.1rem;
-		font-weight: 600;
+	/* ---------- Sections (cards) ---------- */
+	section {
+		margin: 2.5rem 0;
+		padding: 1.8rem 2rem;
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		border-radius: 2rem;
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+		opacity: 0;
+		transform: translateY(30px);
+		transition:
+			opacity 0.8s ease,
+			transform 0.8s ease,
+			box-shadow 0.4s ease,
+			border-color 0.4s ease;
 	}
 
-	section[id] p {
-		margin: 0;
-		max-width: 40rem;
-		color: var(--color-muted);
-		line-height: 1.7;
+	section.visible {
+		opacity: 1;
+		transform: translateY(0);
 	}
 
-	section[id] p a {
-		color: var(--color-primary);
+	section:hover {
+		box-shadow: 0 12px 48px rgba(124, 58, 237, 0.25);
+		border-color: rgba(167, 139, 250, 0.2);
 	}
 
-	section[id] p a:hover,
-	section[id] p a:focus-visible {
-		text-decoration: underline;
+	section h2 {
+		font-size: 1.8rem;
+		font-weight: 700;
+		margin-bottom: 1.2rem;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: #e0d7ff;
 	}
 
-	/* Selected work rows */
+	section h2 i {
+		color: #a78bfa;
+		font-size: 1.6rem;
+		animation: iconPulse 3s ease-in-out infinite;
+	}
+
+	@keyframes iconPulse {
+		0%,
+		100% {
+			transform: scale(1) rotate(0deg);
+		}
+		50% {
+			transform: scale(1.15) rotate(4deg);
+		}
+	}
+
+	/* ---------- Work List ---------- */
 	.work-list {
+		list-style: none;
 		display: flex;
 		flex-direction: column;
-		margin: 0;
-		padding: 0;
-		list-style: none;
+		gap: 1.2rem;
 	}
 
 	.work-list li {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: baseline;
-		gap: var(--space-1) var(--space-3);
-		padding-block: var(--space-2);
-		border-bottom: 1px solid var(--color-border);
+		gap: 0.5rem 1rem;
+		background: rgba(255, 255, 255, 0.03);
+		padding: 1rem 1.2rem;
+		border-radius: 1.2rem;
+		transition: all 0.3s ease;
+		border-left: 3px solid transparent;
 	}
 
-	.work-list li:first-child {
-		padding-top: 0;
-	}
-
-	.work-list li:last-child {
-		border-bottom: none;
+	.work-list li:hover {
+		background: rgba(255, 255, 255, 0.08);
+		transform: translateX(6px) scale(1.01);
+		border-left-color: #a78bfa;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 	}
 
 	.work-name {
-		flex: 0 0 auto;
-		min-width: 10rem;
 		font-weight: 600;
+		font-size: 1.1rem;
+		color: #fff;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.work-name i {
+		color: #a78bfa;
+		font-size: 1rem;
 	}
 
 	.work-desc {
-		flex: 1 1 20rem;
-		color: var(--color-muted);
+		color: rgba(255, 255, 255, 0.75);
+		flex: 1 1 200px;
 	}
 
 	.work-status {
-		flex: 0 0 auto;
-		color: var(--color-muted);
-		font-size: 0.85rem;
+		font-size: 0.75rem;
+		background: rgba(74, 222, 128, 0.15);
+		color: #86efac;
+		padding: 0.2rem 0.8rem;
+		border-radius: 30px;
+		border: 1px solid rgba(74, 222, 128, 0.15);
+		letter-spacing: 0.3px;
 	}
 
-	/* Footer */
+	/* ---------- About (with counters) ---------- */
+	.about-text {
+		color: rgba(255, 255, 255, 0.85);
+		font-size: 1rem;
+		max-width: 700px;
+		margin: 0 auto;
+	}
+
+	.about-text strong {
+		color: #c4b5fd;
+		font-weight: 700;
+	}
+
+	.about-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2rem;
+		justify-content: space-around;
+		text-align: center;
+		margin: 1.5rem 0 0.5rem 0;
+	}
+
+	.stat-item {
+		flex: 1 1 100px;
+		padding: 0.5rem;
+	}
+
+	.stat-number {
+		font-size: 2.8rem;
+		font-weight: 700;
+		background: linear-gradient(135deg, #c4b5fd, #7c3aed);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		line-height: 1.2;
+	}
+
+	.stat-label {
+		color: rgba(255, 255, 255, 0.7);
+		font-size: 0.9rem;
+		margin-top: 0.2rem;
+		font-weight: 400;
+	}
+
+	/* ---------- Contact ---------- */
+	.contact-copy {
+		color: rgba(255, 255, 255, 0.8);
+		margin-bottom: 0.8rem;
+	}
+
+	.contact-links {
+		display: flex;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		margin-top: 0.5rem;
+	}
+
+	.contact-links a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		color: #c4b5fd;
+		text-decoration: none;
+		font-weight: 500;
+		padding: 0.5rem 1rem;
+		border-radius: 40px;
+		background: rgba(255, 255, 255, 0.05);
+		transition: all 0.3s ease;
+		border: 1px solid transparent;
+	}
+
+	.contact-links a i {
+		font-size: 1.2rem;
+		transition: transform 0.3s ease;
+	}
+
+	.contact-links a:hover,
+	.contact-links a:focus-visible {
+		background: rgba(167, 139, 250, 0.15);
+		border-color: #a78bfa;
+		transform: translateY(-3px);
+		box-shadow: 0 12px 28px -8px rgba(124, 58, 237, 0.3);
+	}
+
+	.contact-links a:hover i,
+	.contact-links a:focus-visible i {
+		transform: rotate(-6deg) scale(1.15);
+	}
+
+	/* ---------- Footer ---------- */
 	.mini-footer {
-		border-top: 1px solid var(--color-border);
+		margin-top: 2rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
+		text-align: center;
+		color: rgba(255, 255, 255, 0.4);
+		font-size: 0.9rem;
 	}
 
-	.mini-footer p {
-		margin: 0;
-		padding-block: var(--space-3);
-		color: var(--color-muted);
-		font-size: 0.85rem;
+	/* ---------- Responsive ---------- */
+	@media (max-width: 768px) {
+		.glass-container {
+			padding: 1.5rem 1rem;
+			border-radius: 1.8rem;
+		}
+		.intro-text h1 {
+			font-size: 2.2rem;
+		}
+		.portrait {
+			flex: 0 0 90px;
+			height: 90px;
+			font-size: 2.2rem;
+		}
+		section {
+			padding: 1.2rem 1rem;
+			margin: 1.5rem 0;
+		}
+		.stat-number {
+			font-size: 2.2rem;
+		}
+		.mini-header {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 0.8rem;
+		}
+		.nav-links {
+			justify-content: center;
+			gap: 1.2rem;
+		}
 	}
 
-	@media (max-width: 700px) {
+	@media (max-width: 480px) {
 		.intro {
 			flex-direction: column-reverse;
+			align-items: center;
 			text-align: center;
 		}
-
-		.intro-text {
-			max-width: none;
-		}
-
 		.intro-links {
 			justify-content: center;
 		}
-
 		.work-list li {
 			flex-direction: column;
 			align-items: flex-start;
-			gap: var(--space-1);
 		}
-
-		.work-desc {
-			flex: none;
+		.about-grid {
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+		}
+		.stat-item {
+			flex: 1 1 45%;
 		}
 	}
+
+	/* This page's skip-link visual replaces the sitewide default (blue pill)
+	   with the reference's white pill, scoped to this page's own CSS bundle
+	   only — global.css's .skip-link rule is untouched for every other
+	   route. */
+	:global(.skip-link) {
+		background: #fff;
+		color: #000;
+		padding: 0.5rem 1rem;
+		border-radius: 2rem;
+	}
 </style>
+
+<script>
+	(function () {
+		'use strict';
+
+		// ---------- 1. Counter Animation ----------
+		const counters = document.querySelectorAll('#main-glass .stat-number');
+
+		const animateCounter = (el: Element) => {
+			const target = parseInt(el.getAttribute('data-count') ?? '', 10);
+			if (isNaN(target)) return;
+			let current = 0;
+			const increment = Math.max(1, Math.floor(target / 60));
+			const step = () => {
+				current += increment;
+				if (current >= target) {
+					el.textContent = String(target);
+					return;
+				}
+				el.textContent = String(current);
+				requestAnimationFrame(() => {
+					setTimeout(step, 20);
+				});
+			};
+			step();
+		};
+
+		// ---------- 2. Intersection Observer for fade-in + trigger counters ----------
+		const sections = document.querySelectorAll('#main-glass section:not(.intro)');
+		let countersAnimated = false;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('visible');
+						if (entry.target.id === 'about' && !countersAnimated) {
+							countersAnimated = true;
+							counters.forEach((counter) => animateCounter(counter));
+						}
+					}
+				});
+			},
+			{
+				threshold: 0.15,
+				rootMargin: '0px 0px -20px 0px',
+			},
+		);
+
+		sections.forEach((section) => observer.observe(section));
+
+		// Trigger if "about" is already visible on load
+		setTimeout(() => {
+			const aboutSection = document.getElementById('about');
+			if (aboutSection && aboutSection.getBoundingClientRect().top < window.innerHeight * 0.8) {
+				if (!countersAnimated) {
+					countersAnimated = true;
+					counters.forEach((counter) => animateCounter(counter));
+				}
+			}
+		}, 300);
+
+		// ---------- 3. Ensure intro is visible ----------
+		document.querySelector('#main-glass .intro')?.classList.add('visible');
+	})();
+</script>
