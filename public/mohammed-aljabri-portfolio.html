@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohammed Al-Jabri — Additive Manufacturing &amp; 3D Printing Specialist</title>
+<meta name="description" content="Mohammed Al-Jabri — Additive Manufacturing & 3D Printing Specialist. 6 years experience, 32+ projects, 63 workshops, 1,340+ beneficiaries trained.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+<style>
+  :root {
+    --bg-1: #0a0e2a;
+    --bg-2: #1b1140;
+    --bg-3: #2d1b5e;
+    --violet: #7b2ff7;
+    --blue: #2563eb;
+    --purple: #9333ea;
+    --text: #f4f4ff;
+    --text-dim: #b8b8d4;
+    --glass-bg: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --accent: #a78bfa;
+    --accent-2: #60a5fa;
+    --radius: 20px;
+    --font-en: 'Inter', 'Cairo', sans-serif;
+    --font-ar: 'Cairo', 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-en);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  html[lang="ar"] body { font-family: var(--font-ar); }
+
+  /* Animated gradient background */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(120deg, var(--bg-1), var(--bg-2), var(--purple), var(--bg-3), var(--blue), var(--bg-1));
+    background-size: 400% 400%;
+    animation: gradientShift 18s ease infinite;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(123, 47, 247, 0.25), transparent 45%),
+      radial-gradient(circle at 80% 70%, rgba(37, 99, 235, 0.25), transparent 45%);
+    pointer-events: none;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::before { animation: none; }
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  /* Skip link */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    background: var(--violet);
+    color: #fff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    z-index: 1000;
+    transition: top 0.2s ease;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .skip-link:focus { top: 1rem; }
+
+  a { color: var(--accent-2); }
+
+  .container {
+    max-width: 1100px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  /* Top bar */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(10, 14, 42, 0.55);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 0.9rem;
+  }
+  .brand {
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+  }
+  .brand span { color: var(--accent); }
+
+  .lang-toggle {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .lang-toggle:hover,
+  .lang-toggle:focus-visible {
+    background: rgba(167, 139, 250, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(123, 47, 247, 0.35);
+    outline: none;
+  }
+
+  /* Glass card base */
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Fade in on scroll */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  section { padding-block: 5rem; }
+
+  /* Hero */
+  .hero {
+    padding-block: 6rem 4rem;
+    text-align: center;
+  }
+
+  .avatar-wrap {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--violet), var(--blue));
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.06), 0 20px 50px rgba(123, 47, 247, 0.4);
+    animation: floatAvatar 5s ease-in-out infinite;
+    font-size: 3rem;
+    font-weight: 800;
+  }
+  @keyframes floatAvatar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+  }
+
+  .hero .role {
+    font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .hero .tagline {
+    max-width: 620px;
+    margin-inline: auto;
+    color: var(--text-dim);
+    font-size: 1.05rem;
+  }
+
+  .hero-actions {
+    margin-top: 2.25rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.98rem;
+    border: 1px solid transparent;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--violet), var(--blue));
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(123, 47, 247, 0.4);
+  }
+  .btn-primary:hover, .btn-primary:focus-visible {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(123, 47, 247, 0.55);
+    outline: none;
+  }
+  .btn-ghost {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    color: var(--text);
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-4px);
+    outline: none;
+  }
+
+  /* Section heading */
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 2.75rem;
+    text-align: center;
+  }
+  .section-heading i {
+    color: var(--accent);
+    font-size: 1.5rem;
+    animation: iconPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes iconPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.18); opacity: 0.75; }
+  }
+  .section-heading h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  /* Stats */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.25rem;
+  }
+  .stat-card {
+    padding: 2rem 1.25rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .stat-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+    box-shadow: 0 16px 40px rgba(123, 47, 247, 0.3);
+  }
+  .stat-card i {
+    font-size: 1.6rem;
+    color: var(--accent-2);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+  .stat-number {
+    font-size: clamp(2rem, 4.5vw, 2.6rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .stat-label {
+    margin-top: 0.4rem;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  /* Work */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .work-card {
+    padding: 2rem;
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .work-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(123, 47, 247, 0.18), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .work-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent);
+    box-shadow: 0 20px 45px rgba(37, 99, 235, 0.3);
+  }
+  .work-card:hover::before { opacity: 1; }
+  .work-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--violet), var(--blue));
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .work-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    position: relative;
+  }
+  .work-card p {
+    color: var(--text-dim);
+    font-size: 0.96rem;
+    position: relative;
+  }
+
+  /* Contact */
+  .contact-card {
+    max-width: 640px;
+    margin-inline: auto;
+    padding: 2.75rem 2rem;
+    text-align: center;
+  }
+  .contact-card p.lead {
+    color: var(--text-dim);
+    margin-bottom: 2rem;
+    font-size: 1.02rem;
+  }
+  .contact-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  footer {
+    text-align: center;
+    padding-block: 2.5rem;
+    color: var(--text-dim);
+    font-size: 0.88rem;
+  }
+
+  @media (max-width: 640px) {
+    section { padding-block: 3.5rem; }
+    .hero { padding-block: 4.5rem 3rem; }
+    .contact-links { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link" data-en="Skip to main content" data-ar="تخطَّ إلى المحتوى الرئيسي">Skip to main content</a>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div class="brand" data-en="Mohammed <span>Al-Jabri</span>" data-ar="محمد <span>الجابري</span>">Mohammed <span>Al-Jabri</span></div>
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language / تبديل اللغة">EN / AR</button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Hero -->
+  <section class="hero container">
+    <div class="avatar-wrap" aria-hidden="true">MA</div>
+    <h1 data-en="Mohammed Al-Jabri" data-ar="محمد الجابري">Mohammed Al-Jabri</h1>
+    <p class="role" data-en="Additive Manufacturing &amp; 3D Printing Specialist" data-ar="أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد">Additive Manufacturing &amp; 3D Printing Specialist</p>
+    <p class="tagline" data-en="6 years turning additive manufacturing into real industrial impact — across defense, steel, and oil &amp; gas." data-ar="٦ سنوات في تحويل التصنيع الإضافي إلى أثر صناعي حقيقي — في قطاعات الدفاع والصلب والنفط والغاز.">6 years turning additive manufacturing into real industrial impact — across defense, steel, and oil &amp; gas.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#contact" data-en="Get in touch" data-ar="تواصل معي"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span data-en="Get in touch" data-ar="تواصل معي">Get in touch</span></a>
+      <a class="btn btn-ghost" href="https://wa.me/96891899818" target="_blank" rel="noopener noreferrer">
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+        <span data-en="WhatsApp" data-ar="واتساب">WhatsApp</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="container">
+    <div class="section-heading fade-in">
+      <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+      <h2 data-en="By the Numbers" data-ar="بالأرقام">By the Numbers</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="glass stat-card fade-in">
+        <i class="fa-solid fa-briefcase" aria-hidden="true"></i>
+        <div class="stat-number" data-target="6">0</div>
+        <div class="stat-label" data-en="Years of Experience" data-ar="سنوات الخبرة">Years of Experience</div>
+      </div>
+      <div class="glass stat-card fade-in">
+        <i class="fa-solid fa-cubes" aria-hidden="true"></i>
+        <div class="stat-number" data-target="32" data-suffix="+">0</div>
+        <div class="stat-label" data-en="Real-World Projects" data-ar="مشاريع واقعية">Real-World Projects</div>
+      </div>
+      <div class="glass stat-card fade-in">
+        <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+        <div class="stat-number" data-target="63">0</div>
+        <div class="stat-label" data-en="Workshops Delivered" data-ar="ورش عمل مقدَّمة">Workshops Delivered</div>
+      </div>
+      <div class="glass stat-card fade-in">
+        <i class="fa-solid fa-users" aria-hidden="true"></i>
+        <div class="stat-number" data-target="1340" data-suffix="+">0</div>
+        <div class="stat-label" data-en="Beneficiaries Trained" data-ar="مستفيدون مدرَّبون">Beneficiaries Trained</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Selected Work -->
+  <section class="container">
+    <div class="section-heading fade-in">
+      <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+      <h2 data-en="Selected Work" data-ar="أعمال مختارة">Selected Work</h2>
+    </div>
+    <div class="work-grid">
+      <div class="glass work-card fade-in">
+        <div class="work-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
+        <h3 data-en="Ministry of Defence" data-ar="وزارة الدفاع">Ministry of Defence</h3>
+        <p data-en="Strategic additive manufacturing for defense applications." data-ar="تصنيع إضافي استراتيجي للتطبيقات الدفاعية.">Strategic additive manufacturing for defense applications.</p>
+      </div>
+      <div class="glass work-card fade-in">
+        <div class="work-icon"><i class="fa-solid fa-industry" aria-hidden="true"></i></div>
+        <h3 data-en="Jindal Steel Oman" data-ar="جندال للحديد والصلب عُمان">Jindal Steel Oman</h3>
+        <p data-en="3D printing integration for steel manufacturing." data-ar="دمج الطباعة ثلاثية الأبعاد في تصنيع الصلب.">3D printing integration for steel manufacturing.</p>
+      </div>
+      <div class="glass work-card fade-in">
+        <div class="work-icon"><i class="fa-solid fa-oil-well" aria-hidden="true"></i></div>
+        <h3 data-en="OQGN" data-ar="أو كيو جي إن">OQGN</h3>
+        <p data-en="Advanced manufacturing support for oil &amp; gas sector." data-ar="دعم تصنيع متقدم لقطاع النفط والغاز.">Advanced manufacturing support for oil &amp; gas sector.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="container" id="contact">
+    <div class="section-heading fade-in">
+      <i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i>
+      <h2 data-en="Let's Talk" data-ar="لنتحدث">Let's Talk</h2>
+    </div>
+    <div class="glass contact-card fade-in">
+      <p class="lead" data-en="Open to additive manufacturing projects, workshops, and consulting." data-ar="متاح للمشاريع الاستشارية وورش العمل في التصنيع الإضافي.">Open to additive manufacturing projects, workshops, and consulting.</p>
+      <div class="contact-links">
+        <a class="btn btn-primary" href="mailto:mohdbsaid@outlook.com">
+          <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+          <span>mohdbsaid@outlook.com</span>
+        </a>
+        <a class="btn btn-ghost" href="https://wa.me/96891899818" target="_blank" rel="noopener noreferrer">
+          <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+          <span>+968 9189 9818</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p data-en="© 2026 Mohammed Al-Jabri. All rights reserved." data-ar="© ٢٠٢٦ محمد الجابري. جميع الحقوق محفوظة.">© 2026 Mohammed Al-Jabri. All rights reserved.</p>
+</footer>
+
+<script>
+  (function () {
+    "use strict";
+
+    // Fade-in on scroll
+    var fadeEls = document.querySelectorAll(".fade-in");
+    var fadeObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    fadeEls.forEach(function (el) { fadeObserver.observe(el); });
+
+    // Animated counters
+    var counters = document.querySelectorAll(".stat-number");
+    var counterObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var target = parseInt(el.getAttribute("data-target"), 10);
+        var suffix = el.getAttribute("data-suffix") || "";
+        var duration = 1600;
+        var start = null;
+
+        function step(timestamp) {
+          if (!start) start = timestamp;
+          var progress = Math.min((timestamp - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var value = Math.floor(eased * target);
+          el.textContent = value.toLocaleString("en-US") + suffix;
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            el.textContent = target.toLocaleString("en-US") + suffix;
+          }
+        }
+        requestAnimationFrame(step);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+    counters.forEach(function (el) { counterObserver.observe(el); });
+
+    // Language toggle (EN <-> AR)
+    var toggle = document.getElementById("langToggle");
+    var isArabic = false;
+    var translatable = document.querySelectorAll("[data-en][data-ar]");
+
+    toggle.addEventListener("click", function () {
+      isArabic = !isArabic;
+      document.documentElement.setAttribute("lang", isArabic ? "ar" : "en");
+      document.documentElement.setAttribute("dir", isArabic ? "rtl" : "ltr");
+      translatable.forEach(function (el) {
+        el.innerHTML = isArabic ? el.getAttribute("data-ar") : el.getAttribute("data-en");
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
