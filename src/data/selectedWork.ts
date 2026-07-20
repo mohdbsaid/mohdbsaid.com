@@ -10,24 +10,24 @@ export interface SelectedWorkItem {
 
 export const selectedWork: SelectedWorkItem[] = [
 	{
-		label: 'Digital Systems',
-		title: 'Lomeez OS',
+		label: 'Defense',
+		title: 'Ministry of Defence',
 		description:
-			'A lightweight operating system for team execution, KPI tracking, and company-level visibility.',
-		status: 'In development',
+			'Strategic additive manufacturing solutions for defense applications and mission-critical parts.',
+		status: 'Completed',
 	},
 	{
-		label: 'Personal Productivity',
-		title: 'Mohammed OS',
+		label: 'Industrial Manufacturing',
+		title: 'Jindal Steel Oman',
 		description:
-			'A personal and business operating system built around structured data, projects, goals, and reviews.',
-		status: 'In development',
+			'Industrial 3D printing integration for steel manufacturing processes and spare parts optimization.',
+		status: 'Completed',
 	},
 	{
-		label: 'Engineering Product',
-		title: 'Smart Filament Dryer',
+		label: 'Oil & Gas',
+		title: 'OQGN',
 		description:
-			'A workshop-focused drying system designed to manage multiple filament spools with environmental monitoring.',
-		status: 'In development',
+			'Advanced manufacturing support for oil & gas network infrastructure and pipeline components.',
+		status: 'Completed',
 	},
 ];

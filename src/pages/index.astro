@@ -13,6 +13,7 @@ const description =
 const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
 const email = 'mohdbsaid@outlook.com';
 const github = 'https://github.com/mohdbsaid';
+const whatsapp = 'https://wa.me/96891899818';
 
 const jsonLd = [
 	{
@@ -95,9 +96,9 @@ const jsonLd = [
 			<section id="about" aria-labelledby="about-heading">
 				<h2 id="about-heading">About</h2>
 				<p>
-					Six years of experience, 63 workshops delivered, and 1,340+ beneficiaries trained in
-					additive manufacturing. Hands-on experience in FDM printing, calibration, maintenance, CAD
-					design, training, and post-processing.
+					Six years of experience, over 32 real-world projects delivered, 63 workshops facilitated,
+					and 1,340+ beneficiaries trained in additive manufacturing. Hands-on experience in FDM
+					printing, calibration, maintenance, CAD design, training, and post-processing.
 				</p>
 			</section>
 
@@ -105,7 +106,8 @@ const jsonLd = [
 				<h2 id="contact-heading">Contact</h2>
 				<p>
 					Open to conversations about additive manufacturing, training, and collaboration — reach me
-					by <a href={`mailto:${email}`}>email</a> or on{' '}
+					by <a href={`mailto:${email}`}>email</a>,{' '}
+					<a href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a>, or on{' '}
 					<a href={github} target="_blank" rel="noopener noreferrer">GitHub</a>.
 				</p>
 			</section>
