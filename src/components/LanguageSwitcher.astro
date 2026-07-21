@@ -1,0 +1,127 @@
+---
+// Premium language switcher — a segmented glass pill matching this site's
+// dark glassmorphism language. Fully self-contained: it reads the language
+// list from src/data/languages.ts and figures out which entry is "current"
+// from the request URL itself, so a consuming page never has to pass or
+// duplicate language state (see docs/DECISIONS.md ADR-018).
+//
+// Zero client-side JS — each option is a real <a>, so it works without a
+// script, is keyboard-native, and needs no framework/library to feel alive:
+// hover/press/active states are pure CSS built on this page's existing
+// --ease-premium motion language.
+import { siteLanguages } from '../data/languages';
+
+interface Props {
+	/** Extra class names for placement (e.g. inside a nav row). */
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const normalize = (path: string) => (path.length > 1 ? path.replace(/\/+$/, '') : path);
+const currentPath = normalize(Astro.url.pathname);
+const activeLanguage =
+	siteLanguages.find((lang) => normalize(lang.href) === currentPath) ?? siteLanguages[0];
+---
+
+<div class:list={['lang-switch', className]} role="group" aria-label="Language">
+	{
+		siteLanguages.map((lang) => {
+			const isActive = lang.code === activeLanguage.code;
+			return (
+				<a
+					href={lang.href}
+					class:list={['lang-option', { 'is-active': isActive }]}
+					hreflang={lang.code}
+					aria-current={isActive ? 'true' : undefined}
+					aria-label={isActive ? `${lang.name} (current language)` : `Switch to ${lang.name}`}
+				>
+					<span lang={lang.code} dir={lang.dir}>
+						{lang.label}
+					</span>
+				</a>
+			);
+		})
+	}
+</div>
+
+<style>
+	.lang-switch {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.25rem;
+		border-radius: 999px;
+		background: var(--glass-bg, rgba(255, 255, 255, 0.06));
+		border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		flex-wrap: wrap;
+	}
+
+	.lang-option {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.4rem 0.85rem;
+		border-radius: 999px;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		line-height: 1;
+		color: var(--ink-muted, rgba(255, 255, 255, 0.72));
+		text-decoration: none;
+		white-space: nowrap;
+		transition:
+			color 0.3s ease,
+			background-color 0.35s var(--ease-premium, cubic-bezier(0.16, 1, 0.3, 1)),
+			transform 0.3s var(--ease-premium, cubic-bezier(0.16, 1, 0.3, 1)),
+			box-shadow 0.35s var(--ease-premium, cubic-bezier(0.16, 1, 0.3, 1));
+	}
+
+	/* Self-contained themed focus ring — doesn't rely on the host page's
+	   scoped `:focus-visible` rule reaching in, since Astro scopes styles
+	   per-component and that rule wouldn't match elements rendered here. */
+	.lang-option:focus-visible {
+		outline: 2px solid var(--accent, #a78bfa);
+		outline-offset: 2px;
+	}
+
+	.lang-option:hover {
+		color: var(--ink, #fff);
+		background: rgba(255, 255, 255, 0.09);
+		transform: translateY(-1px);
+		box-shadow: 0 6px 16px -10px rgba(167, 139, 250, 0.7);
+	}
+
+	.lang-option:active {
+		transform: translateY(0) scale(0.94);
+	}
+
+	.lang-option.is-active {
+		color: #fff;
+		background: linear-gradient(135deg, var(--accent-strong, #7c3aed), var(--accent, #a78bfa));
+		box-shadow: 0 8px 20px -9px var(--accent-strong, #7c3aed);
+	}
+
+	.lang-option.is-active:hover {
+		transform: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.lang-option {
+			transition: none;
+		}
+		.lang-option:hover,
+		.lang-option:active {
+			transform: none;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.lang-option {
+			padding: 0.35rem 0.7rem;
+			font-size: 0.75rem;
+		}
+	}
+</style>
