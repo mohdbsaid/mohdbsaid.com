@@ -4,17 +4,17 @@
 import type { IconName } from '../components/Icon.astro';
 
 export interface SelectedWorkItem {
-	label: string;
+	category: string;
 	title: string;
 	description: string;
 	status: string;
-	/** Icon shown next to the title — see src/components/Icon.astro. */
+	/** Icon shown on the project card — see src/components/Icon.astro. */
 	icon: IconName;
 }
 
 export const selectedWork: SelectedWorkItem[] = [
 	{
-		label: 'Defense',
+		category: 'Additive Manufacturing',
 		title: 'Ministry of Defence',
 		description:
 			'Strategic additive manufacturing solutions for defense applications and mission-critical parts.',
@@ -22,7 +22,7 @@ export const selectedWork: SelectedWorkItem[] = [
 		icon: 'shield',
 	},
 	{
-		label: 'Industrial Manufacturing',
+		category: 'Industrial Manufacturing',
 		title: 'Jindal Steel Oman',
 		description:
 			'Industrial 3D printing integration for steel manufacturing processes and spare parts optimization.',
@@ -30,7 +30,7 @@ export const selectedWork: SelectedWorkItem[] = [
 		icon: 'factory',
 	},
 	{
-		label: 'Oil & Gas',
+		category: 'Engineering Support',
 		title: 'OQGN',
 		description:
 			'Advanced manufacturing support for oil & gas network infrastructure and pipeline components.',

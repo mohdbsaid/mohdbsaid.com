@@ -7,6 +7,7 @@
 // system — see docs/DECISIONS.md ADR-014–016. Scoped to this page only.
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { selectedWork } from '../data/selectedWork';
 
 const title = 'Mohammed Al-Jabri — Additive Manufacturing & 3D Printing Specialist';
@@ -101,23 +102,19 @@ const jsonLd = [
 			<p class="eyebrow">Work</p>
 			<h2 id="work-heading">Selected Work</h2>
 
-			<ul class="work-list">
+			<div class="project-grid">
 				{
-					selectedWork.map((item, index) => (
-						<li>
-							<span class="work-index">{String(index + 1).padStart(2, '0')}</span>
-							<span class="work-icon">
-								<Icon name={item.icon} />
-							</span>
-							<span class="work-body">
-								<span class="work-name">{item.title}</span>
-								<span class="work-desc">{item.description}</span>
-							</span>
-							<span class="work-status">{item.status}</span>
-						</li>
+					selectedWork.map((item) => (
+						<ProjectCard
+							title={item.title}
+							description={item.description}
+							status={item.status}
+							category={item.category}
+							icon={item.icon}
+						/>
 					))
 				}
-			</ul>
+			</div>
 		</section>
 
 		<section id="about" aria-labelledby="about-heading" class="section reveal">
@@ -519,96 +516,12 @@ const jsonLd = [
 		margin-bottom: 2.5rem;
 	}
 
-	/* ---------- Work list ---------- */
-	.work-list {
-		list-style: none;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.work-list li {
+	/* ---------- Project grid ---------- */
+	.project-grid {
 		display: grid;
-		grid-template-columns: auto auto 1fr auto;
-		align-items: center;
-		column-gap: 1.5rem;
-		row-gap: 0.5rem;
-		background: var(--glass-bg);
-		border: 1px solid var(--glass-border);
-		padding: 1.75rem 2rem;
-		border-radius: var(--radius-md);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		transition:
-			border-color 0.35s ease,
-			background-color 0.35s ease,
-			transform 0.35s var(--ease-premium),
-			box-shadow 0.35s var(--ease-premium);
-	}
-
-	.work-list li:hover,
-	.work-list li:focus-within {
-		background: var(--glass-bg-strong);
-		border-color: var(--glass-border-strong);
-		transform: translateY(-3px);
-		box-shadow: var(--shadow-soft);
-	}
-
-	.work-index {
-		font-size: 0.8125rem;
-		font-weight: 600;
-		font-variant-numeric: tabular-nums;
-		color: var(--ink-subtle);
-		letter-spacing: 0.02em;
-	}
-
-	.work-icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.5rem;
-		height: 2.5rem;
-		border-radius: 0.75rem;
-		background: rgba(167, 139, 250, 0.12);
-		color: var(--accent);
-	}
-
-	.work-icon :global(svg) {
-		width: 1.15rem;
-		height: 1.15rem;
-	}
-
-	.work-body {
-		display: flex;
-		flex-direction: column;
-		gap: 0.35rem;
-		min-width: 0;
-	}
-
-	.work-name {
-		font-weight: 600;
-		font-size: 1.0625rem;
-		line-height: 1.4;
-		color: var(--ink);
-	}
-
-	.work-desc {
-		font-size: 0.9375rem;
-		line-height: 1.6;
-		color: var(--ink-muted);
-	}
-
-	.work-status {
-		font-size: 0.75rem;
-		font-weight: 500;
-		background: rgba(74, 222, 128, 0.13);
-		color: #86efac;
-		padding: 0.35rem 0.9rem;
-		border-radius: 999px;
-		border: 1px solid rgba(74, 222, 128, 0.18);
-		letter-spacing: 0.02em;
-		white-space: nowrap;
-		justify-self: end;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+		align-items: stretch;
 	}
 
 	/* ---------- About ---------- */
@@ -721,6 +634,9 @@ const jsonLd = [
 
 	/* ---------- Responsive ---------- */
 	@media (max-width: 900px) {
+		.project-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
 		.stat-band {
 			grid-template-columns: repeat(2, 1fr);
 		}
@@ -757,28 +673,6 @@ const jsonLd = [
 		.hero-actions {
 			justify-content: center;
 		}
-		.work-list li {
-			grid-template-columns: auto 1fr;
-			grid-template-areas:
-				'index status'
-				'icon body'
-				'. body';
-			row-gap: 0.75rem;
-			padding: 1.5rem 1.5rem;
-		}
-		.work-index {
-			grid-area: index;
-		}
-		.work-icon {
-			grid-area: icon;
-		}
-		.work-body {
-			grid-area: body;
-		}
-		.work-status {
-			grid-area: status;
-			justify-self: end;
-		}
 		.contact-card {
 			flex-direction: column;
 			align-items: stretch;
@@ -792,6 +686,12 @@ const jsonLd = [
 		}
 		.contact-links .btn {
 			justify-content: center;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.project-grid {
+			grid-template-columns: 1fr;
 		}
 	}
 
