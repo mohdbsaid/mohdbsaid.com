@@ -1,13 +1,15 @@
 // Personal engineering/digital-systems projects shown in the homepage's
 // "Selected work" section — distinct from the `projects` content collection
 // (3D-printing build write-ups with their own detail pages).
+import type { IconName } from '../components/Icon.astro';
+
 export interface SelectedWorkItem {
 	label: string;
 	title: string;
 	description: string;
 	status: string;
-	/** Font Awesome 6 solid-style icon name (without the "fa-" prefix), shown next to the title. */
-	icon: string;
+	/** Icon shown next to the title — see src/components/Icon.astro. */
+	icon: IconName;
 }
 
 export const selectedWork: SelectedWorkItem[] = [
@@ -17,7 +19,7 @@ export const selectedWork: SelectedWorkItem[] = [
 		description:
 			'Strategic additive manufacturing solutions for defense applications and mission-critical parts.',
 		status: 'Completed',
-		icon: 'shield-halved',
+		icon: 'shield',
 	},
 	{
 		label: 'Industrial Manufacturing',
@@ -25,7 +27,7 @@ export const selectedWork: SelectedWorkItem[] = [
 		description:
 			'Industrial 3D printing integration for steel manufacturing processes and spare parts optimization.',
 		status: 'Completed',
-		icon: 'industry',
+		icon: 'factory',
 	},
 	{
 		label: 'Oil & Gas',
@@ -33,6 +35,6 @@ export const selectedWork: SelectedWorkItem[] = [
 		description:
 			'Advanced manufacturing support for oil & gas network infrastructure and pipeline components.',
 		status: 'Completed',
-		icon: 'oil-well',
+		icon: 'droplet',
 	},
 ];
