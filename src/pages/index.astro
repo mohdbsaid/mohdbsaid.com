@@ -176,7 +176,7 @@ const jsonLd = [
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 1rem;
+		padding: 1.5rem;
 		background: linear-gradient(135deg, #0b0c2a, #1a1040, #2d1b69);
 		background-size: 400% 400%;
 		animation: gradientShift 15s ease infinite;
@@ -199,15 +199,15 @@ const jsonLd = [
 
 	/* ---------- Glassmorphism Container ---------- */
 	.glass-container {
-		max-width: 1200px;
+		max-width: 1320px;
 		width: 100%;
 		background: rgba(255, 255, 255, 0.08);
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
 		border-radius: 2.5rem;
-		padding: 2rem 2.5rem;
-		box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-		border: 1px solid rgba(255, 255, 255, 0.08);
+		padding: 3rem 3.5rem;
+		box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.45);
+		border: 1px solid rgba(255, 255, 255, 0.1);
 		transition: all 0.3s ease;
 	}
 
@@ -216,15 +216,15 @@ const jsonLd = [
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding-bottom: 1.5rem;
+		padding-bottom: 2rem;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 		flex-wrap: wrap;
-		gap: 1rem;
+		gap: 1.25rem;
 	}
 
 	.mini-name {
 		font-size: 1.2rem;
-		font-weight: 700;
+		font-weight: 600;
 		letter-spacing: -0.5px;
 		background: linear-gradient(to right, #b0baff, #d4bfff);
 		-webkit-background-clip: text;
@@ -234,7 +234,7 @@ const jsonLd = [
 
 	.nav-links {
 		display: flex;
-		gap: 1.8rem;
+		gap: 2.25rem;
 		align-items: center;
 		flex-wrap: wrap;
 	}
@@ -274,30 +274,32 @@ const jsonLd = [
 		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-between;
-		padding: 2rem 0 3rem 0;
-		gap: 2rem;
+		padding: 3.5rem 0 4.5rem 0;
+		gap: 3rem;
 	}
 
 	.intro-text {
-		flex: 1 1 300px;
+		flex: 1 1 320px;
 	}
 
 	.intro-text h1 {
-		font-size: 3rem;
+		font-size: 3.25rem;
+		line-height: 1.15;
 		font-weight: 700;
 		background: linear-gradient(135deg, #fff, #c4b5fd);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
-		margin-bottom: 0.25rem;
+		margin-bottom: 1rem;
 		letter-spacing: -1px;
 	}
 
 	.role {
 		font-size: 1.2rem;
+		line-height: 1.5;
 		color: #c4b5fd;
 		font-weight: 400;
-		margin-bottom: 0.75rem;
+		margin-bottom: 1.25rem;
 	}
 
 	.role i {
@@ -306,10 +308,11 @@ const jsonLd = [
 	}
 
 	.intro-copy {
-		font-size: 1rem;
+		font-size: 1.05rem;
+		line-height: 1.75;
 		color: rgba(255, 255, 255, 0.8);
 		max-width: 500px;
-		margin-bottom: 1.5rem;
+		margin-bottom: 2.25rem;
 	}
 
 	.intro-links {
@@ -321,10 +324,10 @@ const jsonLd = [
 	.intro-links a {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.6rem;
 		color: #fff;
 		background: rgba(255, 255, 255, 0.1);
-		padding: 0.6rem 1.2rem;
+		padding: 0.75rem 1.5rem;
 		border-radius: 40px;
 		text-decoration: none;
 		font-weight: 500;
@@ -386,14 +389,14 @@ const jsonLd = [
 
 	/* ---------- Sections (cards) ---------- */
 	section {
-		margin: 2.5rem 0;
-		padding: 1.8rem 2rem;
+		margin: 3rem 0;
+		padding: 2.5rem 2.75rem;
 		background: rgba(255, 255, 255, 0.05);
 		backdrop-filter: blur(8px);
 		-webkit-backdrop-filter: blur(8px);
 		border-radius: 2rem;
-		border: 1px solid rgba(255, 255, 255, 0.06);
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+		border: 1px solid rgba(255, 255, 255, 0.09);
+		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 		opacity: 0;
 		transform: translateY(30px);
 		transition:
@@ -409,14 +412,15 @@ const jsonLd = [
 	}
 
 	section:hover {
-		box-shadow: 0 12px 48px rgba(124, 58, 237, 0.25);
-		border-color: rgba(167, 139, 250, 0.2);
+		box-shadow: 0 12px 48px rgba(124, 58, 237, 0.2);
+		border-color: rgba(167, 139, 250, 0.22);
 	}
 
 	section h2 {
-		font-size: 1.8rem;
-		font-weight: 700;
-		margin-bottom: 1.2rem;
+		font-size: 1.65rem;
+		line-height: 1.3;
+		font-weight: 600;
+		margin-bottom: 1.75rem;
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
@@ -444,16 +448,17 @@ const jsonLd = [
 		list-style: none;
 		display: flex;
 		flex-direction: column;
-		gap: 1.2rem;
+		gap: 1.25rem;
 	}
 
 	.work-list li {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: baseline;
-		gap: 0.5rem 1rem;
+		display: grid;
+		grid-template-columns: minmax(180px, 240px) 1fr auto;
+		align-items: center;
+		column-gap: 1.75rem;
+		row-gap: 0.5rem;
 		background: rgba(255, 255, 255, 0.03);
-		padding: 1rem 1.2rem;
+		padding: 1.5rem 1.75rem;
 		border-radius: 1.2rem;
 		transition: all 0.3s ease;
 		border-left: 3px solid transparent;
@@ -469,10 +474,11 @@ const jsonLd = [
 	.work-name {
 		font-weight: 600;
 		font-size: 1.1rem;
+		line-height: 1.4;
 		color: #fff;
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: 10px;
 	}
 
 	.work-name i {
@@ -481,24 +487,28 @@ const jsonLd = [
 	}
 
 	.work-desc {
+		font-size: 1rem;
+		line-height: 1.6;
 		color: rgba(255, 255, 255, 0.75);
-		flex: 1 1 200px;
 	}
 
 	.work-status {
 		font-size: 0.75rem;
 		background: rgba(74, 222, 128, 0.15);
 		color: #86efac;
-		padding: 0.2rem 0.8rem;
+		padding: 0.3rem 0.9rem;
 		border-radius: 30px;
 		border: 1px solid rgba(74, 222, 128, 0.15);
 		letter-spacing: 0.3px;
+		justify-self: end;
+		white-space: nowrap;
 	}
 
 	/* ---------- About (with counters) ---------- */
 	.about-text {
 		color: rgba(255, 255, 255, 0.85);
-		font-size: 1rem;
+		font-size: 1.05rem;
+		line-height: 1.75;
 		max-width: 700px;
 		margin: 0 auto;
 	}
@@ -509,16 +519,14 @@ const jsonLd = [
 	}
 
 	.about-grid {
-		display: flex;
-		flex-wrap: wrap;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
 		gap: 2rem;
-		justify-content: space-around;
 		text-align: center;
-		margin: 1.5rem 0 0.5rem 0;
+		margin: 3rem 0 0.5rem 0;
 	}
 
 	.stat-item {
-		flex: 1 1 100px;
 		padding: 0.5rem;
 	}
 
@@ -535,31 +543,34 @@ const jsonLd = [
 	.stat-label {
 		color: rgba(255, 255, 255, 0.7);
 		font-size: 0.9rem;
-		margin-top: 0.2rem;
+		margin-top: 0.5rem;
 		font-weight: 400;
 	}
 
 	/* ---------- Contact ---------- */
 	.contact-copy {
+		font-size: 1.05rem;
+		line-height: 1.75;
 		color: rgba(255, 255, 255, 0.8);
-		margin-bottom: 0.8rem;
+		max-width: 620px;
+		margin-bottom: 1.75rem;
 	}
 
 	.contact-links {
 		display: flex;
 		gap: 1.5rem;
 		flex-wrap: wrap;
-		margin-top: 0.5rem;
+		margin-top: 0;
 	}
 
 	.contact-links a {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.6rem;
+		gap: 0.65rem;
 		color: #c4b5fd;
 		text-decoration: none;
 		font-weight: 500;
-		padding: 0.5rem 1rem;
+		padding: 0.65rem 1.35rem;
 		border-radius: 40px;
 		background: rgba(255, 255, 255, 0.05);
 		transition: all 0.3s ease;
@@ -586,8 +597,8 @@ const jsonLd = [
 
 	/* ---------- Footer ---------- */
 	.mini-footer {
-		margin-top: 2rem;
-		padding-top: 1.5rem;
+		margin-top: 2.5rem;
+		padding-top: 1.75rem;
 		border-top: 1px solid rgba(255, 255, 255, 0.06);
 		text-align: center;
 		color: rgba(255, 255, 255, 0.4);
@@ -596,56 +607,82 @@ const jsonLd = [
 
 	/* ---------- Responsive ---------- */
 	@media (max-width: 768px) {
+		.page-bg {
+			padding: 1rem;
+		}
 		.glass-container {
-			padding: 1.5rem 1rem;
+			padding: 2.25rem 1.75rem;
 			border-radius: 1.8rem;
 		}
+		.intro {
+			padding: 2.5rem 0 3rem 0;
+			gap: 2.25rem;
+		}
 		.intro-text h1 {
-			font-size: 2.2rem;
+			font-size: 2.4rem;
 		}
 		.portrait {
-			flex: 0 0 90px;
-			height: 90px;
-			font-size: 2.2rem;
+			flex: 0 0 100px;
+			height: 100px;
+			font-size: 2.4rem;
 		}
 		section {
-			padding: 1.2rem 1rem;
-			margin: 1.5rem 0;
+			padding: 1.75rem 1.5rem;
+			margin: 2rem 0;
+		}
+		section h2 {
+			margin-bottom: 1.25rem;
+		}
+		.work-list li {
+			grid-template-columns: minmax(150px, 200px) 1fr auto;
+			column-gap: 1.25rem;
+			padding: 1.25rem 1.5rem;
+		}
+		.about-grid {
+			margin-top: 2.25rem;
 		}
 		.stat-number {
-			font-size: 2.2rem;
+			font-size: 2.4rem;
 		}
 		.mini-header {
 			flex-direction: column;
 			align-items: stretch;
-			gap: 0.8rem;
+			gap: 1rem;
+			padding-bottom: 1.5rem;
 		}
 		.nav-links {
 			justify-content: center;
-			gap: 1.2rem;
+			gap: 1.5rem;
+		}
+	}
+
+	@media (max-width: 620px) {
+		.work-list li {
+			grid-template-columns: 1fr;
+			justify-items: start;
+			row-gap: 0.75rem;
+		}
+		.work-status {
+			justify-self: start;
 		}
 	}
 
 	@media (max-width: 480px) {
+		.glass-container {
+			padding: 1.75rem 1.25rem;
+		}
 		.intro {
 			flex-direction: column-reverse;
 			align-items: center;
 			text-align: center;
+			padding: 2rem 0 2.5rem 0;
 		}
 		.intro-links {
 			justify-content: center;
 		}
-		.work-list li {
-			flex-direction: column;
-			align-items: flex-start;
-		}
 		.about-grid {
-			flex-direction: row;
-			flex-wrap: wrap;
-			gap: 0.5rem;
-		}
-		.stat-item {
-			flex: 1 1 45%;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1.5rem 1rem;
 		}
 	}
 
