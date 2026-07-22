@@ -12,7 +12,7 @@ Everything below is centralized in `<SEO />` (`src/components/SEO.astro`), rende
 - **`noindex`** — optional prop, renders `<meta name="robots" content="noindex, nofollow">` for any future page that needs to stay out of search results (e.g. a draft preview route).
 - **RSS discovery** — `<link rel="alternate" type="application/rss+xml">` pointing at `/rss.xml`, present on every page.
 - **theme-color** — light/dark variants matching the design tokens' background colors.
-- `astro.config.mjs` sets `site` (placeholder: `https://mohdbsaid.com` — **confirm before launch**) and `@astrojs/sitemap`, filtered to exclude `/rss.xml`.
+- `astro.config.mjs` sets `site` to the confirmed production domain (`https://mohdbsaid.com`) and `@astrojs/sitemap`, filtered to exclude `/rss.xml`.
 - `public/robots.txt` allows all crawlers and points to the generated sitemap.
 - `lang="ar"` / `dir="rtl"` are correctly set at the document root.
 - RSS feed (`src/pages/rss.xml.ts`) serves the `blog` collection, newest first, non-draft only.
