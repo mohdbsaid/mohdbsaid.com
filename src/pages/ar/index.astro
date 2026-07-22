@@ -1,0 +1,102 @@
+---
+// Arabic/RTL counterpart of the homepage — same shared <PersonalPortfolio>
+// template as src/pages/index.astro, own Arabic copy and Layout wiring.
+// This is the real Arabic equivalent of the homepage (dark glassmorphism,
+// same components, same interactions), not a lighter/different design —
+// see docs/DECISIONS.md ADR-019. Uses this site's existing self-hosted
+// "Thmanyah Sans" (already Arabic-capable — it's the default body font on
+// every other Arabic page) instead of loading a second webfont.
+import Layout from '../../layouts/Layout.astro';
+import PersonalPortfolio from '../../components/PersonalPortfolio.astro';
+import { selectedWork } from '../../data/selectedWork';
+
+const title = 'محمد الجابري — أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد';
+const description =
+	'محمد الجابري أخصائي في التصنيع الإضافي والطباعة ثلاثية الأبعاد، بخبرة تمتد ست سنوات في تشغيل الطابعات ومعايرتها وصيانتها، وتصميم القطع بواسطة CAD، وتدريب الفرق والمهتمين بالمجال.';
+const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
+const email = 'mohdbsaid@outlook.com';
+const whatsapp = 'https://wa.me/96891899818';
+
+const jsonLd = [
+	{
+		'@type': 'Person',
+		name: 'محمد الجابري',
+		url: `${siteUrl}/ar`,
+		description,
+		jobTitle: 'أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد',
+		email: `mailto:${email}`,
+	},
+	{
+		'@type': 'WebSite',
+		name: 'محمد الجابري',
+		url: `${siteUrl}/ar`,
+		inLanguage: 'ar',
+	},
+];
+---
+
+<Layout
+	title={title}
+	description={description}
+	jsonLd={jsonLd}
+	fullBleed
+	htmlLang="ar"
+	htmlDir="rtl"
+	hideChrome
+	skipLinkLabel="تخطَّ إلى المحتوى الرئيسي"
+	locale="ar_OM"
+>
+	<Fragment slot="head">
+		<link rel="alternate" hreflang="ar" href={new URL('/ar', siteUrl)} />
+		<link rel="alternate" hreflang="en" href={new URL('/', siteUrl)} />
+		<link rel="alternate" hreflang="x-default" href={new URL('/', siteUrl)} />
+	</Fragment>
+
+	<PersonalPortfolio
+		dir="rtl"
+		email={email}
+		whatsapp={whatsapp}
+		nav={{ logo: 'محمد الجابري', work: 'الأعمال', about: 'نبذة', contact: 'تواصل' }}
+		hero={{
+			name: 'محمد الجابري',
+			initials: 'م ج',
+			role: 'أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد',
+			intro:
+				'أعمل على تشغيل الطابعات ثلاثية الأبعاد ومعايرتها، إلى جانب تصميم النماذج باستخدام برامج CAD، لتحويل الأفكار إلى قطع حقيقية. كما أقدّم التدريب للمعلمين والطلاب والفرق الراغبة في اكتساب هذه المهارات.',
+			emailLabel: 'البريد الإلكتروني',
+			whatsappLabel: 'واتساب',
+		}}
+		work={{
+			eyebrow: 'الأعمال',
+			heading: 'أعمال مختارة',
+			projects: selectedWork.map((item) => ({ icon: item.icon, ...item.ar })),
+		}}
+		about={{
+			eyebrow: 'نبذة',
+			heading: 'نبذة عني',
+			stats: [
+				{ value: 32, suffix: '+', label: 'مشاريع' },
+				{ value: 63, suffix: '', label: 'ورش عمل' },
+				{ value: 1340, suffix: '+', label: 'مستفيدون' },
+				{ value: 6, suffix: '', label: 'سنوات الخبرة' },
+			],
+		}}
+		contact={{
+			eyebrow: 'تواصل',
+			heading: 'لنعمل معًا',
+			paragraph:
+				'أرحّب بأي حديث حول التصنيع الإضافي أو التدريب أو فرص التعاون — يمكنك التواصل معي عبر البريد الإلكتروني أو واتساب.',
+			whatsappDisplay: '+968 91899818',
+		}}
+		footer={`© ${new Date().getFullYear()} محمد الجابري`}
+	>
+		<Fragment slot="about-paragraph">
+			على مدى <strong>ست سنوات</strong>، أنجزت أكثر من <strong>32 مشروعًا واقعيًا</strong>، وقدّمت{
+				' '
+			}
+			<strong>63 ورشة تدريبية</strong> استفاد منها أكثر من <strong>1,340</strong> مشاركًا في مجال التصنيع
+			الإضافي. لديّ خبرة عملية في الطباعة بتقنية FDM، والمعايرة، والصيانة، وتصميم CAD، والتدريب، وما بعد
+			المعالجة.
+		</Fragment>
+	</PersonalPortfolio>
+</Layout>

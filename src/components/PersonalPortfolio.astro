@@ -1,0 +1,813 @@
+---
+// Shared homepage template for both languages — see src/pages/index.astro
+// (English/LTR) and src/pages/ar/index.astro (Arabic/RTL), and
+// docs/DECISIONS.md ADR-019. One component, one stylesheet: every string is
+// a prop (or the `about-paragraph` slot, for the one line that needs
+// inline emphasis at different points per language), and the whole layout
+// mirrors for RTL through logical CSS properties + `dir` — not a second,
+// parallel stylesheet. Visual language (dark animated gradient +
+// glassmorphism, hardcoded colors) remains the deliberate one-off exception
+// to the site's design token system established in ADR-014/015/016.
+import Icon, { type IconName } from './Icon.astro';
+import ProjectCard from './ProjectCard.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface ProjectContent {
+	icon: IconName;
+	title: string;
+	description: string;
+	category: string;
+	status: string;
+}
+
+interface StatContent {
+	value: number;
+	suffix: string;
+	label: string;
+}
+
+interface Props {
+	dir: 'ltr' | 'rtl';
+	nav: { logo: string; work: string; about: string; contact: string };
+	hero: {
+		name: string;
+		initials: string;
+		role: string;
+		intro: string;
+		emailLabel: string;
+		whatsappLabel: string;
+	};
+	work: { eyebrow: string; heading: string; projects: ProjectContent[] };
+	about: { eyebrow: string; heading: string; stats: StatContent[] };
+	contact: { eyebrow: string; heading: string; paragraph: string; whatsappDisplay: string };
+	footer: string;
+	email: string;
+	whatsapp: string;
+}
+
+const { dir, nav, hero, work, about, contact, footer, email, whatsapp } = Astro.props;
+const isRtl = dir === 'rtl';
+const fontFamily = isRtl
+	? "'Thmanyah Sans', system-ui, sans-serif"
+	: "'Inter', system-ui, sans-serif";
+---
+
+<div class="page-bg" dir={dir} style={`--font-family: ${fontFamily};`}>
+	<header class="nav" id="siteNav">
+		<div class="nav-inner">
+			<a class="nav-logo" href="#main-content">{nav.logo}</a>
+			<div class="nav-end">
+				<nav class="nav-links" aria-label="Primary">
+					<a href="#work">{nav.work}</a>
+					<a href="#about">{nav.about}</a>
+					<a href="#contact">{nav.contact}</a>
+				</nav>
+				<LanguageSwitcher />
+			</div>
+		</div>
+	</header>
+
+	<section class="hero" aria-label="Introduction">
+		<div class="hero-inner">
+			<div class="hero-content">
+				<h1>{hero.name}</h1>
+				<p class="hero-role">
+					<Icon name="print" class="hero-role-icon" />
+					{hero.role}
+				</p>
+				<p class="hero-copy">{hero.intro}</p>
+				<div class="hero-actions">
+					<a class="btn btn-primary" href={`mailto:${email}`}>
+						<Icon name="mail" />
+						{hero.emailLabel}
+					</a>
+					<a class="btn btn-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer">
+						<Icon name="message" />
+						{hero.whatsappLabel}
+					</a>
+				</div>
+			</div>
+			<div class="hero-mark" aria-hidden="true"><span>{hero.initials}</span></div>
+		</div>
+	</section>
+
+	<section id="work" aria-labelledby="work-heading" class="section reveal">
+		<p class="eyebrow">{work.eyebrow}</p>
+		<h2 id="work-heading">{work.heading}</h2>
+
+		<div class="project-grid">
+			{
+				work.projects.map((item) => (
+					<ProjectCard
+						title={item.title}
+						description={item.description}
+						status={item.status}
+						category={item.category}
+						icon={item.icon}
+					/>
+				))
+			}
+		</div>
+	</section>
+
+	<section id="about" aria-labelledby="about-heading" class="section reveal">
+		<p class="eyebrow">{about.eyebrow}</p>
+		<h2 id="about-heading">{about.heading}</h2>
+		<p class="about-text">
+			<slot name="about-paragraph" />
+		</p>
+
+		<div class="stat-band">
+			{
+				about.stats.map((stat) => (
+					<div class="stat-item">
+						<div class="stat-number" data-count={stat.value} data-suffix={stat.suffix}>
+							0
+						</div>
+						<div class="stat-label">{stat.label}</div>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<section id="contact" aria-labelledby="contact-heading" class="section reveal">
+		<div class="contact-card">
+			<div class="contact-copy">
+				<p class="eyebrow">{contact.eyebrow}</p>
+				<h2 id="contact-heading">{contact.heading}</h2>
+				<p>{contact.paragraph}</p>
+			</div>
+			<div class="contact-links">
+				<a class="btn btn-primary" href={`mailto:${email}`}>
+					<Icon name="mail" />
+					{email}
+				</a>
+				<a class="btn btn-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer">
+					<Icon name="message" />
+					<bdi dir="ltr">{contact.whatsappDisplay}</bdi>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<footer class="mini-footer">
+		<p>{footer}</p>
+	</footer>
+</div>
+
+<style>
+	/* ---------- Design tokens (scoped to this component only) ---------- */
+	.page-bg {
+		--bg-1: #0b0c2a;
+		--bg-2: #1a1040;
+		--bg-3: #2d1b69;
+		--ink: #ffffff;
+		--ink-muted: rgba(255, 255, 255, 0.72);
+		--ink-subtle: rgba(255, 255, 255, 0.5);
+		--accent: #a78bfa;
+		--accent-strong: #7c3aed;
+		--accent-soft: #c4b5fd;
+		--glass-bg: rgba(255, 255, 255, 0.05);
+		--glass-bg-strong: rgba(255, 255, 255, 0.07);
+		--glass-border: rgba(255, 255, 255, 0.09);
+		--glass-border-strong: rgba(255, 255, 255, 0.14);
+		--shadow-soft: 0 20px 50px -20px rgba(0, 0, 0, 0.5);
+		--radius-lg: 1.75rem;
+		--radius-md: 1.25rem;
+		--content-width: 74rem;
+		--ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	/* Component-scoped reset — global.css's sitewide reset doesn't zero every
+	   element, and this component intentionally uses a from-scratch visual
+	   language (see docs/DECISIONS.md ADR-014). Wrapped in :where() so it
+	   carries zero specificity — Astro rewrites a bare `*` in a scoped
+	   selector into a standalone attribute selector (equivalent to a class),
+	   which otherwise makes this reset MORE specific than any single-class
+	   component rule and silently wins. */
+	:where(.page-bg *, .page-bg *::before, .page-bg *::after) {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	.page-bg {
+		min-height: 100vh;
+		background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+		background-size: 400% 400%;
+		animation: gradientShift 22s ease infinite;
+		color: var(--ink);
+		font-family: var(--font-family);
+		line-height: 1.6;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	.page-bg :focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 3px;
+		border-radius: 4px;
+	}
+
+	@keyframes gradientShift {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.page-bg {
+			animation: none;
+		}
+	}
+
+	/* ---------- Shared layout primitives ---------- */
+	.nav-inner,
+	.hero-inner,
+	.section,
+	.mini-footer p {
+		max-width: var(--content-width);
+		margin-inline: auto;
+		padding-inline: clamp(1.5rem, 4vw, 3rem);
+	}
+
+	.eyebrow {
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--accent);
+		margin-bottom: 0.75rem;
+	}
+
+	/* ---------- Buttons ---------- */
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.8rem 1.5rem;
+		border-radius: 999px;
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 0.975rem;
+		border: 1px solid transparent;
+		transition:
+			transform 0.35s var(--ease-premium),
+			background-color 0.25s ease,
+			border-color 0.25s ease,
+			box-shadow 0.35s var(--ease-premium);
+	}
+
+	.btn :global(svg) {
+		width: 1.05rem;
+		height: 1.05rem;
+		flex-shrink: 0;
+	}
+
+	.btn-primary {
+		color: var(--ink);
+		background: linear-gradient(135deg, var(--accent-strong), #5b3ac2);
+		box-shadow: 0 14px 30px -12px rgba(124, 58, 237, 0.55);
+	}
+
+	.btn-primary:hover,
+	.btn-primary:focus-visible {
+		transform: translateY(-2px);
+		box-shadow: 0 18px 36px -12px rgba(124, 58, 237, 0.65);
+	}
+
+	.btn-secondary {
+		color: var(--ink);
+		background: var(--glass-bg-strong);
+		border-color: var(--glass-border-strong);
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+	}
+
+	.btn-secondary:hover,
+	.btn-secondary:focus-visible {
+		transform: translateY(-2px);
+		background: rgba(255, 255, 255, 0.11);
+		border-color: rgba(255, 255, 255, 0.22);
+	}
+
+	/* ---------- Nav ---------- */
+	.nav {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		border-bottom: 1px solid transparent;
+		background: transparent;
+		backdrop-filter: blur(0);
+		-webkit-backdrop-filter: blur(0);
+		transition:
+			background-color 0.4s ease,
+			border-color 0.4s ease,
+			backdrop-filter 0.4s ease;
+	}
+
+	.nav.is-scrolled {
+		background: rgba(11, 12, 42, 0.6);
+		border-color: var(--glass-border);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+	}
+
+	.nav-inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		row-gap: 0.75rem;
+		gap: 1.5rem;
+		padding-block: 1.375rem;
+	}
+
+	.nav-logo {
+		font-size: 1.0625rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		text-decoration: none;
+		color: var(--ink);
+	}
+
+	.nav-end {
+		display: flex;
+		align-items: center;
+		gap: 1.75rem;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+	}
+
+	.nav-links {
+		display: flex;
+		align-items: center;
+		gap: 2.5rem;
+	}
+
+	.nav-links a {
+		color: var(--ink-muted);
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 0.9375rem;
+		position: relative;
+		padding-block: 0.25rem;
+		transition: color 0.25s ease;
+	}
+
+	.nav-links a::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		inset-inline-start: 0;
+		width: 0%;
+		height: 1.5px;
+		background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+		transition: width 0.3s var(--ease-premium);
+	}
+
+	.nav-links a:hover,
+	.nav-links a:focus-visible {
+		color: var(--ink);
+	}
+	.nav-links a:hover::after,
+	.nav-links a:focus-visible::after {
+		width: 100%;
+	}
+
+	/* ---------- Hero ---------- */
+	.hero-inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: clamp(2.5rem, 6vw, 5rem);
+		padding-block: clamp(4rem, 10vw, 7.5rem) clamp(4.5rem, 10vw, 8rem);
+	}
+
+	.hero-content {
+		flex: 1 1 34rem;
+		max-width: 40rem;
+	}
+
+	.hero-content h1 {
+		font-size: clamp(2.75rem, 2.1rem + 3vw, 4.25rem);
+		line-height: 1.15;
+		font-weight: 600;
+		letter-spacing: -0.025em;
+		background: linear-gradient(135deg, #ffffff, var(--accent-soft));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		margin-bottom: 1.25rem;
+	}
+
+	.hero-role {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.6rem;
+		font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+		color: var(--accent-soft);
+		font-weight: 500;
+		line-height: 1.5;
+		margin-bottom: 1.5rem;
+	}
+
+	.hero-role :global(.hero-role-icon) {
+		width: 1.15em;
+		height: 1.15em;
+		color: var(--accent);
+		flex-shrink: 0;
+	}
+
+	.hero-copy {
+		font-size: 1.0625rem;
+		line-height: 1.85;
+		color: var(--ink-muted);
+		max-width: 32rem;
+		margin-bottom: 2.5rem;
+	}
+
+	.hero-actions {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.hero-mark {
+		flex: 0 0 auto;
+		width: clamp(6rem, 9vw, 7.5rem);
+		height: clamp(6rem, 9vw, 7.5rem);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: linear-gradient(135deg, var(--accent-strong), #4f46e5);
+		box-shadow:
+			0 25px 50px -15px rgba(124, 58, 237, 0.45),
+			0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+		animation: float 7s ease-in-out infinite;
+	}
+
+	.hero-mark span {
+		font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--ink);
+	}
+
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-mark {
+			animation: none;
+		}
+	}
+
+	/* ---------- Section shell + scroll reveal ---------- */
+	.section {
+		padding-block: clamp(3.5rem, 7vw, 5.5rem);
+		border-top: 1px solid var(--glass-border);
+	}
+
+	.reveal {
+		opacity: 0;
+		transform: translateY(18px);
+		transition:
+			opacity 0.7s var(--ease-premium),
+			transform 0.7s var(--ease-premium);
+	}
+
+	.reveal.visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+
+	.section h2 {
+		font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		line-height: 1.3;
+		color: var(--ink);
+		margin-bottom: 2.5rem;
+	}
+
+	/* ---------- Project grid ---------- */
+	.project-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+		align-items: stretch;
+	}
+
+	/* ---------- About ---------- */
+	.about-text {
+		font-size: 1.0625rem;
+		line-height: 1.9;
+		color: var(--ink-muted);
+		max-width: 46rem;
+	}
+
+	.about-text :global(strong) {
+		color: var(--accent-soft);
+		font-weight: 600;
+	}
+
+	.stat-band {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		margin-top: 3.5rem;
+		border-radius: var(--radius-md);
+		background: var(--glass-bg);
+		border: 1px solid var(--glass-border);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+	}
+
+	.stat-item {
+		padding: 2rem 1.25rem;
+		text-align: center;
+		border-inline-start: 1px solid var(--glass-border);
+	}
+
+	.stat-item:first-child {
+		border-inline-start: none;
+	}
+
+	.stat-number {
+		font-size: clamp(2.25rem, 1.8rem + 1.6vw, 3rem);
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		letter-spacing: -0.02em;
+		background: linear-gradient(135deg, var(--accent-soft), var(--accent-strong));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		line-height: 1.2;
+	}
+
+	.stat-label {
+		margin-top: 0.5rem;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+		color: var(--ink-subtle);
+	}
+
+	/* ---------- Contact ---------- */
+	.contact-card {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 3rem;
+		flex-wrap: wrap;
+		padding: clamp(2.5rem, 5vw, 4rem);
+		border-radius: var(--radius-lg);
+		background: linear-gradient(160deg, var(--glass-bg-strong), var(--glass-bg));
+		border: 1px solid var(--glass-border-strong);
+		box-shadow: var(--shadow-soft);
+	}
+
+	.contact-copy {
+		flex: 1 1 22rem;
+	}
+
+	.contact-copy .eyebrow {
+		margin-bottom: 0.5rem;
+	}
+
+	.contact-copy h2 {
+		margin-bottom: 0.85rem;
+	}
+
+	.contact-copy p:not(.eyebrow) {
+		font-size: 1.0625rem;
+		line-height: 1.85;
+		color: var(--ink-muted);
+		max-width: 30rem;
+	}
+
+	.contact-links {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.9rem;
+		flex: 0 0 auto;
+	}
+
+	/* ---------- Footer ---------- */
+	.mini-footer {
+		border-top: 1px solid var(--glass-border);
+	}
+
+	.mini-footer p {
+		padding-block: 2rem;
+		text-align: center;
+		color: var(--ink-subtle);
+		font-size: 0.8125rem;
+	}
+
+	/* ---------- Responsive ---------- */
+	@media (max-width: 900px) {
+		.project-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		.stat-band {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		.stat-item:nth-child(2) {
+			border-inline-start: 1px solid var(--glass-border);
+		}
+		.stat-item:nth-child(3) {
+			border-inline-start: none;
+		}
+		.stat-item:nth-child(1),
+		.stat-item:nth-child(2) {
+			border-bottom: 1px solid var(--glass-border);
+			padding-bottom: 1.75rem;
+		}
+		.stat-item:nth-child(3),
+		.stat-item:nth-child(4) {
+			padding-top: 1.75rem;
+		}
+	}
+
+	@media (max-width: 720px) {
+		.hero-inner {
+			flex-direction: column-reverse;
+			text-align: center;
+			gap: 2rem;
+		}
+		.hero-content {
+			max-width: none;
+		}
+		.hero-copy {
+			margin-inline: auto;
+		}
+		.hero-role,
+		.hero-actions {
+			justify-content: center;
+		}
+		.contact-card {
+			flex-direction: column;
+			align-items: stretch;
+			text-align: center;
+		}
+		.contact-copy p:not(.eyebrow) {
+			margin-inline: auto;
+		}
+		.contact-links {
+			align-items: stretch;
+		}
+		.contact-links .btn {
+			justify-content: center;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.project-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.nav-logo {
+			font-size: 0.9375rem;
+		}
+		.nav-end {
+			width: 100%;
+			justify-content: center;
+		}
+		.nav-links {
+			gap: 1rem;
+		}
+		.stat-band {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	/* Arabic is a connected/cursive script — letter tracking breaks glyph
+	   connections and reads as broken, so every place English uses
+	   negative/positive letter-spacing resets to normal under RTL. Uses
+	   :dir() (matches computed directionality, not just an attribute) so it
+	   holds even if direction is ever set upstream instead of on this root. */
+	.page-bg:dir(rtl) .nav-logo,
+	.page-bg:dir(rtl) .eyebrow,
+	.page-bg:dir(rtl) .hero-content h1,
+	.page-bg:dir(rtl) .section h2,
+	.page-bg:dir(rtl) .stat-number,
+	.page-bg:dir(rtl) .stat-label,
+	.page-bg:dir(rtl) .hero-mark span {
+		letter-spacing: normal;
+	}
+
+	/* This component's skip-link visual replaces the sitewide default (blue
+	   pill) with a high-contrast white pill, scoped to this component's own
+	   CSS bundle only — global.css's .skip-link rule is untouched for every
+	   other route. High-contrast is deliberate here: a focus-visible skip
+	   link must be unmissable, which matters more than thematic
+	   color-matching. */
+	:global(.skip-link) {
+		background: #fff;
+		color: #000;
+		padding: 0.5rem 1rem;
+		border-radius: 2rem;
+	}
+</style>
+
+<script>
+	(function () {
+		'use strict';
+
+		const root = document.querySelector('.page-bg');
+		if (!root) return;
+
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		// ---------- 1. Sticky nav gains a glass background once the page scrolls ----------
+		const nav = document.getElementById('siteNav');
+		if (nav) {
+			const updateNav = () => {
+				nav.classList.toggle('is-scrolled', window.scrollY > 8);
+			};
+			updateNav();
+			window.addEventListener('scroll', updateNav, { passive: true });
+		}
+
+		// ---------- 2. Counter animation ----------
+		const animateCounter = (el: Element) => {
+			const target = parseInt(el.getAttribute('data-count') ?? '', 10);
+			const suffix = el.getAttribute('data-suffix') ?? '';
+			if (Number.isNaN(target)) return;
+
+			if (prefersReducedMotion) {
+				el.textContent = target.toLocaleString('en-US') + suffix;
+				return;
+			}
+
+			const duration = 1400;
+			const start = performance.now();
+
+			const tick = (now: number) => {
+				const progress = Math.min((now - start) / duration, 1);
+				const eased = 1 - Math.pow(1 - progress, 3);
+				el.textContent = Math.round(eased * target).toLocaleString('en-US') + suffix;
+				if (progress < 1) requestAnimationFrame(tick);
+			};
+			requestAnimationFrame(tick);
+		};
+
+		// ---------- 3. Reveal-on-scroll + trigger counters when About enters view ----------
+		const counters = root.querySelectorAll('.stat-number');
+		const revealEls = root.querySelectorAll('.reveal');
+		let countersAnimated = false;
+
+		const triggerCounters = () => {
+			if (countersAnimated) return;
+			countersAnimated = true;
+			counters.forEach((counter) => animateCounter(counter));
+		};
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('visible');
+						if (entry.target.id === 'about') triggerCounters();
+					}
+				});
+			},
+			{ threshold: 0.15, rootMargin: '0px 0px -40px 0px' },
+		);
+
+		revealEls.forEach((el) => observer.observe(el));
+
+		// Trigger if "about" is already in view on load (short page / tall viewport)
+		const aboutSection = document.getElementById('about');
+		if (aboutSection && aboutSection.getBoundingClientRect().top < window.innerHeight * 0.85) {
+			triggerCounters();
+		}
+	})();
+</script>

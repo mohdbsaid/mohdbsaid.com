@@ -321,6 +321,19 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 		transform: translate(2px, -2px);
 	}
 
+	/* The arrow means "outward" — under RTL it should point up-left, not
+	   up-right, to match the reading direction's forward momentum. Flipping
+	   first means the existing translate values still read as "forward"
+	   afterward, no separate numbers needed for the mirrored case. */
+	.card-surface:dir(rtl) .card-action :global(svg) {
+		transform: scaleX(-1);
+	}
+
+	.card-surface:dir(rtl):hover .card-action :global(svg),
+	.card-surface:dir(rtl):focus-visible .card-action :global(svg) {
+		transform: scaleX(-1) translate(2px, -2px);
+	}
+
 	@keyframes card-pulse {
 		0%,
 		100% {
