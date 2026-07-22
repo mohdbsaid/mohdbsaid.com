@@ -11,7 +11,7 @@ import { selectedWork } from '../data/selectedWork';
 
 const title = 'Mohammed Al-Jabri — Additive Manufacturing & 3D Printing Specialist';
 const description =
-	'Mohammed Al-Jabri is an additive manufacturing and 3D printing specialist with six years of experience across printer operation, calibration, maintenance, CAD design, and technical training.';
+	'Mohammed Al-Jabri is an additive manufacturing specialist with 6+ years keeping FDM production reliable for government, energy, and industrial clients in Oman — calibration, root-cause diagnostics, technical training, and print-workflow optimization.';
 const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
 const email = 'mohdbsaid@outlook.com';
 const whatsapp = 'https://wa.me/96891899818';
@@ -24,6 +24,13 @@ const jsonLd = [
 		description,
 		jobTitle: 'Additive Manufacturing & 3D Printing Specialist',
 		email: `mailto:${email}`,
+		knowsAbout: [
+			'Additive Manufacturing',
+			'FDM 3D Printing',
+			'Printer Maintenance',
+			'CAD Workflow',
+			'Technical Training',
+		],
 	},
 	{
 		'@type': 'WebSite',
@@ -61,13 +68,19 @@ const jsonLd = [
 		dir="ltr"
 		email={email}
 		whatsapp={whatsapp}
-		nav={{ logo: 'Mohammed Al-Jabri', work: 'Work', about: 'About', contact: 'Contact' }}
+		nav={{
+			logo: 'Mohammed Al-Jabri',
+			work: 'Work',
+			experience: 'Experience',
+			about: 'About',
+			contact: 'Contact',
+		}}
 		hero={{
 			name: 'Mohammed Al-Jabri',
 			initials: 'MA',
 			role: 'Additive Manufacturing & 3D Printing Specialist',
 			intro:
-				'I work across printer operation, calibration, and CAD design, turning ideas into physical parts. I also train educators, students, and teams to do the same.',
+				'I keep FDM production reliable — calibration, root-cause troubleshooting, and print-workflow optimization for government, energy, and industrial projects across Oman. Six years in, I’ve also trained more than 1,300 people and helped bring a locally built 3D printer to market.',
 			emailLabel: 'Email',
 			whatsappLabel: 'WhatsApp',
 		}}
@@ -76,30 +89,52 @@ const jsonLd = [
 			heading: 'Selected Work',
 			projects: selectedWork.map((item) => ({ icon: item.icon, ...item.en })),
 		}}
+		experience={{
+			eyebrow: 'Experience',
+			heading: 'Experience',
+			roles: [
+				{
+					title: '3D Printing Specialist',
+					company: 'Plamore Manufacture',
+					period: 'Dec 2024 – Jan 2026',
+					description:
+						'Ran production-grade FDM systems for government and industrial clients — job prep, material selection, calibration, and root-cause diagnostics to keep output consistent.',
+				},
+				{
+					title: '3D Printing Technician',
+					company: '3D Factory',
+					period: 'Sep 2020 – Nov 2024',
+					description:
+						'Prepared and optimized print jobs from CAD through slicing, delivering prototypes, educational models, and custom parts for institutional and industrial clients across Oman.',
+				},
+			],
+		}}
 		about={{
 			eyebrow: 'About',
 			heading: 'About',
 			stats: [
 				{ value: 32, suffix: '+', label: 'Projects' },
 				{ value: 63, suffix: '', label: 'Workshops' },
-				{ value: 1340, suffix: '+', label: 'Beneficiaries' },
-				{ value: 6, suffix: '', label: 'Years of Experience' },
+				{ value: 1340, suffix: '+', label: 'Participants' },
+				{ value: 6, suffix: '+', label: 'Years of Experience' },
 			],
 		}}
 		contact={{
 			eyebrow: 'Contact',
 			heading: 'Let’s work together',
 			paragraph:
-				'Open to conversations about additive manufacturing, training, and collaboration — reach me by email or WhatsApp.',
+				'Open to conversations about additive manufacturing, technical training, or your next production challenge — reach out by email or WhatsApp.',
 			whatsappDisplay: '+968 91899818',
 		}}
 		footer={`© ${new Date().getFullYear()} Mohammed Al-Jabri`}
 	>
 		<Fragment slot="about-paragraph">
-			Six years of experience, <strong>over 32 real-world projects</strong> delivered, <strong
-				>63 workshops</strong
-			> facilitated, and <strong>1,340+</strong> beneficiaries trained in additive manufacturing. Hands-on
-			experience in FDM printing, calibration, maintenance, CAD design, training, and post-processing.
+			I'm an additive manufacturing specialist with <strong>6+ years</strong> keeping FDM production reliable
+			— calibration, root-cause diagnostics, and print-workflow optimization — for government, energy,
+			education, and industrial clients. I've delivered <strong>63 training workshops</strong> to more
+			than <strong>1,300 participants</strong> across every governorate in Oman, and contributed to developing
+			and commercializing a locally built 3D printer. My background is in communications and electronics
+			engineering, which shapes how I work: diagnose first, then fix.
 		</Fragment>
 	</PersonalPortfolio>
 </Layout>

@@ -28,13 +28,14 @@ export const selectedWork: SelectedWorkItem[] = [
 			category: 'Additive Manufacturing',
 			title: 'Ministry of Defence',
 			description:
-				'Strategic additive manufacturing solutions for defense applications and mission-critical parts.',
+				'Additive manufacturing support for defense-grade parts, where tolerances and reliability leave no room for error.',
 			status: 'Completed',
 		},
 		ar: {
 			category: 'التصنيع الإضافي',
 			title: 'وزارة الدفاع',
-			description: 'حلول تصنيع إضافي استراتيجية لتطبيقات دفاعية وقطع حسّاسة تتطلب دقة عالية.',
+			description:
+				'دعم تصنيعي بتقنية التصنيع الإضافي لقطع دفاعية لا تحتمل أي هامش خطأ في الدقة أو الموثوقية.',
 			status: 'مكتمل',
 		},
 	},
@@ -44,14 +45,14 @@ export const selectedWork: SelectedWorkItem[] = [
 			category: 'Industrial Manufacturing',
 			title: 'Jindal Steel Oman',
 			description:
-				'Industrial 3D printing integration for steel manufacturing processes and spare parts optimization.',
+				'FDM production integrated into steel manufacturing workflows — from spare-part prototypes to process tooling.',
 			status: 'Completed',
 		},
 		ar: {
 			category: 'التصنيع الصناعي',
 			title: 'جيندال ستيل عُمان',
 			description:
-				'دمج تقنيات الطباعة ثلاثية الأبعاد ضمن عمليات تصنيع الصلب، وتحسين إنتاج قطع الغيار.',
+				'دمج الطباعة بتقنية FDM في مسارات تصنيع الصلب، من نماذج قطع الغيار الأولية إلى أدوات دعم الإنتاج.',
 			status: 'مكتمل',
 		},
 	},
@@ -61,13 +62,14 @@ export const selectedWork: SelectedWorkItem[] = [
 			category: 'Engineering Support',
 			title: 'OQGN',
 			description:
-				'Advanced manufacturing support for oil & gas network infrastructure and pipeline components.',
+				'Manufacturing support for oil & gas infrastructure, producing components built for demanding field conditions.',
 			status: 'Completed',
 		},
 		ar: {
 			category: 'الدعم الهندسي',
 			title: 'OQGN',
-			description: 'دعم تصنيعي متقدم لمكوّنات شبكات النفط والغاز وخطوط الأنابيب.',
+			description:
+				'دعم تصنيعي لمكوّنات بنية النفط والغاز، بما يتحمّل ظروف التشغيل الميدانية الصعبة.',
 			status: 'مكتمل',
 		},
 	},

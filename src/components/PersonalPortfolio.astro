@@ -26,9 +26,16 @@ interface StatContent {
 	label: string;
 }
 
+interface RoleContent {
+	title: string;
+	company: string;
+	period: string;
+	description: string;
+}
+
 interface Props {
 	dir: 'ltr' | 'rtl';
-	nav: { logo: string; work: string; about: string; contact: string };
+	nav: { logo: string; work: string; experience: string; about: string; contact: string };
 	hero: {
 		name: string;
 		initials: string;
@@ -38,6 +45,7 @@ interface Props {
 		whatsappLabel: string;
 	};
 	work: { eyebrow: string; heading: string; projects: ProjectContent[] };
+	experience: { eyebrow: string; heading: string; roles: RoleContent[] };
 	about: { eyebrow: string; heading: string; stats: StatContent[] };
 	contact: { eyebrow: string; heading: string; paragraph: string; whatsappDisplay: string };
 	footer: string;
@@ -45,7 +53,7 @@ interface Props {
 	whatsapp: string;
 }
 
-const { dir, nav, hero, work, about, contact, footer, email, whatsapp } = Astro.props;
+const { dir, nav, hero, work, experience, about, contact, footer, email, whatsapp } = Astro.props;
 const isRtl = dir === 'rtl';
 const fontFamily = isRtl
 	? "'Thmanyah Sans', system-ui, sans-serif"
@@ -59,6 +67,7 @@ const fontFamily = isRtl
 			<div class="nav-end">
 				<nav class="nav-links" aria-label="Primary">
 					<a href="#work">{nav.work}</a>
+					<a href="#experience">{nav.experience}</a>
 					<a href="#about">{nav.about}</a>
 					<a href="#contact">{nav.contact}</a>
 				</nav>
@@ -105,6 +114,31 @@ const fontFamily = isRtl
 						category={item.category}
 						icon={item.icon}
 					/>
+				))
+			}
+		</div>
+	</section>
+
+	<section id="experience" aria-labelledby="experience-heading" class="section reveal">
+		<p class="eyebrow">{experience.eyebrow}</p>
+		<h2 id="experience-heading">{experience.heading}</h2>
+
+		<div class="experience-list">
+			{
+				experience.roles.map((role) => (
+					<div class="experience-item">
+						<div class="experience-head">
+							<div class="experience-role">
+								<span class="experience-title">{role.title}</span>
+								<span class="experience-dash" aria-hidden="true">
+									—
+								</span>
+								<span class="experience-company">{role.company}</span>
+							</div>
+							<span class="experience-period">{role.period}</span>
+						</div>
+						<p class="experience-description">{role.description}</p>
+					</div>
 				))
 			}
 		</div>
@@ -519,6 +553,77 @@ const fontFamily = isRtl
 		grid-template-columns: repeat(3, 1fr);
 		gap: 1.5rem;
 		align-items: stretch;
+	}
+
+	/* ---------- Experience ---------- */
+	.experience-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.experience-item {
+		padding: 1.75rem 2rem;
+		border-radius: var(--radius-md);
+		background: var(--glass-bg);
+		border: 1px solid var(--glass-border);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		transition:
+			border-color 0.35s ease,
+			background-color 0.35s ease;
+	}
+
+	.experience-item:hover,
+	.experience-item:focus-within {
+		background: var(--glass-bg-strong);
+		border-color: var(--glass-border-strong);
+	}
+
+	.experience-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+		margin-bottom: 0.6rem;
+	}
+
+	.experience-role {
+		display: inline-flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.experience-title {
+		font-weight: 600;
+		font-size: 1.0625rem;
+		color: var(--ink);
+	}
+
+	.experience-dash {
+		color: var(--ink-subtle);
+	}
+
+	.experience-company {
+		color: var(--accent-soft);
+		font-weight: 500;
+	}
+
+	.experience-period {
+		font-size: 0.8125rem;
+		font-weight: 500;
+		color: var(--ink-subtle);
+		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.experience-description {
+		font-size: 0.9375rem;
+		line-height: 1.75;
+		color: var(--ink-muted);
+		max-width: 52rem;
 	}
 
 	/* ---------- About ---------- */
