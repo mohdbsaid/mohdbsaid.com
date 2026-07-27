@@ -37,12 +37,50 @@ Phased plan. Nothing beyond Phase 0 has been implemented — this is planning on
 - [ ] Real photography/thumbnails through the now-wired image pipeline
 - [ ] Lighthouse/Core Web Vitals pass
 
-## Phase 5 — Internationalization (tentative)
+## Phase 5 — Internationalization (partial)
 
-- English variant via Astro i18n routing, only if/when needed — not committed to yet.
+- [x] Homepage has a real English/Arabic pair (`/` + `/ar`), sharing one template (`PersonalPortfolio.astro`) driven by props/`dir` — see `DECISIONS.md` ADR-019.
+- **Deviation from the original plan below:** this used a manual thin-wrapper-page pair, not Astro's built-in i18n routing (`astro:i18n`) — see ADR-019 for why. If i18n routing is adopted later for the rest of the site, reconcile the homepage onto the same mechanism rather than running two approaches side by side.
+- [ ] Extend English/Arabic pairing to `/about`, `/blog`, `/projects`, `/resources`, `/courses` — not started; those remain Arabic-only.
+- [ ] Formalize `/en/`/`/ar/`-prefixed routing per ADR-022, for new bilingual content — the homepage's `/`/`/ar` pair stays a recorded exception (ADR-019) unless explicitly reconciled as its own step, since `/` is the live canonical URL.
+
+## Phase 6 — Styling migration to Tailwind CSS v4 — planned, not started
+
+Per `DECISIONS.md` ADR-022. Incremental, not a rewrite:
+
+- [ ] New components/pages default to Tailwind utilities instead of new hand-written CSS.
+- [ ] Design tokens (`docs/DESIGN_SYSTEM.md`) move to Tailwind v4's `@theme` (still CSS custom properties, just Tailwind's configuration surface instead of a hand-rolled `:root` block).
+- [ ] Existing hand-written CSS (`global.css`'s current rules, the homepage's dark-glassmorphism system under ADR-014–020) migrates opportunistically, page/component at a time — not a single sweeping rewrite, and never mixed into an unrelated commit.
+
+## Phase 7 — Content authoring: MDX + new collections — planned, not started
+
+Per `DECISIONS.md` ADR-022.
+
+- [ ] Add `@astrojs/mdx`; new articles authored as `.mdx`.
+- [ ] Existing `.md` entries are not required to convert as a side effect of unrelated work.
+- [ ] `timeline`, `talks`, `notes` collections defined only once real content exists for each — per ADR-001's precedent against scaffolding unused collections.
+
+## Phase 8 — Analytics (Plausible) — blocked
+
+Per `DECISIONS.md` ADR-022. Blocked on the project owner provisioning a real Plausible site/domain — the tracking script can't be wired in against a domain that doesn't exist yet.
+
+## Phase 9 — Headless CMS (Sanity) — planned, not started
+
+v2 of the content architecture. Astro + Cloudflare Pages stay; Sanity is introduced as the content source, **additively** — see `DECISIONS.md` ADR-021 for the full decision record before any of this is implemented.
+
+- [ ] Add Sanity as a Content Layer **loader** for one collection first (most likely `blog`), keeping `content.config.ts`'s existing base schema as the target shape — not a new, separate data path.
+- [ ] Preserve every existing URL — no slug/route changes as a side effect of the migration.
+- [ ] Preserve the `<SEO />` contract (canonical/OG/Twitter/JSON-LD) unchanged; only the content source changes.
+- [ ] Migrate collections one at a time (`blog` → `projects` → `resources` → `courses`), each shippable on its own, not a big-bang cutover.
+- [ ] Structured content (Sanity Portable Text or equivalent) renders through the existing `Layout`/`PageLayout`/`Card` components — no rewrite of the presentation layer.
+- [ ] Draft/published workflow maps onto the existing `draft: boolean` semantics already in the base schema.
+- [ ] Image management goes through Sanity's asset pipeline into `astro:assets`, the same way `cover`/`coverAlt` work today.
+- [ ] English/Arabic per document, formalizing what Phase 5 started ad hoc for the homepage.
+- [ ] Requires the project owner to provision a real Sanity project (project ID, dataset, API token) before any code lands — not something to stub out speculatively.
 
 ## Explicitly out of scope for now
 
-- Any CMS integration.
+- Any CMS integration **beyond what's planned in Phase 9** — no Sanity code lands until that ADR's prerequisites (a real Sanity project) exist.
 - Any UI framework (React/Vue/Svelte) — the site has no interactivity requirement today.
-- Any redesign of current visuals.
+- Any redesign of current visuals — Phase 6's Tailwind migration is a re-implementation, not a restyle; visual output should stay the same unless a redesign is separately requested.
+- Flipping any existing Arabic-only route's declared language away from `ar`/`rtl` — see `CLAUDE.md`'s Internationalization rules.

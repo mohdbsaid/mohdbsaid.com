@@ -49,10 +49,9 @@ Each collection adds exactly one distinguishing field: `category` (projects), `f
 
 ## Language
 
-Arabic is the only language today (`lang="ar" dir="rtl"`, hardcoded once in `Layout.astro`). If English is added later:
+Arabic is the sitewide default (`lang="ar" dir="rtl"`, set in `Layout.astro`). The homepage is the one exception: `/` (English) and `/ar` (Arabic) share one template (`PersonalPortfolio.astro`), each page supplying its own copy as props — see `DECISIONS.md` ADR-019. This predates Astro's built-in [i18n routing](https://docs.astro.build/en/guides/internationalization/) being adopted; if/when the rest of the site gets an English pairing, reconcile onto one mechanism rather than running both (tracked in `ROADMAP.md` Phase 5).
 
-- Use Astro's built-in [i18n routing](https://docs.astro.build/en/guides/internationalization/) rather than a manual `/en/` prefix hack.
-- This is a routing/architecture change — record it in `DECISIONS.md` before implementing.
+The four content collections (`blog`/`projects`/`resources`/`courses`) are Arabic-only today — no bilingual content model exists for them yet. The planned Sanity migration (`ROADMAP.md` Phase 6, `DECISIONS.md` ADR-021) is expected to be what formalizes per-document English/Arabic content for collections, rather than building a bespoke bilingual scheme into the current markdown-based collections first.
 
 ## RSS
 

@@ -65,3 +65,17 @@ Four collections (`blog`, `projects`, `resources`, `courses`), each backed by ma
 ## Explaining architectural decisions
 
 Any change that alters rendering mode, adds a framework integration, introduces a new top-level folder, or changes how routing/content works must be explained in `DECISIONS.md` **before** the change lands — see `CLAUDE.md`.
+
+## Target architecture (ADR-022)
+
+The project owner has set a standing long-term direction, recorded in full in `DECISIONS.md` ADR-022. Current state (this section, above) vs. target:
+
+| Area      | Current                                                                              | Target                                                                                                                                                                                                                                        |
+| --------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Styling   | Hand-written CSS: `global.css` tokens + per-component scoped `<style>`               | Tailwind CSS v4, tokens via `@theme` (CSS variables) — existing hand-written systems (incl. the homepage's dark-glassmorphism system) are recorded exceptions, migrated incrementally, not rewritten wholesale                                |
+| Content   | Markdown, 4 collections: `blog`/`projects`/`resources`/`courses`                     | MDX, up to 6 collections: `blog`/`projects`/`resources`/`timeline`/`talks`/`notes` — new collections added only once real content exists, per ADR-001's precedent                                                                             |
+| Analytics | None                                                                                 | Plausible Analytics — blocked on a real Plausible site/domain being provisioned                                                                                                                                                               |
+| i18n      | Arabic-only sitewide default; homepage has an ad hoc `/` (EN) + `/ar` pair (ADR-019) | `/en/`/`/ar/`-prefixed routing, shared components, for genuinely bilingual content — existing Arabic-only routes and the homepage's `/`/`/ar` pair are not retroactively touched by this alone (see `CLAUDE.md`'s Internationalization rules) |
+| CMS       | None — content lives in Git                                                          | Sanity, additive via a Content Layer loader (ADR-021) — blocked on a real Sanity project being provisioned                                                                                                                                    |
+
+Nothing in this table is implemented yet beyond what's already noted as current. See `ROADMAP.md` for phasing.

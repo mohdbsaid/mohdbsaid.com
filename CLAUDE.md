@@ -7,10 +7,12 @@ Supporting detail lives in `/docs`: `ARCHITECTURE.md`, `DESIGN_SYSTEM.md`, `CONT
 ## Architecture rules
 
 - Static Astro site. No SSR adapter, no server runtime, unless a decision to add one is recorded in `docs/DECISIONS.md` first.
-- No UI framework (React/Vue/Svelte/etc.) and no CSS framework (Tailwind, etc.) unless a real interactivity/styling need can't be met with plain Astro + CSS, and the decision is recorded.
+- No UI framework (React/Vue/Svelte/etc.) unless a real interactivity need can't be met with plain Astro.
+- **Tailwind CSS v4 is the sanctioned styling solution going forward** — see `docs/DECISIONS.md` ADR-022 for the standing architecture decision. New component styling should default to Tailwind utilities rather than new hand-written CSS. This does **not** retroactively obligate rewriting existing hand-written systems (`src/styles/global.css`'s token layer, the homepage's dark-glassmorphism system under ADR-014–020) — those remain valid, recorded exceptions until migrated on their own schedule, not as a side effect of unrelated work.
 - Routing is file-based under `src/pages/` — every file there is a live URL. Don't create a page as a side effect of unrelated work.
-- Content that has a title/date/body shape belongs in a Content Layer collection (`src/content/` + `src/content.config.ts`), not hardcoded into a page or a `src/data/*.ts` array. All four collections (`blog`/`projects`/`resources`/`courses`) share one base schema (`title`, `description`, `publishDate`, `draft`, `featured`, optional `cover`/`coverAlt`) — extend it, don't fork it, when adding a collection.
+- Content that has a title/date/body shape belongs in a Content Layer collection (`src/content/` + `src/content.config.ts`), not hardcoded into a page or a `src/data/*.ts` array. The four existing collections (`blog`/`projects`/`resources`/`courses`) share one base schema (`title`, `description`, `publishDate`, `draft`, `featured`, optional `cover`/`coverAlt`) — extend it, don't fork it, when adding a collection. New collections named in ADR-022's target architecture (`timeline`, `talks`, `notes`) are not yet defined — don't scaffold them ahead of real content (see ADR-001's precedent).
 - Query collections through `src/lib/content.ts`'s `getFeatured()` (or extend it) rather than hand-rolling a second draft/featured/sort filter in a page.
+- New long-form content (articles) should be authored as MDX going forward, per ADR-022 — existing `.md` entries aren't required to convert as a side effect of unrelated work.
 
 ## Folder conventions
 
@@ -43,9 +45,9 @@ src/
 
 ## CSS rules
 
-- All colors, spacing, and radii come from the custom-property tokens in `src/styles/global.css` (see `docs/DESIGN_SYSTEM.md`). No hardcoded hex values or magic spacing numbers in component styles.
-- Global/shared styles live in `global.css`, imported once (in `Layout.astro`). Component-specific styles live in that component's scoped `<style>` block.
-- Use logical properties (`margin-inline`, `padding-block`, `inset-inline-start`) over physical ones (`margin-left`, `left`) — this is an RTL-first (`dir="rtl"`) site.
+- All colors, spacing, and radii come from design tokens expressed as CSS custom properties — today that's `src/styles/global.css` (see `docs/DESIGN_SYSTEM.md`); under Tailwind v4 the same tokens belong in a `@theme` block, not scattered utility overrides. No hardcoded hex values or magic spacing numbers in component styles.
+- Global/shared styles live in `global.css`, imported once (in `Layout.astro`). Component-specific styles live in that component's scoped `<style>` block (or Tailwind utility classes, once adopted).
+- Use logical properties (`margin-inline`, `padding-block`, `inset-inline-start`) over physical ones (`margin-left`, `left`) in any hand-written CSS — RTL must keep working through the same components/utilities in both directions, not a separate RTL stylesheet.
 - Never let a CSS change alter the current rendered appearance unless that's the explicit goal of the change. A whitespace/formatting pass and a visual change are different kinds of commits — don't mix them.
 
 ## Accessibility rules
@@ -57,15 +59,23 @@ src/
 
 ## Performance rules
 
-- Ship zero client-side JS by default. A `<script>` tag or framework island requires a real interactivity need, not convenience.
+- Ship zero client-side JS by default. A `<script>` tag or framework island requires a real interactivity need, not convenience. Plausible Analytics (ADR-022) is the one sanctioned exception once wired in — it needs a real Plausible site/domain provisioned first, so it isn't added speculatively.
 - Route all content/thumbnail images through `astro:assets` — either `src/assets/` for site-chrome images, or a content collection's `cover` field for collection entries — so they get optimized via `<Image>`. `public/` is only for files that must be served byte-for-byte as-is (favicons, fonts, `robots.txt`). Don't add a `cover`/author photo to content just to exercise the pipeline — leave it unset until a real asset exists.
 - Don't add a new npm dependency for something a small amount of plain code/CSS can do.
+- Target Lighthouse Performance/Accessibility/Best Practices/SEO scores >95 (ADR-022) — treat a regression below that as a real bug, not a later cleanup.
 
 ## SEO rules
 
 - Every page passes explicit `title`/`description` (and `image`/`imageAlt`/`jsonLd`/`noindex` where relevant) to `Layout.astro`/`PageLayout.astro` — never inherit the homepage defaults. Never render SEO meta tags anywhere except through `<SEO />` — add new tag types to that component, don't hand-write a second `<title>`/OG block/JSON-LD script in a page.
 - Every real route is reachable from nav or otherwise included in the sitemap — no orphan pages. The sitemap is generated by `@astrojs/sitemap`; don't hand-maintain one. Use the sitemap's `filter` (in `astro.config.mjs`) to exclude non-page routes like `/rss.xml`, not a second config mechanism.
 - Confirm `site` in `astro.config.mjs` is the correct production domain before anything gets deployed — it started life as a placeholder (see `docs/SEO.md`).
+
+## Internationalization rules
+
+- Target architecture (ADR-022): English and Arabic, sharing components rather than duplicated layouts, with `/en/`- and `/ar/`-prefixed routing as the long-term pattern for genuinely bilingual content. RTL is handled through the same components as LTR via logical CSS properties — never a separate RTL stylesheet or component fork.
+- **Current reality, deliberately not touched by ADR-022:** the site's non-homepage routes (`/about`, `/blog`, `/projects`, `/resources`, `/courses`) are Arabic-only today, with `lang="ar" dir="rtl"` as `Layout.astro`'s actual default — that default is not to be flipped as a side effect of adopting this architecture doc, since doing so would mislabel real Arabic content as English and actively harm SEO/accessibility for pages that exist today. The homepage is the one bilingual pair, at `/` (English) + `/ar` (Arabic) — a deliberate exception to the `/en/`/`/ar/` pattern, recorded in ADR-019, because `/` is the live, indexed, canonical URL and moving it would violate "preserve all existing URLs." Reconcile `/` toward `/en/` only as an explicit, separately-confirmed step (e.g. `/` redirecting to `/en/`), never silently.
+- New bilingual content going forward should target real `/en/`+`/ar/` routing per ADR-022 rather than repeating the homepage's props-based workaround.
+- Arabic copy is always original writing for its context, never a literal translation of the English — see ADR-019/020 for examples of this in practice.
 
 ## Git workflow
 
@@ -129,3 +139,4 @@ Consult before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+- [MDX](https://docs.astro.build/en/guides/integrations-guide/mdx/)
