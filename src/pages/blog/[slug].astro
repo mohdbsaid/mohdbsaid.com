@@ -41,7 +41,7 @@ const readingTime = estimateReadingTime(post.body ?? '');
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
 
 const breadcrumbItems: BreadcrumbItem[] = [
-	{ label: 'الرئيسية', href: '/' },
+	{ label: 'الرئيسية', href: '/ar' },
 	{ label: 'المدونة', href: '/blog' },
 	{ label: category, href: `/blog/category/${encodeURIComponent(category)}` },
 	{ label: title },
