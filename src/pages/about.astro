@@ -1,31 +1,64 @@
 ---
 // English/LTR About page — the primary professional profile, sharing the
 // homepage's exact visual identity via the shared AboutPage.astro template
-// (see docs/DECISIONS.md ADR-023). Replaces the previous Arabic-only,
-// light-themed about.astro; that content has moved to /ar/about, rewritten
-// rather than carried over — see the ADR for why.
-//
-// Every fact below traces to the project owner's CV (confirmed as
-// Mohammed_Aljabri_CV_2026.docx) — no invented achievements, numbers,
-// dates, employers, or certifications.
+// (see docs/DECISIONS.md ADR-023). All section copy is fetched from
+// src/content/pages/about/**/en.mdx (content-first architecture — see
+// docs/DECISIONS.md ADR-024) instead of being hardcoded here; global facts
+// (name, email, WhatsApp) come from src/data/site.ts.
+import { render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import AboutPage from '../components/AboutPage.astro';
+import { getPageSection } from '../lib/content';
+import { site } from '../data/site';
+import type { IconName } from '../components/Icon.astro';
 
-const title = 'Mohammed Al-Jabri — About';
-const description =
-	'Mohammed Al-Jabri is an additive manufacturing specialist with 6+ years of production, training, and engineering experience in Oman — career background, technical expertise, and credentials.';
-const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
-const email = 'mohdbsaid@outlook.com';
-const whatsapp = 'https://wa.me/96891899818';
+const locale = 'en';
+
+const [
+	hero,
+	profile,
+	achievements,
+	experience,
+	industries,
+	skills,
+	training,
+	certifications,
+	philosophy,
+	timeline,
+	contact,
+] = await Promise.all([
+	getPageSection('about', 'hero', locale, 'hero'),
+	getPageSection('about', 'profile', locale, 'prose'),
+	getPageSection('about', 'achievements', locale, 'achievements'),
+	getPageSection('about', 'experience', locale, 'experience'),
+	getPageSection('about', 'industries', locale, 'industries'),
+	getPageSection('about', 'skills', locale, 'skills'),
+	getPageSection('about', 'training', locale, 'prose'),
+	getPageSection('about', 'certifications', locale, 'certifications'),
+	getPageSection('about', 'philosophy', locale, 'prose'),
+	getPageSection('about', 'timeline', locale, 'timeline'),
+	getPageSection('about', 'contact', locale, 'contact'),
+]);
+
+const [
+	{ Content: ProfileContent },
+	{ Content: TrainingContent },
+	{ Content: PhilosophyContent },
+	{ Content: ContactContent },
+] = await Promise.all([render(profile), render(training), render(philosophy), render(contact)]);
+
+const title = `${site.name.en} — About`;
+const description = `${site.name.en} is an additive manufacturing specialist with 6+ years of production, training, and engineering experience in Oman — career background, technical expertise, and credentials.`;
+const siteUrl = Astro.site?.toString() ?? site.website;
 
 const jsonLd = [
 	{
 		'@type': 'Person',
-		name: 'Mohammed Al-Jabri',
+		name: site.name.en,
 		url: `${siteUrl}/about`,
 		description,
-		jobTitle: 'Additive Manufacturing & 3D Printing Specialist',
-		email: `mailto:${email}`,
+		jobTitle: site.title.en,
+		email: `mailto:${site.email}`,
 		knowsAbout: [
 			'Additive Manufacturing',
 			'FDM 3D Printing',
@@ -37,12 +70,12 @@ const jsonLd = [
 		],
 		alumniOf: {
 			'@type': 'CollegeOrUniversity',
-			name: 'University of Technology and Applied Sciences (UTAS), Oman',
+			name: certifications.data.institution,
 		},
 	},
 	{
 		'@type': 'WebSite',
-		name: 'Mohammed Al-Jabri',
+		name: site.name.en,
 		url: `${siteUrl}/about`,
 		inLanguage: 'en',
 	},
@@ -74,10 +107,11 @@ const jsonLd = [
 
 	<AboutPage
 		dir="ltr"
-		email={email}
-		whatsapp={whatsapp}
+		email={site.email}
+		whatsapp={site.whatsapp.url}
+		whatsappDisplay={site.whatsapp.display}
 		nav={{
-			logo: { label: 'Mohammed Al-Jabri', href: '/' },
+			logo: { label: site.name.en, href: '/' },
 			links: [
 				{ label: 'Work', href: '/#work' },
 				{ label: 'About', href: '/about' },
@@ -85,142 +119,47 @@ const jsonLd = [
 			],
 		}}
 		hero={{
-			name: 'Mohammed Al-Jabri',
-			initials: 'MA',
-			role: 'Additive Manufacturing & 3D Printing Specialist',
-			tagline:
-				'Six years of hands-on FDM production, technical training, and engineering work across Oman — the full background behind the homepage.',
-			emailLabel: 'Email',
-			whatsappLabel: 'WhatsApp',
+			name: site.name.en,
+			initials: site.initials.en,
+			role: site.title.en,
+			tagline: hero.data.tagline,
+			emailLabel: hero.data.emailLabel,
+			whatsappLabel: hero.data.whatsappLabel,
 		}}
 		profile={{
-			eyebrow: 'Profile',
-			heading: 'Profile',
-			paragraphs: [
-				'My path into additive manufacturing started with a diploma in communications and electronics engineering — a foundation that still shapes how I approach every failed print: as a signal to trace back to its source, not a problem to route around. Over six years, that habit turned into a specialty — keeping FDM production lines dependable for government, energy, and industrial clients across Oman, through calibration, root-cause diagnostics, and workflow optimization that holds up under real production pressure, not just in a controlled test print.',
-				"Alongside that production work, I've spent a significant part of my career on the training side of the field — designing and delivering workshops that have reached more than 1,300 people across every governorate in Oman, and contributing to the development and commercialization of a locally built 3D printer. Both threads come from the same instinct: additive manufacturing in Oman is still young, and the more people who understand it properly, the better it gets for everyone working in it.",
-			],
+			eyebrow: profile.data.eyebrow,
+			heading: profile.data.heading,
+			Content: ProfileContent,
 		}}
-		achievements={{
-			eyebrow: 'Achievements',
-			heading: 'Core Achievements',
-			stats: [
-				{ value: 6, suffix: '+', label: 'Years of Experience' },
-				{ value: 32, suffix: '+', label: 'Projects' },
-				{ value: 63, suffix: '', label: 'Workshops' },
-				{ value: 1340, suffix: '+', label: 'Participants' },
-			],
-		}}
-		experience={{
-			eyebrow: 'Experience',
-			heading: 'Professional Experience',
-			roles: [
-				{
-					title: '3D Printing Specialist',
-					company: 'Plamore Manufacture',
-					period: 'Dec 2024 – Jan 2026',
-					description:
-						'Operated and maintained professional FDM systems for production work serving government and industrial clients — job preparation, material selection, slicing parameters, production monitoring, and final quality inspection. Ran calibration and preventive maintenance to improve equipment reliability, and diagnosed mechanical, electrical, and process-related failures through root-cause analysis rather than trial and error.',
-				},
-				{
-					title: '3D Printing Technician',
-					company: '3D Factory',
-					period: 'Sep 2020 – Nov 2024',
-					description:
-						'Prepared and optimized print jobs using CAD and slicing tools, balancing dimensional accuracy, surface quality, material use, and production time. Delivered prototypes, educational models, and customized parts for industrial and institutional clients across Oman, while advising teams on materials, print orientation, and support strategy.',
-				},
-			],
-		}}
-		industries={{
-			eyebrow: 'Industries',
-			heading: 'Industries & Clients',
-			groups: [
-				{
-					title: 'Government & Defense',
-					items: ['Ministry of Defence', 'Civil Aviation Authority'],
-				},
-				{ title: 'Energy', items: ['PDO', 'OQGN', 'SLB'] },
-				{ title: 'Industrial Manufacturing', items: ['Jindal Steel Oman'] },
-				{ title: 'Urban Development', items: ['Sultan Haitham City'] },
-			],
-		}}
+		achievements={achievements.data}
+		experience={experience.data}
+		industries={industries.data}
 		expertise={{
-			eyebrow: 'Expertise',
-			heading: 'Technical Expertise',
-			categories: [
-				{
-					icon: 'print',
-					title: 'Additive Manufacturing',
-					skills:
-						'FDM systems, print preparation, slicing, parameter optimization, material selection, prototype production, quality inspection, post-processing.',
-				},
-				{
-					icon: 'wrench',
-					title: 'Maintenance & Engineering',
-					skills:
-						'Calibration, preventive maintenance, mechanical assembly, electronics maintenance, troubleshooting, root-cause analysis, operational safety.',
-				},
-				{
-					icon: 'code',
-					title: 'Software & Tools',
-					skills:
-						'Fusion 360, OrcaSlicer, CAD fundamentals, STL/3MF preparation, print workflow management.',
-				},
-				{
-					icon: 'book',
-					title: 'Training & Documentation',
-					skills:
-						'Workshop design and delivery, technical instruction, training materials, SOPs, technical documentation.',
-				},
-			],
-			note: 'Also exploring robotics and IoT applications as a natural extension of this work.',
+			eyebrow: skills.data.eyebrow,
+			heading: skills.data.heading,
+			categories: skills.data.categories.map((category) => ({
+				...category,
+				icon: category.icon as IconName,
+			})),
+			note: skills.data.note,
 		}}
 		training={{
-			eyebrow: 'Training',
-			heading: 'Training',
-			paragraph:
-				"Independent of any single employer, I've spent years designing and delivering training on additive manufacturing fundamentals — printer operation, maintenance, safety, slicing, and practical applications — for teachers, students, and industry professionals across Oman. Some of that work has been with schools and universities adopting 3D printing as part of hands-on STEM learning; some with professionals looking to bring the skill in-house. Every session is shaped around where the audience actually is, not a fixed curriculum.",
+			eyebrow: training.data.eyebrow,
+			heading: training.data.heading,
+			Content: TrainingContent,
 		}}
-		education={{
-			eyebrow: 'Education',
-			heading: 'Education & Certifications',
-			degree: 'Diploma in Communications & Electronics Engineering',
-			institution: 'University of Technology and Applied Sciences (UTAS), Oman',
-			period: '2020',
-			coursework:
-				'Relevant coursework: Analog Electronics, Digital Electronics, Electrical Safety, Maintenance and Repair.',
-			certificationsLabel: 'Certifications',
-			certifications: [
-				'Professional Design Engineer',
-				'Additive Manufacturing: Materials for 3D Printing',
-				'Robotics and Artificial Intelligence',
-				'Health, Safety and Environment (HSE)',
-				'Internet of Things (IoT)',
-				'Training of Trainers (ToT)',
-			],
-		}}
+		education={certifications.data}
 		philosophy={{
-			eyebrow: 'Philosophy',
-			heading: 'Engineering Philosophy',
-			paragraph:
-				"Good additive manufacturing work is mostly invisible — a part that prints right the first time, a machine that doesn't go down mid-run, a workshop attendee who leaves able to fix their own printer instead of needing to call someone. I'd rather spend an extra ten minutes finding why a print actually failed than spend an hour reprinting it and hoping. That habit is slower in the moment and faster over a career.",
+			eyebrow: philosophy.data.eyebrow,
+			heading: philosophy.data.heading,
+			Content: PhilosophyContent,
 		}}
-		timeline={{
-			eyebrow: 'Timeline',
-			heading: 'Timeline',
-			items: [
-				{ period: '2020', title: 'Diploma in Communications & Electronics Engineering, UTAS' },
-				{ period: '2020 – 2024', title: '3D Printing Technician, 3D Factory' },
-				{ period: '2024 – 2026', title: '3D Printing Specialist, Plamore Manufacture' },
-			],
-		}}
+		timeline={timeline.data}
 		contact={{
-			eyebrow: 'Contact',
-			heading: 'Let’s work together',
-			paragraph:
-				'Open to conversations about additive manufacturing, technical training, or your next production challenge — reach out by email or WhatsApp.',
-			whatsappDisplay: '+968 91899818',
+			eyebrow: contact.data.eyebrow,
+			heading: contact.data.heading,
+			Content: ContactContent,
 		}}
-		footer={`© ${new Date().getFullYear()} Mohammed Al-Jabri`}
+		footer={`© ${new Date().getFullYear()} ${site.name.en}`}
 	/>
 </Layout>

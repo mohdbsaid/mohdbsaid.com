@@ -3,30 +3,41 @@
 // <Header>/<Footer> chrome (via Layout's hideChrome) and renders the shared
 // <PersonalPortfolio> template instead. Intentionally minimal: hero,
 // selected work, contact — the detailed professional profile lives on
-// /about (see AboutPage.astro) — per docs/DECISIONS.md ADR-023.
+// /about (see AboutPage.astro) — per docs/DECISIONS.md ADR-023. Section
+// copy comes from src/content/pages/home/**/en.mdx (docs/DECISIONS.md ADR-024).
+import { render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PersonalPortfolio from '../components/PersonalPortfolio.astro';
 import { selectedWork } from '../data/selectedWork';
+import { getPageSection } from '../lib/content';
+import { site } from '../data/site';
 
-const title = 'Mohammed Al-Jabri — Additive Manufacturing & 3D Printing Specialist';
-const description =
-	'Mohammed Al-Jabri is an additive manufacturing specialist based in Oman. Explore selected work or get in touch — full professional background on the About page.';
-const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
-const email = 'mohdbsaid@outlook.com';
-const whatsapp = 'https://wa.me/96891899818';
+const locale = 'en';
+
+const [hero, workIntro, contact] = await Promise.all([
+	getPageSection('home', 'hero', locale, 'hero'),
+	getPageSection('home', 'workintro', locale, 'workintro'),
+	getPageSection('home', 'contact', locale, 'contact'),
+]);
+
+const { Content: ContactContent } = await render(contact);
+
+const title = `${site.name.en} — ${site.title.en}`;
+const description = `${site.name.en} is an additive manufacturing specialist based in Oman. Explore selected work or get in touch — full professional background on the About page.`;
+const siteUrl = Astro.site?.toString() ?? site.website;
 
 const jsonLd = [
 	{
 		'@type': 'Person',
-		name: 'Mohammed Al-Jabri',
+		name: site.name.en,
 		url: siteUrl,
 		description,
-		jobTitle: 'Additive Manufacturing & 3D Printing Specialist',
-		email: `mailto:${email}`,
+		jobTitle: site.title.en,
+		email: `mailto:${site.email}`,
 	},
 	{
 		'@type': 'WebSite',
-		name: 'Mohammed Al-Jabri',
+		name: site.name.en,
 		url: siteUrl,
 		inLanguage: 'en',
 	},
@@ -58,10 +69,11 @@ const jsonLd = [
 
 	<PersonalPortfolio
 		dir="ltr"
-		email={email}
-		whatsapp={whatsapp}
+		email={site.email}
+		whatsapp={site.whatsapp.url}
+		whatsappDisplay={site.whatsapp.display}
 		nav={{
-			logo: { label: 'Mohammed Al-Jabri', href: '/' },
+			logo: { label: site.name.en, href: '/' },
 			links: [
 				{ label: 'Work', href: '#work' },
 				{ label: 'About', href: '/about' },
@@ -69,26 +81,23 @@ const jsonLd = [
 			],
 		}}
 		hero={{
-			name: 'Mohammed Al-Jabri',
-			initials: 'MA',
-			role: 'Additive Manufacturing & 3D Printing Specialist',
-			intro:
-				'I turn ideas into physical parts — through reliable FDM production, hands-on training, and six years of hard-won experience in Oman.',
-			emailLabel: 'Email',
-			whatsappLabel: 'WhatsApp',
+			name: site.name.en,
+			initials: site.initials.en,
+			role: site.title.en,
+			intro: hero.data.tagline,
+			emailLabel: hero.data.emailLabel,
+			whatsappLabel: hero.data.whatsappLabel,
 		}}
 		work={{
-			eyebrow: 'Work',
-			heading: 'Selected Work',
+			eyebrow: workIntro.data.eyebrow,
+			heading: workIntro.data.heading,
 			projects: selectedWork.map((item) => ({ icon: item.icon, ...item.en })),
 		}}
 		contact={{
-			eyebrow: 'Contact',
-			heading: 'Let’s work together',
-			paragraph:
-				'Open to conversations about additive manufacturing, technical training, or your next production challenge — reach out by email or WhatsApp.',
-			whatsappDisplay: '+968 91899818',
+			eyebrow: contact.data.eyebrow,
+			heading: contact.data.heading,
+			Content: ContactContent,
 		}}
-		footer={`© ${new Date().getFullYear()} Mohammed Al-Jabri`}
+		footer={`© ${new Date().getFullYear()} ${site.name.en}`}
 	/>
 </Layout>

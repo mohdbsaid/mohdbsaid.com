@@ -3,18 +3,20 @@
 // About) — identical markup/behavior in both places, so it's a real
 // component instead of copy-pasted per page. Styles (.contact-card etc.)
 // live in src/styles/glass-theme.css — see GlassNav.astro for why.
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import Icon from './Icon.astro';
 
 interface Props {
 	eyebrow: string;
 	heading: string;
-	paragraph: string;
+	/** Rendered MDX body from the page's `contact` content section (src/content/pages/<page>/contact). */
+	Content: AstroComponentFactory;
 	email: string;
 	whatsapp: string;
 	whatsappDisplay: string;
 }
 
-const { eyebrow, heading, paragraph, email, whatsapp, whatsappDisplay } = Astro.props;
+const { eyebrow, heading, Content, email, whatsapp, whatsappDisplay } = Astro.props;
 ---
 
 <section id="contact" aria-labelledby="contact-heading" class="section reveal">
@@ -22,7 +24,7 @@ const { eyebrow, heading, paragraph, email, whatsapp, whatsappDisplay } = Astro.
 		<div class="contact-copy">
 			<p class="eyebrow">{eyebrow}</p>
 			<h2 id="contact-heading">{heading}</h2>
-			<p>{paragraph}</p>
+			<Content />
 		</div>
 		<div class="contact-links">
 			<a class="btn btn-primary" href={`mailto:${email}`}>

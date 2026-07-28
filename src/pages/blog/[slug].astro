@@ -12,6 +12,7 @@ import CopyLinkButton from '../../components/CopyLinkButton.astro';
 import { getAdjacentEntries, getRelatedPosts } from '../../lib/content';
 import { formatArabicDate } from '../../utils/formatDate';
 import { estimateReadingTime, estimateReadingMinutesISO } from '../../utils/readingTime';
+import { site } from '../../data/site';
 import type { BreadcrumbItem } from '../../types';
 
 export async function getStaticPaths() {
@@ -59,7 +60,7 @@ const articleJsonLd = {
 	keywords: [category, ...tags].join('، '),
 	timeRequired: estimateReadingMinutesISO(post.body ?? ''),
 	...(cover && { image: new URL(cover.src, Astro.site).toString() }),
-	author: { '@type': 'Person', name: 'محمد الجابري' },
+	author: { '@type': 'Person', name: site.name.ar },
 };
 
 const breadcrumbJsonLd = {

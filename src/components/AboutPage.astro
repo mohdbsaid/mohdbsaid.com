@@ -4,6 +4,7 @@
 // its entire visual identity with the homepage via GlassNav/GlassFooter/
 // GlassContactCTA + src/styles/glass-theme.css + src/lib/glassInteractions.ts
 // — same tokens, same components, same motion, not a second design.
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import '../styles/glass-theme.css';
 import Icon, { type IconName } from './Icon.astro';
 import GlassNav from './GlassNav.astro';
@@ -55,12 +56,12 @@ interface Props {
 		emailLabel: string;
 		whatsappLabel: string;
 	};
-	profile: { eyebrow: string; heading: string; paragraphs: string[] };
+	profile: { eyebrow: string; heading: string; Content: AstroComponentFactory };
 	achievements: { eyebrow: string; heading: string; stats: StatContent[] };
 	experience: { eyebrow: string; heading: string; roles: RoleContent[] };
 	industries: { eyebrow: string; heading: string; groups: IndustryGroup[] };
 	expertise: { eyebrow: string; heading: string; categories: SkillCategory[]; note: string };
-	training: { eyebrow: string; heading: string; paragraph: string };
+	training: { eyebrow: string; heading: string; Content: AstroComponentFactory };
 	education: {
 		eyebrow: string;
 		heading: string;
@@ -71,12 +72,13 @@ interface Props {
 		certificationsLabel: string;
 		certifications: string[];
 	};
-	philosophy: { eyebrow: string; heading: string; paragraph: string };
+	philosophy: { eyebrow: string; heading: string; Content: AstroComponentFactory };
 	timeline: { eyebrow: string; heading: string; items: TimelineItem[] };
-	contact: { eyebrow: string; heading: string; paragraph: string; whatsappDisplay: string };
+	contact: { eyebrow: string; heading: string; Content: AstroComponentFactory };
 	footer: string;
 	email: string;
 	whatsapp: string;
+	whatsappDisplay: string;
 }
 
 const {
@@ -96,6 +98,7 @@ const {
 	footer,
 	email,
 	whatsapp,
+	whatsappDisplay,
 } = Astro.props;
 
 const isRtl = dir === 'rtl';
@@ -141,7 +144,7 @@ const educationMeta = `${education.institution} · ${education.period}`;
 		<p class="eyebrow">{profile.eyebrow}</p>
 		<h2 id="profile-heading">{profile.heading}</h2>
 		<div class="profile-text">
-			{profile.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+			<profile.Content />
 		</div>
 	</section>
 
@@ -230,7 +233,9 @@ const educationMeta = `${education.institution} · ${education.period}`;
 	<section id="training" aria-labelledby="training-heading" class="section reveal">
 		<p class="eyebrow">{training.eyebrow}</p>
 		<h2 id="training-heading">{training.heading}</h2>
-		<p class="training-text">{training.paragraph}</p>
+		<div class="training-text">
+			<training.Content />
+		</div>
 	</section>
 
 	<section id="education" aria-labelledby="education-heading" class="section reveal">
@@ -255,7 +260,9 @@ const educationMeta = `${education.institution} · ${education.period}`;
 	<section id="philosophy" aria-labelledby="philosophy-heading" class="section reveal">
 		<p class="eyebrow">{philosophy.eyebrow}</p>
 		<h2 id="philosophy-heading">{philosophy.heading}</h2>
-		<p class="philosophy-text">{philosophy.paragraph}</p>
+		<div class="philosophy-text">
+			<philosophy.Content />
+		</div>
 	</section>
 
 	<section id="timeline" aria-labelledby="timeline-heading" class="section reveal">
@@ -279,10 +286,10 @@ const educationMeta = `${education.institution} · ${education.period}`;
 	<GlassContactCTA
 		eyebrow={contact.eyebrow}
 		heading={contact.heading}
-		paragraph={contact.paragraph}
+		Content={contact.Content}
 		email={email}
 		whatsapp={whatsapp}
-		whatsappDisplay={contact.whatsappDisplay}
+		whatsappDisplay={whatsappDisplay}
 	/>
 
 	<GlassFooter text={footer} />

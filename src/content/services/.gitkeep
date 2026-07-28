@@ -1,0 +1,1 @@
+This folder is intentionally empty — the `services` collection (src/content.config.ts) is schema-only until a real service offering exists. See docs/DECISIONS.md ADR-024 and content-admin/README.md ("How to add a service").

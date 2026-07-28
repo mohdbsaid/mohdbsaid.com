@@ -4,29 +4,40 @@
 // minimal — see docs/DECISIONS.md ADR-023. Uses this site's existing
 // self-hosted "Thmanyah Sans" (already Arabic-capable — it's the default
 // body font on every other Arabic page) instead of loading a second webfont.
+// Section copy comes from src/content/pages/home/**/ar.mdx (ADR-024).
+import { render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PersonalPortfolio from '../../components/PersonalPortfolio.astro';
 import { selectedWork } from '../../data/selectedWork';
+import { getPageSection } from '../../lib/content';
+import { site } from '../../data/site';
 
-const title = 'محمد الجابري — أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد';
-const description =
-	'محمد الجابري أخصائي تصنيع إضافي مقيم في عُمان. تصفّح الأعمال المختارة أو تواصل معه — السيرة المهنية الكاملة متاحة في صفحة نبذة.';
-const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
-const email = 'mohdbsaid@outlook.com';
-const whatsapp = 'https://wa.me/96891899818';
+const locale = 'ar';
+
+const [hero, workIntro, contact] = await Promise.all([
+	getPageSection('home', 'hero', locale, 'hero'),
+	getPageSection('home', 'workintro', locale, 'workintro'),
+	getPageSection('home', 'contact', locale, 'contact'),
+]);
+
+const { Content: ContactContent } = await render(contact);
+
+const title = `${site.name.ar} — ${site.title.ar}`;
+const description = `${site.name.ar} أخصائي تصنيع إضافي مقيم في عُمان. تصفّح الأعمال المختارة أو تواصل معه — السيرة المهنية الكاملة متاحة في صفحة نبذة.`;
+const siteUrl = Astro.site?.toString() ?? site.website;
 
 const jsonLd = [
 	{
 		'@type': 'Person',
-		name: 'محمد الجابري',
+		name: site.name.ar,
 		url: `${siteUrl}/ar`,
 		description,
-		jobTitle: 'أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد',
-		email: `mailto:${email}`,
+		jobTitle: site.title.ar,
+		email: `mailto:${site.email}`,
 	},
 	{
 		'@type': 'WebSite',
-		name: 'محمد الجابري',
+		name: site.name.ar,
 		url: `${siteUrl}/ar`,
 		inLanguage: 'ar',
 	},
@@ -52,10 +63,11 @@ const jsonLd = [
 
 	<PersonalPortfolio
 		dir="rtl"
-		email={email}
-		whatsapp={whatsapp}
+		email={site.email}
+		whatsapp={site.whatsapp.url}
+		whatsappDisplay={site.whatsapp.display}
 		nav={{
-			logo: { label: 'محمد الجابري', href: '/ar' },
+			logo: { label: site.name.ar, href: '/ar' },
 			links: [
 				{ label: 'الأعمال', href: '#work' },
 				{ label: 'نبذة', href: '/ar/about' },
@@ -63,26 +75,23 @@ const jsonLd = [
 			],
 		}}
 		hero={{
-			name: 'محمد الجابري',
-			initials: 'م ج',
-			role: 'أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد',
-			intro:
-				'أحوّل الأفكار إلى قطع حقيقية عبر إنتاج موثوق بتقنية FDM، وخبرة امتدت ست سنوات في هذا المجال داخل عُمان.',
-			emailLabel: 'البريد الإلكتروني',
-			whatsappLabel: 'واتساب',
+			name: site.name.ar,
+			initials: site.initials.ar,
+			role: site.title.ar,
+			intro: hero.data.tagline,
+			emailLabel: hero.data.emailLabel,
+			whatsappLabel: hero.data.whatsappLabel,
 		}}
 		work={{
-			eyebrow: 'الأعمال',
-			heading: 'أعمال مختارة',
+			eyebrow: workIntro.data.eyebrow,
+			heading: workIntro.data.heading,
 			projects: selectedWork.map((item) => ({ icon: item.icon, ...item.ar })),
 		}}
 		contact={{
-			eyebrow: 'تواصل',
-			heading: 'لنعمل معًا',
-			paragraph:
-				'أرحّب بالتواصل بشأن مشاريع التصنيع الإضافي أو التدريب التقني أو أي تحدٍّ إنتاجي تعمل عليه — يمكنك التواصل معي عبر البريد الإلكتروني أو واتساب.',
-			whatsappDisplay: '+968 91899818',
+			eyebrow: contact.data.eyebrow,
+			heading: contact.data.heading,
+			Content: ContactContent,
 		}}
-		footer={`© ${new Date().getFullYear()} محمد الجابري`}
+		footer={`© ${new Date().getFullYear()} ${site.name.ar}`}
 	/>
 </Layout>

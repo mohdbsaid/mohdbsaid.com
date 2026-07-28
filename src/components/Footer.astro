@@ -1,5 +1,6 @@
 ---
 import { primaryNav, legalNav } from '../data/nav';
+import { site } from '../data/site';
 import Container from './Container.astro';
 ---
 
@@ -7,10 +8,8 @@ import Container from './Container.astro';
 	<Container class="footer-container">
 		<div class="footer-grid">
 			<div class="footer-brand">
-				<p class="footer-name">محمد الجابري</p>
-				<p class="footer-tagline">
-					موقع شخصي لتوثيق مشاريعي، مقالاتي، وأعمالي في الطباعة ثلاثية الأبعاد.
-				</p>
+				<p class="footer-name">{site.name.ar}</p>
+				<p class="footer-tagline">{site.description.ar}</p>
 			</div>
 
 			<nav class="footer-links" aria-label="روابط سريعة">
@@ -41,7 +40,7 @@ import Container from './Container.astro';
 		</div>
 
 		<div class="footer-bottom">
-			<p>© {new Date().getFullYear()} محمد الجابري. جميع الحقوق محفوظة.</p>
+			<p>© {new Date().getFullYear()} {site.name.ar}. جميع الحقوق محفوظة.</p>
 			<a href="#top" class="back-to-top">العودة إلى الأعلى ↑</a>
 		</div>
 	</Container>

@@ -1,25 +1,63 @@
 ---
 // Arabic/RTL About page — same shared AboutPage.astro template as
 // src/pages/about.astro, own independently-written Arabic copy (not a
-// translation of the English) — see docs/DECISIONS.md ADR-023.
+// translation of the English) — see docs/DECISIONS.md ADR-023. Section
+// copy comes from src/content/pages/about/**/ar.mdx, per the content-first
+// architecture refactor (docs/DECISIONS.md ADR-024).
+import { render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import AboutPage from '../../components/AboutPage.astro';
+import { getPageSection } from '../../lib/content';
+import { site } from '../../data/site';
+import type { IconName } from '../../components/Icon.astro';
 
-const title = 'محمد الجابري — نبذة';
-const description =
-	'محمد الجابري أخصائي تصنيع إضافي بخبرة تتجاوز ست سنوات في الإنتاج والتدريب والهندسة داخل عُمان — المسيرة المهنية والخبرات التقنية والشهادات.';
-const siteUrl = Astro.site?.toString() ?? 'https://mohdbsaid.com';
-const email = 'mohdbsaid@outlook.com';
-const whatsapp = 'https://wa.me/96891899818';
+const locale = 'ar';
+
+const [
+	hero,
+	profile,
+	achievements,
+	experience,
+	industries,
+	skills,
+	training,
+	certifications,
+	philosophy,
+	timeline,
+	contact,
+] = await Promise.all([
+	getPageSection('about', 'hero', locale, 'hero'),
+	getPageSection('about', 'profile', locale, 'prose'),
+	getPageSection('about', 'achievements', locale, 'achievements'),
+	getPageSection('about', 'experience', locale, 'experience'),
+	getPageSection('about', 'industries', locale, 'industries'),
+	getPageSection('about', 'skills', locale, 'skills'),
+	getPageSection('about', 'training', locale, 'prose'),
+	getPageSection('about', 'certifications', locale, 'certifications'),
+	getPageSection('about', 'philosophy', locale, 'prose'),
+	getPageSection('about', 'timeline', locale, 'timeline'),
+	getPageSection('about', 'contact', locale, 'contact'),
+]);
+
+const [
+	{ Content: ProfileContent },
+	{ Content: TrainingContent },
+	{ Content: PhilosophyContent },
+	{ Content: ContactContent },
+] = await Promise.all([render(profile), render(training), render(philosophy), render(contact)]);
+
+const title = `${site.name.ar} — نبذة`;
+const description = `${site.name.ar} أخصائي تصنيع إضافي بخبرة تتجاوز ست سنوات في الإنتاج والتدريب والهندسة داخل عُمان — المسيرة المهنية والخبرات التقنية والشهادات.`;
+const siteUrl = Astro.site?.toString() ?? site.website;
 
 const jsonLd = [
 	{
 		'@type': 'Person',
-		name: 'محمد الجابري',
+		name: site.name.ar,
 		url: `${siteUrl}/ar/about`,
 		description,
-		jobTitle: 'أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد',
-		email: `mailto:${email}`,
+		jobTitle: site.title.ar,
+		email: `mailto:${site.email}`,
 		knowsAbout: [
 			'التصنيع الإضافي',
 			'الطباعة بتقنية FDM',
@@ -31,12 +69,12 @@ const jsonLd = [
 		],
 		alumniOf: {
 			'@type': 'CollegeOrUniversity',
-			name: 'كلية التقنية والعلوم التطبيقية (UTAS)، عُمان',
+			name: certifications.data.institution,
 		},
 	},
 	{
 		'@type': 'WebSite',
-		name: 'محمد الجابري',
+		name: site.name.ar,
 		url: `${siteUrl}/ar/about`,
 		inLanguage: 'ar',
 	},
@@ -62,10 +100,11 @@ const jsonLd = [
 
 	<AboutPage
 		dir="rtl"
-		email={email}
-		whatsapp={whatsapp}
+		email={site.email}
+		whatsapp={site.whatsapp.url}
+		whatsappDisplay={site.whatsapp.display}
 		nav={{
-			logo: { label: 'محمد الجابري', href: '/ar' },
+			logo: { label: site.name.ar, href: '/ar' },
 			links: [
 				{ label: 'الأعمال', href: '/ar#work' },
 				{ label: 'نبذة', href: '/ar/about' },
@@ -73,142 +112,47 @@ const jsonLd = [
 			],
 		}}
 		hero={{
-			name: 'محمد الجابري',
-			initials: 'م ج',
-			role: 'أخصائي التصنيع الإضافي والطباعة ثلاثية الأبعاد',
-			tagline:
-				'ست سنوات من العمل الإنتاجي بتقنية FDM والتدريب التقني والعمل الهندسي داخل عُمان — الخلفية الكاملة وراء الصفحة الرئيسية.',
-			emailLabel: 'البريد الإلكتروني',
-			whatsappLabel: 'واتساب',
+			name: site.name.ar,
+			initials: site.initials.ar,
+			role: site.title.ar,
+			tagline: hero.data.tagline,
+			emailLabel: hero.data.emailLabel,
+			whatsappLabel: hero.data.whatsappLabel,
 		}}
 		profile={{
-			eyebrow: 'نبذة',
-			heading: 'نبذة عني',
-			paragraphs: [
-				'بدأت مسيرتي في التصنيع الإضافي من دبلوم في هندسة الاتصالات والإلكترونيات، وهو ما لا يزال يشكّل طريقتي في التعامل مع أي طباعة فاشلة: أعتبرها إشارة تقودني إلى السبب الجذري، لا مشكلة أتجاوزها بحل سريع. على مدى ست سنوات، تحوّلت هذه العادة إلى تخصص قائم بذاته: الحفاظ على استقرار خطوط إنتاج الطباعة بتقنية FDM لعملاء في القطاعين الحكومي والصناعي وقطاع الطاقة داخل عُمان، من خلال المعايرة وتشخيص الأعطال من جذورها وتحسين مسارات العمل بما يصمد أمام ضغط الإنتاج الفعلي، لا فقط في تجربة طباعة محكومة.',
-				'إلى جانب العمل الإنتاجي، خصّصت جزءًا كبيرًا من مسيرتي للجانب التدريبي في هذا المجال، بتصميم وتقديم ورش عمل استفاد منها أكثر من 1,300 مشارك في جميع محافظات عُمان، والمساهمة في تطوير طابعة ثلاثية الأبعاد عُمانية الصنع وتسويقها. كلا المسارين ينبعان من الدافع نفسه: التصنيع الإضافي في عُمان لا يزال مجالًا فتيًا، وكلما ازداد عدد من يفهمه بشكل صحيح، تحسّن واقعه لكل العاملين فيه.',
-			],
+			eyebrow: profile.data.eyebrow,
+			heading: profile.data.heading,
+			Content: ProfileContent,
 		}}
-		achievements={{
-			eyebrow: 'الإنجازات',
-			heading: 'أبرز الإنجازات',
-			stats: [
-				{ value: 6, suffix: '+', label: 'سنوات الخبرة' },
-				{ value: 32, suffix: '+', label: 'مشاريع' },
-				{ value: 63, suffix: '', label: 'ورش عمل' },
-				{ value: 1340, suffix: '+', label: 'مشاركون' },
-			],
-		}}
-		experience={{
-			eyebrow: 'الخبرة',
-			heading: 'الخبرة المهنية',
-			roles: [
-				{
-					title: 'أخصائي طباعة ثلاثية الأبعاد',
-					company: 'Plamore Manufacture',
-					period: 'ديسمبر 2024 – يناير 2026',
-					description:
-						'تشغيل وصيانة منظومات طباعة FDM احترافية ضمن أعمال إنتاجية فعلية لعملاء حكوميين وصناعيين — إعداد المهام، واختيار المواد، وضبط إعدادات التقطيع البرمجي، ومتابعة الإنتاج، والفحص النهائي للجودة. نفّذت أعمال المعايرة والصيانة الوقائية لتحسين موثوقية المعدات، وشخّصت الأعطال الميكانيكية والكهربائية والتشغيلية عبر تحليل السبب الجذري بدلًا من التجربة العشوائية.',
-				},
-				{
-					title: 'تقني طباعة ثلاثية الأبعاد',
-					company: '3D Factory',
-					period: 'سبتمبر 2020 – نوفمبر 2024',
-					description:
-						'إعداد وتحسين مهام الطباعة باستخدام أدوات CAD والتقطيع البرمجي، بما يوازن بين الدقة الأبعادية وجودة السطح واستهلاك المواد ووقت الإنتاج. سلّمت نماذج أولية ونماذج تعليمية وقطعًا مخصصة لعملاء صناعيين ومؤسسيين في عُمان، إلى جانب تقديم الاستشارة حول المواد واتجاه الطباعة واستراتيجية الدعامات.',
-				},
-			],
-		}}
-		industries={{
-			eyebrow: 'الصناعات',
-			heading: 'الصناعات والعملاء',
-			groups: [
-				{
-					title: 'القطاع الحكومي والدفاعي',
-					items: ['وزارة الدفاع', 'الهيئة العامة للطيران المدني'],
-				},
-				{ title: 'قطاع الطاقة', items: ['PDO', 'OQGN', 'SLB'] },
-				{ title: 'التصنيع الصناعي', items: ['جيندال ستيل عُمان'] },
-				{ title: 'التطوير العمراني', items: ['مدينة السلطان هيثم'] },
-			],
-		}}
+		achievements={achievements.data}
+		experience={experience.data}
+		industries={industries.data}
 		expertise={{
-			eyebrow: 'الخبرات',
-			heading: 'الخبرات التقنية',
-			categories: [
-				{
-					icon: 'print',
-					title: 'التصنيع الإضافي',
-					skills:
-						'أنظمة FDM، إعداد الطباعة، التقطيع البرمجي، تحسين الإعدادات، اختيار المواد، إنتاج النماذج الأولية، فحص الجودة، المعالجة اللاحقة.',
-				},
-				{
-					icon: 'wrench',
-					title: 'الصيانة والهندسة',
-					skills:
-						'المعايرة، الصيانة الوقائية، التجميع الميكانيكي، صيانة الأنظمة الإلكترونية، استكشاف الأعطال، تحليل السبب الجذري، السلامة التشغيلية.',
-				},
-				{
-					icon: 'code',
-					title: 'البرمجيات والأدوات',
-					skills:
-						'Fusion 360، OrcaSlicer، أساسيات CAD، إعداد ملفات STL وثلاثية الأبعاد 3MF، إدارة مسار عمل الطباعة.',
-				},
-				{
-					icon: 'book',
-					title: 'التدريب والتوثيق',
-					skills:
-						'تصميم وتقديم ورش العمل، التدريب التقني، إعداد المواد التدريبية، إجراءات التشغيل القياسية، التوثيق الفني.',
-				},
-			],
-			note: 'كما أتابع تطورات الروبوتات وإنترنت الأشياء (IoT) كامتداد طبيعي لهذا المجال.',
+			eyebrow: skills.data.eyebrow,
+			heading: skills.data.heading,
+			categories: skills.data.categories.map((category) => ({
+				...category,
+				icon: category.icon as IconName,
+			})),
+			note: skills.data.note,
 		}}
 		training={{
-			eyebrow: 'التدريب',
-			heading: 'التدريب',
-			paragraph:
-				'إلى جانب عملي الوظيفي، صممت وقدّمت على مدى سنوات تدريبًا في أساسيات التصنيع الإضافي — تشغيل الطابعات، الصيانة، السلامة، التقطيع البرمجي، والتطبيقات العملية — لمعلمين وطلاب ومختصين في القطاع الصناعي في مختلف أنحاء عُمان. جزء من هذا العمل كان بالتعاون مع مدارس وجامعات تتبنى الطباعة ثلاثية الأبعاد ضمن التعلّم العملي في مجالات العلوم والتقنية، وجزء آخر مع محترفين يسعون لبناء هذه المهارة داخل فرقهم. كل جلسة تدريبية تُبنى وفق مستوى الحضور الفعلي، لا وفق منهج ثابت.',
+			eyebrow: training.data.eyebrow,
+			heading: training.data.heading,
+			Content: TrainingContent,
 		}}
-		education={{
-			eyebrow: 'التعليم',
-			heading: 'التعليم والشهادات',
-			degree: 'دبلوم في هندسة الاتصالات والإلكترونيات',
-			institution: 'كلية التقنية والعلوم التطبيقية (UTAS)، عُمان',
-			period: '2020',
-			coursework:
-				'مقررات ذات صلة: الإلكترونيات التناظرية، الإلكترونيات الرقمية، السلامة الكهربائية، الصيانة والإصلاح.',
-			certificationsLabel: 'الشهادات',
-			certifications: [
-				'مصمم هندسي محترف',
-				'التصنيع الإضافي: مواد الطباعة ثلاثية الأبعاد',
-				'الروبوتات والذكاء الاصطناعي',
-				'الصحة والسلامة والبيئة (HSE)',
-				'إنترنت الأشياء (IoT)',
-				'تدريب المدربين (ToT)',
-			],
-		}}
+		education={certifications.data}
 		philosophy={{
-			eyebrow: 'الفلسفة',
-			heading: 'فلسفتي الهندسية',
-			paragraph:
-				'معظم العمل الجيد في التصنيع الإضافي غير مرئي — قطعة تُطبع بشكل صحيح من المحاولة الأولى، وماكينة لا تتعطل في منتصف التشغيل، ومشارك في ورشة يغادر قادرًا على إصلاح طابعته بنفسه بدلًا من الاتصال بأحد غيره. أفضّل أن أقضي عشر دقائق إضافية في معرفة السبب الحقيقي وراء فشل طباعة ما، على أن أقضي ساعة في إعادتها آملًا أن تنجح هذه المرة. هذه العادة أبطأ في اللحظة نفسها، لكنها أسرع على مدى مسيرة كاملة.',
+			eyebrow: philosophy.data.eyebrow,
+			heading: philosophy.data.heading,
+			Content: PhilosophyContent,
 		}}
-		timeline={{
-			eyebrow: 'المسيرة',
-			heading: 'المسيرة الزمنية',
-			items: [
-				{ period: '2020', title: 'دبلوم في هندسة الاتصالات والإلكترونيات، UTAS' },
-				{ period: '2020 – 2024', title: 'تقني طباعة ثلاثية الأبعاد، 3D Factory' },
-				{ period: '2024 – 2026', title: 'أخصائي طباعة ثلاثية الأبعاد، Plamore Manufacture' },
-			],
-		}}
+		timeline={timeline.data}
 		contact={{
-			eyebrow: 'تواصل',
-			heading: 'لنعمل معًا',
-			paragraph:
-				'أرحّب بالتواصل بشأن مشاريع التصنيع الإضافي أو التدريب التقني أو أي تحدٍّ إنتاجي تعمل عليه — يمكنك الوصول إليّ عبر البريد الإلكتروني أو واتساب.',
-			whatsappDisplay: '+968 91899818',
+			eyebrow: contact.data.eyebrow,
+			heading: contact.data.heading,
+			Content: ContactContent,
 		}}
-		footer={`© ${new Date().getFullYear()} محمد الجابري`}
+		footer={`© ${new Date().getFullYear()} ${site.name.ar}`}
 	/>
 </Layout>

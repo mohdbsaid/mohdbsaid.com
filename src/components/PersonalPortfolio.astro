@@ -9,6 +9,7 @@
 // src/styles/glass-theme.css + src/lib/glassInteractions.ts — the same
 // pieces AboutPage.astro uses, so the two pages can't visually drift apart
 // from each other over time.
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import '../styles/glass-theme.css';
 import Icon, { type IconName } from './Icon.astro';
 import ProjectCard from './ProjectCard.astro';
@@ -41,13 +42,14 @@ interface Props {
 		whatsappLabel: string;
 	};
 	work: { eyebrow: string; heading: string; projects: ProjectContent[] };
-	contact: { eyebrow: string; heading: string; paragraph: string; whatsappDisplay: string };
+	contact: { eyebrow: string; heading: string; Content: AstroComponentFactory };
 	footer: string;
 	email: string;
 	whatsapp: string;
+	whatsappDisplay: string;
 }
 
-const { dir, nav, hero, work, contact, footer, email, whatsapp } = Astro.props;
+const { dir, nav, hero, work, contact, footer, email, whatsapp, whatsappDisplay } = Astro.props;
 const isRtl = dir === 'rtl';
 const fontFamily = isRtl
 	? "'Thmanyah Sans', system-ui, sans-serif"
@@ -103,10 +105,10 @@ const fontFamily = isRtl
 	<GlassContactCTA
 		eyebrow={contact.eyebrow}
 		heading={contact.heading}
-		paragraph={contact.paragraph}
+		Content={contact.Content}
 		email={email}
 		whatsapp={whatsapp}
-		whatsappDisplay={contact.whatsappDisplay}
+		whatsappDisplay={whatsappDisplay}
 	/>
 
 	<GlassFooter text={footer} />

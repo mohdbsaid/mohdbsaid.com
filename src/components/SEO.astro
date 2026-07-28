@@ -4,6 +4,8 @@
 // optional JSON-LD/robots noindex. Rendered once from Layout.astro, so every
 // page gets it automatically by using Layout — no page has to remember to
 // import this itself.
+import { site } from '../data/site';
+
 interface Props {
 	title: string;
 	description: string;
@@ -43,11 +45,11 @@ const jsonLdPayload = jsonLd
 <link rel="canonical" href={canonicalUrl} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 
-<link rel="alternate" type="application/rss+xml" title="محمد الجابري — RSS" href="/rss.xml" />
+<link rel="alternate" type="application/rss+xml" title={`${site.name.ar} — RSS`} href="/rss.xml" />
 
 <meta property="og:type" content="website" />
 <meta property="og:locale" content={locale} />
-<meta property="og:site_name" content="محمد الجابري" />
+<meta property="og:site_name" content={site.name.ar} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />

@@ -5,6 +5,7 @@ import { Image } from 'astro:assets';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import { formatArabicDate } from '../../utils/formatDate';
+import { site } from '../../data/site';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects', ({ data }) => !data.draft);
@@ -20,18 +21,8 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const {
-	title,
-	description,
-	category,
-	publishDate,
-	status,
-	technologies,
-	cover,
-	coverAlt,
-	githubUrl,
-	demoUrl,
-} = project.data;
+const { title, description, category, publishDate, status, technologies, cover, coverAlt, links } =
+	project.data;
 
 const { Content } = await render(project);
 
@@ -46,7 +37,7 @@ const jsonLd = {
 	datePublished: publishDate.toISOString(),
 	...(cover && { image: new URL(cover.src, Astro.site).toString() }),
 	...(technologies && technologies.length > 0 && { keywords: technologies.join('، ') }),
-	author: { '@type': 'Person', name: 'محمد الجابري' },
+	author: { '@type': 'Person', name: site.name.ar },
 };
 ---
 
@@ -102,14 +93,14 @@ const jsonLd = {
 	</dl>
 
 	{
-		(githubUrl || demoUrl) && (
+		(links?.github || links?.demo) && (
 			<div class="links-row">
-				{githubUrl && (
-					<Button href={githubUrl} variant="secondary">
+				{links.github && (
+					<Button href={links.github} variant="secondary">
 						الكود المصدري
 					</Button>
 				)}
-				{demoUrl && <Button href={demoUrl}>تجربة حية</Button>}
+				{links.demo && <Button href={links.demo}>تجربة حية</Button>}
 			</div>
 		)
 	}
