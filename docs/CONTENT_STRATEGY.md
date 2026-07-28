@@ -4,16 +4,16 @@
 
 `Header.astro`/`Footer.astro` list the intended information architecture. Collections now back four of these; the rest are still plain pages waiting to be built (see `ROADMAP.md`).
 
-| Route                | Purpose                               | Content model                                 |
-| -------------------- | ------------------------------------- | --------------------------------------------- |
-| `/`                  | Home                                  | Static page (exists)                          |
-| `/about`             | Bio                                   | Static page, no collection needed             |
-| `/projects`          | 3D-printing / other project write-ups | Content collection: `projects` (implemented)  |
-| `/blog`              | Articles                              | Content collection: `blog` (implemented)      |
-| `/resources`         | Curated links/downloads               | Content collection: `resources` (implemented) |
-| `/courses`           | Courses taught/taken                  | Content collection: `courses` (implemented)   |
-| `/contact`           | Contact form/details                  | Static page, no collection needed             |
-| `/privacy`, `/terms` | Legal                                 | Static pages, no collection needed            |
+| Route                 | Purpose                               | Content model                                 |
+| --------------------- | ------------------------------------- | --------------------------------------------- |
+| `/`, `/ar`            | Home — intentionally minimal          | Static page, shared `PersonalPortfolio.astro` |
+| `/about`, `/ar/about` | Full professional profile             | Static page, shared `AboutPage.astro`         |
+| `/projects`           | 3D-printing / other project write-ups | Content collection: `projects` (implemented)  |
+| `/blog`               | Articles                              | Content collection: `blog` (implemented)      |
+| `/resources`          | Curated links/downloads               | Content collection: `resources` (implemented) |
+| `/courses`            | Courses taught/taken                  | Content collection: `courses` (implemented)   |
+| `/contact`            | Contact form/details                  | Static page, no collection needed             |
+| `/privacy`, `/terms`  | Legal                                 | Static pages, no collection needed            |
 
 The four collections are defined and populated (`src/content.config.ts`, `src/content/{blog,projects,resources,courses}/`) and power the homepage's preview sections. The listing/detail pages themselves (`/blog/[slug]`, `/projects/[slug]`, etc.) are **not** built yet — that's `ROADMAP.md` Phase 3.
 
@@ -49,7 +49,7 @@ Each collection adds exactly one distinguishing field: `category` (projects), `f
 
 ## Language
 
-Arabic is the sitewide default (`lang="ar" dir="rtl"`, set in `Layout.astro`). The homepage is the one exception: `/` (English) and `/ar` (Arabic) share one template (`PersonalPortfolio.astro`), each page supplying its own copy as props — see `DECISIONS.md` ADR-019. This predates Astro's built-in [i18n routing](https://docs.astro.build/en/guides/internationalization/) being adopted; if/when the rest of the site gets an English pairing, reconcile onto one mechanism rather than running both (tracked in `ROADMAP.md` Phase 5).
+Arabic is the sitewide default (`lang="ar" dir="rtl"`, set in `Layout.astro`). The homepage and About are the exceptions: `/`+`/ar` and `/about`+`/ar/about` each share one template (`PersonalPortfolio.astro`, `AboutPage.astro`) driven by props/`dir` — see `DECISIONS.md` ADR-019/023. `<LanguageSwitcher>` derives both pages' Arabic URL from the current path itself (prefixing `/ar`), so this pattern extends to any future bilingual page pair with zero switcher/data changes. This predates Astro's built-in [i18n routing](https://docs.astro.build/en/guides/internationalization/) being adopted; if/when the rest of the site gets an English pairing, reconcile onto one mechanism rather than running both (tracked in `ROADMAP.md` Phase 5).
 
 The four content collections (`blog`/`projects`/`resources`/`courses`) are Arabic-only today — no bilingual content model exists for them yet. The planned Sanity migration (`ROADMAP.md` Phase 6, `DECISIONS.md` ADR-021) is expected to be what formalizes per-document English/Arabic content for collections, rather than building a bespoke bilingual scheme into the current markdown-based collections first.
 

@@ -1,0 +1,49 @@
+---
+// Shared sticky nav for the dark-glassmorphism pages (homepage, About —
+// see docs/DECISIONS.md ADR-023). Styles come from src/styles/glass-theme.css,
+// not a scoped <style> block here, since this component's markup is reused
+// across multiple top-level pages and needs to look identical everywhere.
+//
+// `links` mixes same-page anchors (`#work`, `#contact`) and real page routes
+// (`/about`) freely — an anchor works whether you're already on that page
+// (browser just scrolls) or coming from elsewhere prefixed with the page
+// path (e.g. `/#work` from the About page). Cross-page links get
+// `aria-current="page"` when they match the current route.
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface NavLink {
+	label: string;
+	href: string;
+}
+
+interface Props {
+	logo: NavLink;
+	links: NavLink[];
+}
+
+const { logo, links } = Astro.props;
+
+const normalize = (path: string) => (path.length > 1 ? path.replace(/\/+$/, '') : path);
+const currentPath = normalize(Astro.url.pathname);
+---
+
+<header class="nav" id="siteNav">
+	<div class="nav-inner">
+		<a class="nav-logo" href={logo.href}>{logo.label}</a>
+		<div class="nav-end">
+			<nav class="nav-links" aria-label="Primary">
+				{
+					links.map((link) => {
+						const isCurrentPage = !link.href.includes('#') && normalize(link.href) === currentPath;
+						return (
+							<a href={link.href} aria-current={isCurrentPage ? 'page' : undefined}>
+								{link.label}
+							</a>
+						);
+					})
+				}
+			</nav>
+			<LanguageSwitcher />
+		</div>
+	</div>
+</header>

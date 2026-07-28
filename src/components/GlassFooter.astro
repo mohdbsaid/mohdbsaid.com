@@ -1,0 +1,13 @@
+---
+// Shared minimal footer for the dark-glassmorphism pages — see GlassNav.astro
+// for why this is a real reused component rather than duplicated markup.
+interface Props {
+	text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<footer class="mini-footer">
+	<p>{text}</p>
+</footer>

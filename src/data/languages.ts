@@ -1,9 +1,9 @@
-// Site-wide language options for <LanguageSwitcher>. Adding a language later
-// (or moving English to /en/-prefixed routing to match) means editing this
-// list only — the component itself has no language-specific logic. See
-// docs/DECISIONS.md ADR-019: /ar is the real Arabic counterpart of the
-// homepage (same dark-glassmorphism design, shared components), not the
-// unrelated /about page this used to point at.
+// Site-wide language metadata for <LanguageSwitcher>. No page paths here —
+// the component derives each language's URL from the *current* page's own
+// path (English at the plain route, Arabic under an /ar prefix — see
+// docs/DECISIONS.md ADR-019/023), so a new bilingual page pair (About,
+// and later Projects/Services/Blog/Store) needs zero changes here or in
+// the component itself.
 export interface SiteLanguage {
 	/** BCP 47 language code, e.g. "en", "ar". */
 	code: string;
@@ -11,12 +11,10 @@ export interface SiteLanguage {
 	label: string;
 	/** Full language name, used for the accessible link description. */
 	name: string;
-	/** The best available page for this language today. */
-	href: string;
 	dir: 'ltr' | 'rtl';
 }
 
 export const siteLanguages: SiteLanguage[] = [
-	{ code: 'en', label: 'EN', name: 'English', href: '/', dir: 'ltr' },
-	{ code: 'ar', label: 'العربية', name: 'العربية', href: '/ar', dir: 'rtl' },
+	{ code: 'en', label: 'EN', name: 'English', dir: 'ltr' },
+	{ code: 'ar', label: 'العربية', name: 'العربية', dir: 'rtl' },
 ];

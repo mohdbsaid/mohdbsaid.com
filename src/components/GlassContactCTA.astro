@@ -1,0 +1,38 @@
+---
+// Shared closing contact CTA for the dark-glassmorphism pages (homepage,
+// About) — identical markup/behavior in both places, so it's a real
+// component instead of copy-pasted per page. Styles (.contact-card etc.)
+// live in src/styles/glass-theme.css — see GlassNav.astro for why.
+import Icon from './Icon.astro';
+
+interface Props {
+	eyebrow: string;
+	heading: string;
+	paragraph: string;
+	email: string;
+	whatsapp: string;
+	whatsappDisplay: string;
+}
+
+const { eyebrow, heading, paragraph, email, whatsapp, whatsappDisplay } = Astro.props;
+---
+
+<section id="contact" aria-labelledby="contact-heading" class="section reveal">
+	<div class="contact-card">
+		<div class="contact-copy">
+			<p class="eyebrow">{eyebrow}</p>
+			<h2 id="contact-heading">{heading}</h2>
+			<p>{paragraph}</p>
+		</div>
+		<div class="contact-links">
+			<a class="btn btn-primary" href={`mailto:${email}`}>
+				<Icon name="mail" />
+				{email}
+			</a>
+			<a class="btn btn-secondary" href={whatsapp} target="_blank" rel="noopener noreferrer">
+				<Icon name="message" />
+				<bdi dir="ltr">{whatsappDisplay}</bdi>
+			</a>
+		</div>
+	</div>
+</section>

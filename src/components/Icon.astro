@@ -3,7 +3,17 @@
 // Replaces a Font Awesome CDN dependency that shipped ~350KB to render six
 // glyphs — see docs/DECISIONS.md ADR-016. Add new names here as needed
 // rather than reaching for an icon library for a handful of marks.
-export type IconName = 'mail' | 'message' | 'print' | 'shield' | 'factory' | 'droplet' | 'arrow';
+export type IconName =
+	| 'mail'
+	| 'message'
+	| 'print'
+	| 'shield'
+	| 'factory'
+	| 'droplet'
+	| 'arrow'
+	| 'wrench'
+	| 'code'
+	| 'book';
 
 interface Props {
 	name: IconName;
@@ -57,6 +67,31 @@ const { name, class: className } = Astro.props;
 			<>
 				<line x1="7" y1="17" x2="17" y2="7" />
 				<polyline points="8 7 17 7 17 16" />
+			</>
+		)
+	}
+	{
+		name === 'wrench' && (
+			<>
+				<circle cx="6" cy="6" r="3" />
+				<circle cx="18" cy="18" r="3" />
+				<line x1="8.2" y1="8.2" x2="15.8" y2="15.8" />
+			</>
+		)
+	}
+	{
+		name === 'code' && (
+			<>
+				<polyline points="9 8 4 12 9 16" />
+				<polyline points="15 8 20 12 15 16" />
+			</>
+		)
+	}
+	{
+		name === 'book' && (
+			<>
+				<polygon points="4 6 12 4 12 20 4 18" />
+				<polygon points="20 6 12 4 12 20 20 18" />
 			</>
 		)
 	}
