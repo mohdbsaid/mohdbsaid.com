@@ -29,7 +29,7 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, category, tags, publishDate, cover, coverAlt } = post.data;
+const { title, description, category, tags, publishDate, updatedDate, cover, coverAlt } = post.data;
 
 const { Content, headings } = await render(post);
 
@@ -55,6 +55,7 @@ const articleJsonLd = {
 	url: canonicalUrl,
 	mainEntityOfPage: canonicalUrl,
 	datePublished: publishDate.toISOString(),
+	...(updatedDate && { dateModified: updatedDate.toISOString() }),
 	inLanguage: 'ar',
 	articleSection: category,
 	keywords: [category, ...tags].join('، '),
@@ -81,6 +82,9 @@ const breadcrumbJsonLd = {
 	image={cover?.src}
 	imageAlt={coverAlt}
 	jsonLd={[articleJsonLd, breadcrumbJsonLd]}
+	ogType="article"
+	publishedTime={publishDate.toISOString()}
+	modifiedTime={updatedDate?.toISOString()}
 >
 	<Breadcrumbs items={breadcrumbItems} />
 

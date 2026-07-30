@@ -18,6 +18,11 @@ interface Props {
 	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 	/** Override for a page whose content language differs from the site default. */
 	locale?: string;
+	/** "article" for blog posts (adds article:published_time/modified_time); every other page stays "website". */
+	ogType?: 'website' | 'article';
+	/** Only meaningful when ogType="article" — ISO date strings. */
+	publishedTime?: string;
+	modifiedTime?: string;
 }
 
 const {
@@ -28,6 +33,9 @@ const {
 	noindex = false,
 	jsonLd,
 	locale = 'ar_AR',
+	ogType = 'website',
+	publishedTime,
+	modifiedTime,
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
@@ -47,7 +55,7 @@ const jsonLdPayload = jsonLd
 
 <link rel="alternate" type="application/rss+xml" title={`${site.name.ar} — RSS`} href="/rss.xml" />
 
-<meta property="og:type" content="website" />
+<meta property="og:type" content={ogType} />
 <meta property="og:locale" content={locale} />
 <meta property="og:site_name" content={site.name.ar} />
 <meta property="og:title" content={title} />
@@ -55,6 +63,16 @@ const jsonLdPayload = jsonLd
 <meta property="og:url" content={canonicalUrl} />
 {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
 {ogImageUrl && imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+{
+	ogType === 'article' && publishedTime && (
+		<meta property="article:published_time" content={publishedTime} />
+	)
+}
+{
+	ogType === 'article' && modifiedTime && (
+		<meta property="article:modified_time" content={modifiedTime} />
+	)
+}
 
 <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
 <meta name="twitter:title" content={title} />

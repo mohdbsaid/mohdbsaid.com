@@ -56,7 +56,11 @@ const fontFamily = isRtl
 	: "'Inter', system-ui, sans-serif";
 ---
 
-<div class="page-bg" dir={dir} style={`--font-family: ${fontFamily};`}>
+<div
+	class="page-bg"
+	dir={dir}
+	style={`--font-family: ${fontFamily}; --hero-mark-size: clamp(6rem, 9vw, 7.5rem); --hero-mark-font-size: clamp(1.75rem, 2.5vw, 2.25rem);`}
+>
 	<GlassNav logo={nav.logo} links={nav.links} dir={dir} />
 
 	<section class="hero" aria-label="Introduction">
@@ -173,43 +177,7 @@ const fontFamily = isRtl
 		flex-wrap: wrap;
 	}
 
-	.hero-mark {
-		flex: 0 0 auto;
-		width: clamp(6rem, 9vw, 7.5rem);
-		height: clamp(6rem, 9vw, 7.5rem);
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: linear-gradient(135deg, var(--accent-strong), #4f46e5);
-		box-shadow:
-			0 25px 50px -15px rgba(124, 58, 237, 0.45),
-			0 0 0 1px rgba(255, 255, 255, 0.08) inset;
-		animation: float 7s ease-in-out infinite;
-	}
-
-	.hero-mark span {
-		font-size: clamp(1.75rem, 2.5vw, 2.25rem);
-		font-weight: 600;
-		letter-spacing: -0.02em;
-		color: var(--ink);
-	}
-
-	@keyframes float {
-		0%,
-		100% {
-			transform: translateY(0px);
-		}
-		50% {
-			transform: translateY(-10px);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.hero-mark {
-			animation: none;
-		}
-	}
+	/* .hero-mark is shared — see src/styles/glass-theme.css */
 
 	/* ---------- Project grid ---------- */
 	.project-grid {

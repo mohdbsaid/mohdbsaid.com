@@ -152,14 +152,14 @@ const jsonLd = {
 		)
 	}
 
-	<div class="contact-cta">
-		<h2>مهتم بهذه الخدمة؟</h2>
+	<section class="contact-cta" aria-labelledby="service-contact-heading">
+		<h2 id="service-contact-heading">مهتم بهذه الخدمة؟</h2>
 		<p>تواصل معي لمناقشة تفاصيل مشروعك.</p>
 		<div class="contact-actions">
 			<Button href={`mailto:${site.email}`}>راسلني عبر البريد الإلكتروني</Button>
 			<Button href={site.whatsapp.url} variant="secondary">تواصل عبر واتساب</Button>
 		</div>
-	</div>
+	</section>
 </PageLayout>
 
 <style>

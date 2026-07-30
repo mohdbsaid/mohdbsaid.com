@@ -1,38 +1,59 @@
 ---
 // Services listing — same content-collection/PageLayout/Card pattern as
 // /projects and /blog (light token system, not the Home/About glass theme —
-// see docs/DECISIONS.md ADR-025). The `services` collection has zero real
-// entries today (no service offerings confirmed by the project owner yet —
-// see content.config.ts's comment), so this renders an honest empty state
-// instead of fabricated offerings. Once a real entry exists, it appears
-// here automatically with no page changes needed.
+// see docs/DECISIONS.md ADR-025), including the same featured/all split
+// (see docs/DECISIONS.md ADR-026 — this was missing until this pass, the
+// one behavioral inconsistency between the four listing pages). The
+// `services` collection has zero real entries today (no service offerings
+// confirmed by the project owner yet — see content.config.ts's comment),
+// so this renders an honest empty state instead of fabricated offerings.
+// Once a real entry exists, it appears here automatically with no page
+// changes needed.
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
 import CardGrid from '../../components/CardGrid.astro';
 import Button from '../../components/Button.astro';
+import { getFeatured } from '../../lib/content';
 import { site } from '../../data/site';
+import type { CollectionEntry } from 'astro:content';
 
 const title = 'الخدمات';
 const description = 'خدمات هندسية احترافية في التصنيع الإضافي والطباعة ثلاثية الأبعاد.';
 
-const services = await getCollection('services', ({ data }) => !data.draft);
-services.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+const [featuredServices, allServices] = await Promise.all([
+	getFeatured('services'),
+	getCollection('services', ({ data }) => !data.draft),
+]);
+
+allServices.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+
+const toCardProps = (service: CollectionEntry<'services'>) => ({
+	kind: 'خدمة',
+	title: service.data.title,
+	description: service.data.description,
+	meta: service.data.category ?? service.data.technologies?.join('، ') ?? '',
+	href: `/services/${service.id}`,
+	image: service.data.cover,
+	imageAlt: service.data.coverAlt,
+});
 ---
 
 <PageLayout title={title} description={description} eyebrow="خدماتي">
 	{
-		services.length > 0 ? (
-			<CardGrid
-				items={services.map((service) => ({
-					kind: 'خدمة',
-					title: service.data.title,
-					description: service.data.description,
-					meta: service.data.technologies?.join('، ') ?? '',
-					href: `/services/${service.id}`,
-					image: service.data.cover,
-					imageAlt: service.data.coverAlt,
-				}))}
-			/>
+		allServices.length > 0 ? (
+			<Fragment>
+				{featuredServices.length > 0 && (
+					<div id="featured-services" aria-labelledby="featured-services-heading">
+						<SectionHeading id="featured-services-heading" title="خدمات مميزة" />
+						<CardGrid items={featuredServices.map(toCardProps)} />
+					</div>
+				)}
+				<div id="all-services" aria-labelledby="all-services-heading">
+					<SectionHeading id="all-services-heading" title="جميع الخدمات" />
+					<CardGrid items={allServices.map(toCardProps)} />
+				</div>
+			</Fragment>
 		) : (
 			<div class="empty-state">
 				<p>لا توجد خدمات منشورة حالياً.</p>
@@ -44,6 +65,10 @@ services.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueO
 </PageLayout>
 
 <style>
+	#featured-services {
+		margin-bottom: var(--space-6);
+	}
+
 	.empty-state {
 		max-width: 32rem;
 		padding: var(--space-4);

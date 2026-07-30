@@ -1,35 +1,54 @@
 ---
 // Store listing — architecture only, no ecommerce/checkout (per the
-// project owner's explicit brief — see docs/DECISIONS.md ADR-025). Same
+// project owner's explicit brief — see docs/DECISIONS.md ADR-025), with
+// the same featured/all split as Blog/Projects/Services (ADR-026). Same
 // pattern as /services: real page, zero real products today, honest empty
 // state instead of fabricated inventory.
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
 import CardGrid from '../../components/CardGrid.astro';
 import Button from '../../components/Button.astro';
+import { getFeatured } from '../../lib/content';
 import { site } from '../../data/site';
+import type { CollectionEntry } from 'astro:content';
 
 const title = 'المتجر';
 const description = 'منتجات مطبوعة ثلاثية الأبعاد وتصاميم جاهزة — قريباً.';
 
-const products = await getCollection('store', ({ data }) => !data.draft);
-products.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+const [featuredProducts, allProducts] = await Promise.all([
+	getFeatured('store'),
+	getCollection('store', ({ data }) => !data.draft),
+]);
+
+allProducts.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+
+const toCardProps = (product: CollectionEntry<'store'>) => ({
+	kind: 'منتج',
+	title: product.data.title,
+	description: product.data.description,
+	meta: product.data.category ?? product.data.status ?? '',
+	href: `/store/${product.id}`,
+	image: product.data.cover,
+	imageAlt: product.data.coverAlt,
+});
 ---
 
 <PageLayout title={title} description={description} eyebrow="المتجر">
 	{
-		products.length > 0 ? (
-			<CardGrid
-				items={products.map((product) => ({
-					kind: 'منتج',
-					title: product.data.title,
-					description: product.data.description,
-					meta: product.data.category ?? product.data.status ?? '',
-					href: `/store/${product.id}`,
-					image: product.data.cover,
-					imageAlt: product.data.coverAlt,
-				}))}
-			/>
+		allProducts.length > 0 ? (
+			<Fragment>
+				{featuredProducts.length > 0 && (
+					<div id="featured-products" aria-labelledby="featured-products-heading">
+						<SectionHeading id="featured-products-heading" title="منتجات مميزة" />
+						<CardGrid items={featuredProducts.map(toCardProps)} />
+					</div>
+				)}
+				<div id="all-products" aria-labelledby="all-products-heading">
+					<SectionHeading id="all-products-heading" title="جميع المنتجات" />
+					<CardGrid items={allProducts.map(toCardProps)} />
+				</div>
+			</Fragment>
 		) : (
 			<div class="empty-state">
 				<p>لا توجد منتجات منشورة حالياً.</p>
@@ -41,6 +60,10 @@ products.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueO
 </PageLayout>
 
 <style>
+	#featured-products {
+		margin-bottom: var(--space-6);
+	}
+
 	.empty-state {
 		max-width: 32rem;
 		padding: var(--space-4);

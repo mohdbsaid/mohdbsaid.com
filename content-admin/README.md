@@ -281,13 +281,15 @@ Then open the address it prints (usually `http://localhost:4321`) in a browser a
 
 ## How to deploy
 
-This site builds as static files and is hosted on Cloudflare Pages, connected directly to this GitHub repository. In practice:
+This site builds as static files, and the intended host is Cloudflare Pages connected directly to this GitHub repository. In practice, once that connection is set up:
 
 1. Save your content changes.
 2. Commit and push them to the `main` branch on GitHub (a developer can do this for you, or use GitHub's own web editor for simple text edits).
 3. Cloudflare Pages automatically rebuilds and publishes the site within a few minutes of the push — there's no separate manual deploy step.
 
-If you want to double check a change builds correctly before pushing, a developer can run `npm run build` locally — this is the same build Cloudflare Pages runs, so if it succeeds locally it will succeed on deploy.
+**Before relying on this:** confirm the production domain actually resolves and serves the site (open it in a browser, or ask a developer to check). As of this writing the production domain does not resolve — either the Cloudflare Pages project isn't connected yet, the custom domain isn't attached, or DNS isn't configured. This needs to be fixed in the domain registrar's and Cloudflare's own dashboards (outside this repository) before pushing to `main` actually publishes anything publicly.
+
+If you want to double check a change builds correctly before pushing, a developer can run `npm run build` locally — this is the same build Cloudflare Pages should run, so if it succeeds locally it will succeed on deploy once hosting is actually connected.
 
 ---
 

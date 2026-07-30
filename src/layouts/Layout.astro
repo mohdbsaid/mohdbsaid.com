@@ -30,6 +30,10 @@ interface Props {
 	mainDir?: 'ltr' | 'rtl';
 	/** Forwarded to <SEO>'s og:locale; only needed when it differs from the site default. */
 	locale?: string;
+	/** Forwarded to <SEO> — "article" for blog posts, see SEO.astro. */
+	ogType?: 'website' | 'article';
+	publishedTime?: string;
+	modifiedTime?: string;
 	/**
 	 * Override the whole page's <html lang dir> instead of just <main>'s —
 	 * for a page that is entirely in a different language than the rest of
@@ -59,6 +63,9 @@ const {
 	mainLang,
 	mainDir,
 	locale,
+	ogType,
+	publishedTime,
+	modifiedTime,
 	htmlLang = 'ar',
 	htmlDir = 'rtl',
 	hideChrome = false,
@@ -80,9 +87,13 @@ const {
 			noindex={noindex}
 			jsonLd={jsonLd}
 			locale={locale}
+			ogType={ogType}
+			publishedTime={publishedTime}
+			modifiedTime={modifiedTime}
 		/>
 
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" sizes="any" />
 
 		<slot name="head" />
 	</head>

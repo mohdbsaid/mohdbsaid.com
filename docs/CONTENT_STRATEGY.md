@@ -38,7 +38,7 @@ z.object({
 });
 ```
 
-Each collection adds the fields that make it distinct: `category`/`client`/`year`/`technologies`/`gallery`/`links` (projects), `format` (resources), `level` (courses), `icon`/`whoItsFor`/`process`/`deliverables`/`technologies`/`faq` (services), `category`/`gallery`/`specifications`/`status`/`price`/`currency`/`sku` (store). Blog needs no extra field beyond `category`/`tags` — its distinguishing display text is the formatted `publishDate` (see `src/utils/formatDate.ts`). `gallery` (projects/store) is `{ image, alt }[]`, not a bare image array — every gallery photo needs its own real alt text (see `docs/DECISIONS.md` ADR-025).
+Each collection adds the fields that make it distinct: `category`/`client`/`year`/`technologies`/`gallery`/`links` (projects), `format` (resources), `level` (courses), `category`/`icon`/`whoItsFor`/`process`/`deliverables`/`technologies`/`faq` (services), `category`/`gallery`/`specifications`/`status`/`price`/`currency`/`sku` (store). Blog needs no extra field beyond `category`/`tags` — its distinguishing display text is the formatted `publishDate` (see `src/utils/formatDate.ts`). `gallery` (projects/store) is `{ image, alt }[]`, not a bare image array — every gallery photo needs its own real alt text (see `docs/DECISIONS.md` ADR-025).
 
 The `pages` collection (Home/About section copy) does **not** share this base schema — it's a different content shape entirely (structured page sections, not dated posts), so it gets its own `type`-discriminated schema in `content.config.ts`. See `DECISIONS.md` ADR-024.
 

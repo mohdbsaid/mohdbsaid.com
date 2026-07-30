@@ -109,6 +109,11 @@ const services = defineCollection({
 		requireAltWithCover(
 			baseSchema(ctx).extend({
 				icon: z.string().optional(),
+				// Distinguishing classification field, same role as
+				// blog.category/projects.category/resources.format/courses.level/
+				// store.category — kept optional since a single service offering
+				// may not need one (see docs/DECISIONS.md ADR-026).
+				category: z.string().optional(),
 				// Everything below is optional, same "don't fabricate" rule as
 				// projects' extra fields — only set what's actually true of the
 				// service being described.

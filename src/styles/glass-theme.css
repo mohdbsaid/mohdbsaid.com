@@ -39,6 +39,21 @@
 	--radius-md: 1.25rem;
 	--content-width: 74rem;
 	--ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+
+	/* Named tint levels of --accent, previously three raw rgba() tuples
+	   hardcoded independently in AboutPage.astro (industry/cert pills,
+	   expertise icon background, timeline dot glow) — same color, three
+	   untracked magic numbers. Named here so future uses reference one of
+	   three intentional levels instead of a fourth ad hoc opacity. */
+	--accent-tint-weak: rgba(167, 139, 250, 0.1);
+	--accent-tint: rgba(167, 139, 250, 0.12);
+	--accent-tint-glow: rgba(167, 139, 250, 0.16);
+
+	/* Hero avatar size — each page sets its own value on `.page-bg` inline
+	   (see PersonalPortfolio.astro/AboutPage.astro); these are fallbacks
+	   only, matching About's size since it's the more common case. */
+	--hero-mark-size: clamp(5.5rem, 8vw, 7rem);
+	--hero-mark-font-size: clamp(1.5rem, 2vw, 2rem);
 }
 
 /* Reset scoped to .page-bg's own subtree only — global.css's sitewide
@@ -155,6 +170,49 @@
 	transform: translateY(-2px);
 	background: rgba(255, 255, 255, 0.11);
 	border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* ---------- Hero mark (circular initials avatar) ---------- */
+/* Shared by the homepage and About hero — previously two near-identical
+   copies (~30 lines each) in PersonalPortfolio.astro/AboutPage.astro,
+   differing only in size. Each page sets --hero-mark-size/-font-size
+   inline on its own .page-bg root — see docs/DECISIONS.md ADR-026. */
+.hero-mark {
+	flex: 0 0 auto;
+	width: var(--hero-mark-size);
+	height: var(--hero-mark-size);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(135deg, var(--accent-strong), #4f46e5);
+	box-shadow:
+		0 25px 50px -15px rgba(124, 58, 237, 0.45),
+		0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+	animation: float 7s ease-in-out infinite;
+}
+
+.hero-mark span {
+	font-size: var(--hero-mark-font-size);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	color: var(--ink);
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-10px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero-mark {
+		animation: none;
+	}
 }
 
 /* ---------- Nav ---------- */

@@ -1,10 +1,10 @@
 ---
-// Standard layout for future content pages (/about, /blog/[slug], /projects,
-// etc.) — Layout's shell plus a consistent title/eyebrow/description
-// heading. Not used by the homepage, which has its own bespoke <Hero>
-// instead of a generic page heading. No page consumes this yet (only the
-// homepage exists so far); it's scaffolding so the next page built gets the
-// same heading treatment for free instead of re-implementing it.
+// Standard layout for content pages — Layout's shell plus a consistent
+// title/eyebrow/description heading. Consumed by every page except
+// Home/About (which use the glass system's own bespoke <Hero> instead of
+// a generic page heading): /projects (+ [slug]), /blog (+ [slug],
+// /category/[category], /tags/[tag]), /services (+ [slug]), /store
+// (+ [slug]).
 import Layout from './Layout.astro';
 import Section from '../components/Section.astro';
 import SectionHeading from '../components/SectionHeading.astro';
@@ -17,9 +17,24 @@ interface Props {
 	imageAlt?: string;
 	noindex?: boolean;
 	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+	/** "article" for blog posts — see SEO.astro. */
+	ogType?: 'website' | 'article';
+	publishedTime?: string;
+	modifiedTime?: string;
 }
 
-const { title, description, eyebrow, image, imageAlt, noindex, jsonLd } = Astro.props;
+const {
+	title,
+	description,
+	eyebrow,
+	image,
+	imageAlt,
+	noindex,
+	jsonLd,
+	ogType,
+	publishedTime,
+	modifiedTime,
+} = Astro.props;
 ---
 
 <Layout
@@ -29,6 +44,9 @@ const { title, description, eyebrow, image, imageAlt, noindex, jsonLd } = Astro.
 	imageAlt={imageAlt}
 	noindex={noindex}
 	jsonLd={jsonLd}
+	ogType={ogType}
+	publishedTime={publishedTime}
+	modifiedTime={modifiedTime}
 	fullBleed
 >
 	<Section id="page-heading">

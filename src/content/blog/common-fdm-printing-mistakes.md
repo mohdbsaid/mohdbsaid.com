@@ -5,6 +5,12 @@ category: 'استكشاف الأخطاء'
 tags: ['FDM', 'استكشاف الأخطاء', 'جودة الطباعة']
 publishDate: 2026-04-03
 featured: true
+# Hidden pending completion — the second section ("كيف أشخّص كل مشكلة")
+# promises the diagnostic steps but the article ends before delivering
+# them. Found during the production-readiness content review
+# (docs/DECISIONS.md ADR-026). Set draft: false once the diagnostic
+# section is actually written.
+draft: true
 ---
 
 ## الأسباب الثلاثة المتكررة

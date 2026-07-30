@@ -35,16 +35,18 @@ const Tag = href ? 'a' : 'button';
 			transform 0.2s ease;
 	}
 
-	.btn:hover {
+	.btn:hover,
+	.btn:focus-visible {
 		transform: translateY(-1px);
 	}
 
 	.btn-primary {
 		background: var(--color-primary);
-		color: #fff;
+		color: var(--color-on-primary);
 	}
 
-	.btn-primary:hover {
+	.btn-primary:hover,
+	.btn-primary:focus-visible {
 		background: color-mix(in srgb, var(--color-primary) 88%, black);
 	}
 
@@ -54,7 +56,8 @@ const Tag = href ? 'a' : 'button';
 		color: var(--color-text);
 	}
 
-	.btn-secondary:hover {
+	.btn-secondary:hover,
+	.btn-secondary:focus-visible {
 		border-color: var(--color-primary);
 		color: var(--color-primary);
 	}
