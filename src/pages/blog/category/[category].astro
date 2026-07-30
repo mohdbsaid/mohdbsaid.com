@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import PageLayout from '../../../layouts/PageLayout.astro';
-import Card from '../../../components/Card.astro';
+import CardGrid from '../../../components/CardGrid.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import { formatArabicDate } from '../../../utils/formatDate';
 import type { BreadcrumbItem } from '../../../types';
@@ -39,33 +39,15 @@ const breadcrumbItems: BreadcrumbItem[] = [
 <PageLayout title={title} description={description} eyebrow="المدونة">
 	<Breadcrumbs items={breadcrumbItems} />
 
-	<div class="card-grid">
-		{
-			posts.map((post) => (
-				<Card
-					kind="مقالة"
-					title={post.data.title}
-					description={post.data.description}
-					meta={formatArabicDate(post.data.publishDate)}
-					href={`/blog/${post.id}`}
-					image={post.data.cover}
-					imageAlt={post.data.coverAlt}
-				/>
-			))
-		}
-	</div>
+	<CardGrid
+		items={posts.map((post) => ({
+			kind: 'مقالة',
+			title: post.data.title,
+			description: post.data.description,
+			meta: formatArabicDate(post.data.publishDate),
+			href: `/blog/${post.id}`,
+			image: post.data.cover,
+			imageAlt: post.data.coverAlt,
+		}))}
+	/>
 </PageLayout>
-
-<style>
-	.card-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--space-3);
-	}
-
-	@media (max-width: 800px) {
-		.card-grid {
-			grid-template-columns: 1fr;
-		}
-	}
-</style>

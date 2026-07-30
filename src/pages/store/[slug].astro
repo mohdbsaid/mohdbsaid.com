@@ -1,0 +1,310 @@
+---
+// Product detail — architecture only, no checkout (docs/DECISIONS.md
+// ADR-025). Same light-token PageLayout/Card system as /projects, /blog,
+// /services. Zero real entries today; template verified with a temporary
+// preview entry that was removed before committing.
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+	const products = await getCollection('store', ({ data }) => !data.draft);
+
+	return products.map((product) => ({
+		params: { slug: product.id },
+		props: { product },
+	}));
+}
+
+interface Props {
+	product: CollectionEntry<'store'>;
+}
+
+const { product } = Astro.props;
+const {
+	title,
+	description,
+	category,
+	status,
+	specifications,
+	gallery,
+	price,
+	currency,
+	sku,
+	cover,
+	coverAlt,
+} = product.data;
+
+const { Content } = await render(product);
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+
+const jsonLd = {
+	'@type': 'Product',
+	name: title,
+	description,
+	url: canonicalUrl,
+	...(sku && { sku }),
+	...(category && { category }),
+	...(cover && { image: new URL(cover.src, Astro.site).toString() }),
+	// No `availability` — `status` is free-text display copy (see
+	// content.config.ts), not a schema.org availability enum, so it isn't
+	// mapped here rather than guessed at.
+	...(price && {
+		offers: {
+			'@type': 'Offer',
+			price,
+			priceCurrency: currency ?? 'OMR',
+		},
+	}),
+};
+---
+
+<PageLayout
+	title={title}
+	description={description}
+	eyebrow={category ?? 'منتج'}
+	image={cover?.src}
+	imageAlt={coverAlt}
+	jsonLd={jsonLd}
+>
+	<a class="back-link" href="/store">→ العودة إلى المتجر</a>
+
+	{
+		cover && (
+			<Image
+				class="cover"
+				src={cover}
+				alt={coverAlt ?? ''}
+				widths={[600, 1100]}
+				sizes="(max-width: 800px) 100vw, 1100px"
+				width={1100}
+				height={619}
+			/>
+		)
+	}
+
+	<dl class="meta-list">
+		{
+			category && (
+				<div>
+					<dt>الفئة</dt>
+					<dd>{category}</dd>
+				</div>
+			)
+		}
+		{
+			status && (
+				<div>
+					<dt>الحالة</dt>
+					<dd>{status}</dd>
+				</div>
+			)
+		}
+		{
+			price && (
+				<div>
+					<dt>السعر</dt>
+					<dd>
+						{price} {currency ?? 'OMR'}
+					</dd>
+				</div>
+			)
+		}
+	</dl>
+
+	<div class="product-body">
+		<Content />
+	</div>
+
+	{
+		specifications && specifications.length > 0 && (
+			<section aria-labelledby="specs-heading" class="specs-section">
+				<h2 id="specs-heading">المواصفات</h2>
+				<dl class="specs-list">
+					{specifications.map((spec) => (
+						<div>
+							<dt>{spec.label}</dt>
+							<dd>{spec.value}</dd>
+						</div>
+					))}
+				</dl>
+			</section>
+		)
+	}
+
+	{
+		gallery && gallery.length > 0 && (
+			<section aria-labelledby="gallery-heading" class="gallery-section">
+				<h2 id="gallery-heading">معرض الصور</h2>
+				<div class="gallery-grid">
+					{gallery.map((item, index) => (
+						<Image
+							src={item.image}
+							alt={item.alt}
+							widths={[400, 700]}
+							sizes="(max-width: 800px) 50vw, 350px"
+							width={700}
+							height={525}
+							loading={index < 2 ? 'eager' : 'lazy'}
+						/>
+					))}
+				</div>
+			</section>
+		)
+	}
+
+	<div class="contact-cta">
+		<h2>مهتم بهذا المنتج؟</h2>
+		<p>لا يوجد شراء مباشر حالياً — تواصل معي للاستفسار أو الطلب.</p>
+		<div class="contact-actions">
+			<Button href={`mailto:${site.email}`}>راسلني عبر البريد الإلكتروني</Button>
+			<Button href={site.whatsapp.url} variant="secondary">تواصل عبر واتساب</Button>
+		</div>
+	</div>
+</PageLayout>
+
+<style>
+	.back-link {
+		display: inline-block;
+		margin-bottom: var(--space-3);
+		color: var(--color-primary);
+		font-weight: 700;
+	}
+
+	.cover {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius-medium);
+		margin-bottom: var(--space-4);
+	}
+
+	.meta-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-4);
+		margin: 0 0 var(--space-4);
+		padding: var(--space-3);
+		background: var(--color-surface);
+		border-radius: var(--radius-medium);
+	}
+
+	.meta-list dt {
+		margin: 0 0 0.25rem;
+		color: var(--color-muted);
+		font-size: 0.8rem;
+		font-weight: 700;
+	}
+
+	.meta-list dd {
+		margin-inline-start: 0;
+		font-size: 0.95rem;
+	}
+
+	.product-body {
+		max-width: 46rem;
+	}
+
+	.product-body :global(p) {
+		margin: 0 0 var(--space-2);
+		color: var(--color-text);
+		line-height: 1.8;
+	}
+
+	.specs-section,
+	.gallery-section {
+		max-width: 46rem;
+		margin-top: var(--space-5);
+	}
+
+	.specs-section h2,
+	.gallery-section h2 {
+		font-size: 1.3rem;
+		line-height: 1.4;
+		margin: 0 0 var(--space-2);
+	}
+
+	.specs-list {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-2) var(--space-4);
+	}
+
+	.specs-list > div {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--space-2);
+		padding-block: var(--space-1);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.specs-list dt {
+		color: var(--color-muted);
+	}
+
+	.specs-list dd {
+		margin-inline-start: 0;
+		font-weight: 700;
+	}
+
+	@media (max-width: 600px) {
+		.specs-list {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.gallery-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-2);
+	}
+
+	.gallery-grid img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-small);
+	}
+
+	@media (max-width: 800px) {
+		.gallery-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.gallery-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.contact-cta {
+		max-width: 46rem;
+		margin-top: var(--space-6);
+		padding: var(--space-4);
+		background: var(--color-surface);
+		border-radius: var(--radius-medium);
+	}
+
+	.contact-cta h2 {
+		margin: 0 0 var(--space-1);
+		font-size: 1.3rem;
+	}
+
+	.contact-cta p {
+		margin: 0 0 var(--space-3);
+		color: var(--color-muted);
+	}
+
+	.contact-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+</style>

@@ -1,0 +1,32 @@
+---
+// Shared 3-column (→1 col ≤800px) grid of <Card>, extracted from
+// blog/projects/services/store's listing pages — they all repeated the same
+// grid markup/CSS with only the mapped data differing. See
+// docs/DECISIONS.md ADR-025.
+import Card from './Card.astro';
+import type { CardProps } from '../types';
+
+interface Props {
+	items: CardProps[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="card-grid">
+	{items.map((item) => <Card {...item} />)}
+</div>
+
+<style>
+	.card-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-3);
+	}
+
+	@media (max-width: 800px) {
+		.card-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

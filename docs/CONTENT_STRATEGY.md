@@ -14,10 +14,10 @@
 | `/courses`            | Courses taught/taken                  | Content collection: `courses` (implemented)                                 |
 | `/contact`            | Contact form/details                  | Static page, no collection needed                                           |
 | `/privacy`, `/terms`  | Legal                                 | Static pages, no collection needed                                          |
-| _(none yet)_          | Services                              | Content collection: `services` (schema only, zero entries — ADR-024)        |
-| _(none yet)_          | Store                                 | Content collection: `store` (schema only, zero entries — ADR-024)           |
+| `/services`           | Professional service offerings        | Content collection: `services` (page live, zero real entries — ADR-025)     |
+| `/store`              | Products (no checkout)                | Content collection: `store` (page live, zero real entries — ADR-025)        |
 
-The four listing collections above `/contact` are defined and populated (`src/content.config.ts`, `src/content/{blog,projects,resources,courses}/`) and power the homepage's preview sections. The listing/detail pages themselves (`/blog/[slug]`, `/projects/[slug]`, etc.) are implemented for `blog`/`projects`; `resources`/`courses` still need theirs — that's `ROADMAP.md` Phase 3. `services`/`store` have no page/nav entry yet at all — see ADR-024.
+The four listing collections above `/contact` are defined and populated (`src/content.config.ts`, `src/content/{blog,projects,resources,courses}/`) and power the homepage's preview sections. The listing/detail pages themselves (`/blog/[slug]`, `/projects/[slug]`, `/services/[slug]`, `/store/[slug]`, etc.) are implemented for `blog`/`projects`/`services`/`store`; `resources`/`courses` still need theirs — that's `ROADMAP.md` Phase 3. `services`/`store` render an honest empty state until a real entry is added — see ADR-025.
 
 Since ADR-024, Home and About no longer hold their section copy as hardcoded props inside `src/pages/*.astro` — it's fetched from the `pages` content collection (`src/content/pages/<page>/<section>/<locale>.mdx`) via `src/lib/content.ts`'s `getPageSection()`. See `content-admin/README.md` for how to edit this without touching any `.astro` file.
 
@@ -38,7 +38,7 @@ z.object({
 });
 ```
 
-Each collection adds the fields that make it distinct: `category`/`client`/`year`/`technologies`/`gallery`/`links` (projects), `format` (resources), `level` (courses), `icon` (services), `price`/`currency`/`sku`/`inStock` (store). Blog needs no extra field beyond `category`/`tags` — its distinguishing display text is the formatted `publishDate` (see `src/utils/formatDate.ts`).
+Each collection adds the fields that make it distinct: `category`/`client`/`year`/`technologies`/`gallery`/`links` (projects), `format` (resources), `level` (courses), `icon`/`whoItsFor`/`process`/`deliverables`/`technologies`/`faq` (services), `category`/`gallery`/`specifications`/`status`/`price`/`currency`/`sku` (store). Blog needs no extra field beyond `category`/`tags` — its distinguishing display text is the formatted `publishDate` (see `src/utils/formatDate.ts`). `gallery` (projects/store) is `{ image, alt }[]`, not a bare image array — every gallery photo needs its own real alt text (see `docs/DECISIONS.md` ADR-025).
 
 The `pages` collection (Home/About section copy) does **not** share this base schema — it's a different content shape entirely (structured page sections, not dated posts), so it gets its own `type`-discriminated schema in `content.config.ts`. See `DECISIONS.md` ADR-024.
 
@@ -46,7 +46,7 @@ The `pages` collection (Home/About section copy) does **not** share this base sc
 
 ## Querying
 
-`src/lib/content.ts`'s `getFeatured(collection, limit = 3)` is the one query every homepage section uses: non-draft, `featured: true`, sorted newest-first, capped at `limit`. Don't hand-roll a second version of this filter/sort in a page — extend the helper if a new query shape is needed.
+`src/lib/content.ts`'s `getFeatured(collection, limit = 3)` is the one query every homepage section uses: non-draft, `featured: true`, sorted newest-first, capped at `limit`. `getRelatedProjects(current, limit = 3)` (category match) and `getRelatedPosts(current, limit = 3)` (tag + category match) power each detail page's "related" section the same way. Don't hand-roll a second version of any of these in a page — extend the helper if a new query shape is needed.
 
 ## How to add an entry
 

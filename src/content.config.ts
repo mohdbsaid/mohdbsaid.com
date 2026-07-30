@@ -43,7 +43,7 @@ function requireAltWithCover<T extends WithCover>(schema: T) {
 }
 
 const blog = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
 	schema: (ctx) =>
 		requireAltWithCover(
 			baseSchema(ctx).extend({
@@ -54,7 +54,7 @@ const blog = defineCollection({
 });
 
 const projects = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
 	schema: (ctx) =>
 		requireAltWithCover(
 			baseSchema(ctx).extend({
@@ -66,7 +66,18 @@ const projects = defineCollection({
 				client: z.string().optional(),
 				year: z.coerce.number().optional(),
 				technologies: z.array(z.string()).optional(),
-				gallery: z.array(ctx.image()).optional(),
+				// Each image pairs with required alt text (unlike `cover`, gallery
+				// images have no separate `.refine()` to enforce this, so it's
+				// required directly in the shape) — every gallery image needs a
+				// real accessible description, not decoration.
+				gallery: z
+					.array(
+						z.object({
+							image: ctx.image(),
+							alt: z.string(),
+						}),
+					)
+					.optional(),
 				links: z
 					.object({
 						github: z.url().optional(),
@@ -78,39 +89,85 @@ const projects = defineCollection({
 });
 
 const resources = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/resources' }),
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/resources' }),
 	schema: (ctx) => requireAltWithCover(baseSchema(ctx).extend({ format: z.string() })),
 });
 
 const courses = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/courses' }),
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/courses' }),
 	schema: (ctx) => requireAltWithCover(baseSchema(ctx).extend({ level: z.string() })),
 });
 
-// Not yet consumed by any page/nav entry — schema defined ahead of content,
-// same precedent as ADR-001 (blog/projects/courses/resources started this
-// way too). Add a real /services page + nav entry only once real service
-// entries exist, per CLAUDE.md's "don't create a page as a side effect" rule.
+// /services and /services/[slug] pages exist (docs/DECISIONS.md ADR-025) but
+// this collection has zero real entries — no actual service offerings have
+// been confirmed by the project owner yet, so none are fabricated here. The
+// pages render an honest "nothing published yet" empty state until a real
+// entry is added; see content-admin/README.md.
 const services = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/services' }),
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/services' }),
 	schema: (ctx) =>
 		requireAltWithCover(
 			baseSchema(ctx).extend({
 				icon: z.string().optional(),
+				// Everything below is optional, same "don't fabricate" rule as
+				// projects' extra fields — only set what's actually true of the
+				// service being described.
+				whoItsFor: z.array(z.string()).optional(),
+				process: z
+					.array(
+						z.object({
+							title: z.string(),
+							description: z.string(),
+						}),
+					)
+					.optional(),
+				deliverables: z.array(z.string()).optional(),
+				technologies: z.array(z.string()).optional(),
+				faq: z
+					.array(
+						z.object({
+							question: z.string(),
+							answer: z.string(),
+						}),
+					)
+					.optional(),
 			}),
 		),
 });
 
-// Same status as `services` above: schema only, zero entries, no page yet.
+// Same status as `services` above: real pages, zero real products — no
+// ecommerce/checkout integration (not asked for; store architecture only).
 const store = defineCollection({
-	loader: glob({ pattern: '**/*.md', base: './src/content/store' }),
+	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/store' }),
 	schema: (ctx) =>
 		requireAltWithCover(
 			baseSchema(ctx).extend({
+				category: z.string().optional(),
+				// Same shape as `projects.gallery` — required alt text per image.
+				gallery: z
+					.array(
+						z.object({
+							image: ctx.image(),
+							alt: z.string(),
+						}),
+					)
+					.optional(),
+				specifications: z
+					.array(
+						z.object({
+							label: z.string(),
+							value: z.string(),
+						}),
+					)
+					.optional(),
+				// Free-text on purpose (matches `projects.status`'s convention) —
+				// e.g. "In Stock" / "Coming Soon" / "Sold Out", not a fixed enum,
+				// since this is display copy, not an inventory system (no checkout
+				// exists — see this file's `store` comment above).
+				status: z.string().optional(),
 				price: z.number().optional(),
 				currency: z.string().optional(),
 				sku: z.string().optional(),
-				inStock: z.boolean().default(true),
 			}),
 		),
 });

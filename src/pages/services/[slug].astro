@@ -1,0 +1,268 @@
+---
+// Service detail — professional-offering case study: Overview, Who it's for,
+// Process, Deliverables, Technologies, FAQ, Contact CTA (docs/DECISIONS.md
+// ADR-025). Same light-token PageLayout/Card system as /projects and /blog.
+// Zero real entries exist today — this template is built and verified, but
+// won't generate any pages until a real service is added (getStaticPaths
+// returns nothing for an empty collection, which is a normal, valid build).
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+	const services = await getCollection('services', ({ data }) => !data.draft);
+
+	return services.map((service) => ({
+		params: { slug: service.id },
+		props: { service },
+	}));
+}
+
+interface Props {
+	service: CollectionEntry<'services'>;
+}
+
+const { service } = Astro.props;
+const {
+	title,
+	description,
+	whoItsFor,
+	process: processSteps,
+	deliverables,
+	technologies,
+	faq,
+	cover,
+	coverAlt,
+} = service.data;
+
+const { Content } = await render(service);
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+
+const jsonLd = {
+	'@type': 'Service',
+	name: title,
+	description,
+	url: canonicalUrl,
+	provider: { '@type': 'Person', name: site.name.ar },
+	...(faq &&
+		faq.length > 0 && {
+			mainEntity: faq.map((item) => ({
+				'@type': 'Question',
+				name: item.question,
+				acceptedAnswer: { '@type': 'Answer', text: item.answer },
+			})),
+		}),
+};
+---
+
+<PageLayout
+	title={title}
+	description={description}
+	eyebrow="خدمة"
+	image={cover?.src}
+	imageAlt={coverAlt}
+	jsonLd={jsonLd}
+>
+	<a class="back-link" href="/services">→ العودة إلى الخدمات</a>
+
+	{
+		cover && (
+			<Image
+				class="cover"
+				src={cover}
+				alt={coverAlt ?? ''}
+				widths={[600, 1100]}
+				sizes="(max-width: 800px) 100vw, 1100px"
+				width={1100}
+				height={619}
+			/>
+		)
+	}
+
+	<div class="service-body">
+		<Content />
+	</div>
+
+	{
+		whoItsFor && whoItsFor.length > 0 && (
+			<section aria-labelledby="who-heading" class="service-section">
+				<h2 id="who-heading">لمن هذه الخدمة</h2>
+				<ul>
+					{whoItsFor.map((item) => (
+						<li>{item}</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	{
+		processSteps && processSteps.length > 0 && (
+			<section aria-labelledby="process-heading" class="service-section">
+				<h2 id="process-heading">آلية العمل</h2>
+				<ol class="process-list">
+					{processSteps.map((step) => (
+						<li>
+							<strong>{step.title}</strong>
+							<p>{step.description}</p>
+						</li>
+					))}
+				</ol>
+			</section>
+		)
+	}
+
+	{
+		deliverables && deliverables.length > 0 && (
+			<section aria-labelledby="deliverables-heading" class="service-section">
+				<h2 id="deliverables-heading">المخرجات</h2>
+				<ul>
+					{deliverables.map((item) => (
+						<li>{item}</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
+
+	{
+		technologies && technologies.length > 0 && (
+			<section aria-labelledby="technologies-heading" class="service-section">
+				<h2 id="technologies-heading">الأدوات والتقنيات</h2>
+				<p>{technologies.join('، ')}</p>
+			</section>
+		)
+	}
+
+	{
+		faq && faq.length > 0 && (
+			<section aria-labelledby="faq-heading" class="service-section">
+				<h2 id="faq-heading">الأسئلة الشائعة</h2>
+				{faq.map((item) => (
+					<details class="faq-item">
+						<summary>{item.question}</summary>
+						<p>{item.answer}</p>
+					</details>
+				))}
+			</section>
+		)
+	}
+
+	<div class="contact-cta">
+		<h2>مهتم بهذه الخدمة؟</h2>
+		<p>تواصل معي لمناقشة تفاصيل مشروعك.</p>
+		<div class="contact-actions">
+			<Button href={`mailto:${site.email}`}>راسلني عبر البريد الإلكتروني</Button>
+			<Button href={site.whatsapp.url} variant="secondary">تواصل عبر واتساب</Button>
+		</div>
+	</div>
+</PageLayout>
+
+<style>
+	.back-link {
+		display: inline-block;
+		margin-bottom: var(--space-3);
+		color: var(--color-primary);
+		font-weight: 700;
+	}
+
+	.cover {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: var(--radius-medium);
+		margin-bottom: var(--space-4);
+	}
+
+	.service-body {
+		max-width: 46rem;
+	}
+
+	.service-body :global(p) {
+		margin: 0 0 var(--space-2);
+		color: var(--color-text);
+		line-height: 1.8;
+	}
+
+	.service-section {
+		max-width: 46rem;
+		margin-top: var(--space-5);
+	}
+
+	.service-section h2 {
+		font-size: 1.3rem;
+		line-height: 1.4;
+		margin: 0 0 var(--space-2);
+	}
+
+	.service-section ul,
+	.service-section ol {
+		margin: 0;
+		padding-inline-start: 1.25rem;
+		color: var(--color-text);
+		line-height: 1.8;
+	}
+
+	.process-list {
+		list-style: decimal;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.process-list li {
+		padding-inline-start: 0.25rem;
+	}
+
+	.process-list p {
+		margin: 0.25rem 0 0;
+		color: var(--color-muted);
+	}
+
+	.faq-item {
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-small);
+		padding: var(--space-2) var(--space-3);
+		margin-bottom: var(--space-2);
+	}
+
+	.faq-item summary {
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+	.faq-item p {
+		margin: var(--space-2) 0 0;
+		color: var(--color-muted);
+		line-height: 1.8;
+	}
+
+	.contact-cta {
+		max-width: 46rem;
+		margin-top: var(--space-6);
+		padding: var(--space-4);
+		background: var(--color-surface);
+		border-radius: var(--radius-medium);
+	}
+
+	.contact-cta h2 {
+		margin: 0 0 var(--space-1);
+		font-size: 1.3rem;
+	}
+
+	.contact-cta p {
+		margin: 0 0 var(--space-3);
+		color: var(--color-muted);
+	}
+
+	.contact-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+</style>

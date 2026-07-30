@@ -1,0 +1,63 @@
+---
+// Services listing — same content-collection/PageLayout/Card pattern as
+// /projects and /blog (light token system, not the Home/About glass theme —
+// see docs/DECISIONS.md ADR-025). The `services` collection has zero real
+// entries today (no service offerings confirmed by the project owner yet —
+// see content.config.ts's comment), so this renders an honest empty state
+// instead of fabricated offerings. Once a real entry exists, it appears
+// here automatically with no page changes needed.
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import CardGrid from '../../components/CardGrid.astro';
+import Button from '../../components/Button.astro';
+import { site } from '../../data/site';
+
+const title = 'الخدمات';
+const description = 'خدمات هندسية احترافية في التصنيع الإضافي والطباعة ثلاثية الأبعاد.';
+
+const services = await getCollection('services', ({ data }) => !data.draft);
+services.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+---
+
+<PageLayout title={title} description={description} eyebrow="خدماتي">
+	{
+		services.length > 0 ? (
+			<CardGrid
+				items={services.map((service) => ({
+					kind: 'خدمة',
+					title: service.data.title,
+					description: service.data.description,
+					meta: service.data.technologies?.join('، ') ?? '',
+					href: `/services/${service.id}`,
+					image: service.data.cover,
+					imageAlt: service.data.coverAlt,
+				}))}
+			/>
+		) : (
+			<div class="empty-state">
+				<p>لا توجد خدمات منشورة حالياً.</p>
+				<p>تواصل معي مباشرة لمناقشة احتياجك ومعرفة كيف يمكنني المساعدة.</p>
+				<Button href={`mailto:${site.email}`}>تواصل عبر البريد الإلكتروني</Button>
+			</div>
+		)
+	}
+</PageLayout>
+
+<style>
+	.empty-state {
+		max-width: 32rem;
+		padding: var(--space-4);
+		background: var(--color-surface);
+		border-radius: var(--radius-medium);
+	}
+
+	.empty-state p {
+		margin: 0 0 var(--space-2);
+		color: var(--color-muted);
+		line-height: 1.8;
+	}
+
+	.empty-state :global(.btn) {
+		margin-top: var(--space-1);
+	}
+</style>

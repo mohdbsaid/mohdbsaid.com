@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import Card from '../../components/Card.astro';
+import CardGrid from '../../components/CardGrid.astro';
 import Tag from '../../components/Tag.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getFeatured } from '../../lib/content';
@@ -45,40 +45,34 @@ const categories = [...new Set(allPosts.map((post) => post.data.category))];
 		featuredPosts.length > 0 && (
 			<div id="featured-posts" aria-labelledby="featured-posts-heading">
 				<SectionHeading id="featured-posts-heading" title="مقالات مميزة" />
-				<div class="card-grid">
-					{featuredPosts.map((post) => (
-						<Card
-							kind="مقالة"
-							title={post.data.title}
-							description={post.data.description}
-							meta={`${post.data.category} · ${formatArabicDate(post.data.publishDate)}`}
-							href={`/blog/${post.id}`}
-							image={post.data.cover}
-							imageAlt={post.data.coverAlt}
-						/>
-					))}
-				</div>
+				<CardGrid
+					items={featuredPosts.map((post) => ({
+						kind: 'مقالة',
+						title: post.data.title,
+						description: post.data.description,
+						meta: `${post.data.category} · ${formatArabicDate(post.data.publishDate)}`,
+						href: `/blog/${post.id}`,
+						image: post.data.cover,
+						imageAlt: post.data.coverAlt,
+					}))}
+				/>
 			</div>
 		)
 	}
 
 	<div id="all-posts" aria-labelledby="all-posts-heading">
 		<SectionHeading id="all-posts-heading" title="جميع المقالات" />
-		<div class="card-grid">
-			{
-				allPosts.map((post) => (
-					<Card
-						kind="مقالة"
-						title={post.data.title}
-						description={post.data.description}
-						meta={`${post.data.category} · ${formatArabicDate(post.data.publishDate)}`}
-						href={`/blog/${post.id}`}
-						image={post.data.cover}
-						imageAlt={post.data.coverAlt}
-					/>
-				))
-			}
-		</div>
+		<CardGrid
+			items={allPosts.map((post) => ({
+				kind: 'مقالة',
+				title: post.data.title,
+				description: post.data.description,
+				meta: `${post.data.category} · ${formatArabicDate(post.data.publishDate)}`,
+				href: `/blog/${post.id}`,
+				image: post.data.cover,
+				imageAlt: post.data.coverAlt,
+			}))}
+		/>
 	</div>
 </PageLayout>
 
@@ -92,17 +86,5 @@ const categories = [...new Set(allPosts.map((post) => post.data.category))];
 
 	#featured-posts {
 		margin-bottom: var(--space-6);
-	}
-
-	.card-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--space-3);
-	}
-
-	@media (max-width: 800px) {
-		.card-grid {
-			grid-template-columns: 1fr;
-		}
 	}
 </style>

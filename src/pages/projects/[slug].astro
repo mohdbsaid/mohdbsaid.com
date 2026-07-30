@@ -4,7 +4,10 @@ import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
+import CardGrid from '../../components/CardGrid.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
 import { formatArabicDate } from '../../utils/formatDate';
+import { getRelatedProjects } from '../../lib/content';
 import { site } from '../../data/site';
 
 export async function getStaticPaths() {
@@ -21,10 +24,23 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, description, category, publishDate, status, technologies, cover, coverAlt, links } =
-	project.data;
+const {
+	title,
+	description,
+	category,
+	publishDate,
+	status,
+	client,
+	year,
+	technologies,
+	gallery,
+	cover,
+	coverAlt,
+	links,
+} = project.data;
 
 const { Content } = await render(project);
+const relatedProjects = await getRelatedProjects(project);
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
 
@@ -37,6 +53,7 @@ const jsonLd = {
 	datePublished: publishDate.toISOString(),
 	...(cover && { image: new URL(cover.src, Astro.site).toString() }),
 	...(technologies && technologies.length > 0 && { keywords: technologies.join('، ') }),
+	...(client && { sourceOrganization: { '@type': 'Organization', name: client } }),
 	author: { '@type': 'Person', name: site.name.ar },
 };
 ---
@@ -78,9 +95,17 @@ const jsonLd = {
 				</div>
 			)
 		}
+		{
+			client && (
+				<div>
+					<dt>العميل</dt>
+					<dd>{client}</dd>
+				</div>
+			)
+		}
 		<div>
-			<dt>تاريخ النشر</dt>
-			<dd>{formatArabicDate(publishDate)}</dd>
+			<dt>{year ? 'السنة' : 'تاريخ النشر'}</dt>
+			<dd>{year ?? formatArabicDate(publishDate)}</dd>
 		</div>
 		{
 			technologies && technologies.length > 0 && (
@@ -108,6 +133,46 @@ const jsonLd = {
 	<div class="project-body">
 		<Content />
 	</div>
+
+	{
+		gallery && gallery.length > 0 && (
+			<div id="gallery" aria-labelledby="gallery-heading" class="gallery-section">
+				<SectionHeading id="gallery-heading" title="معرض الصور" />
+				<div class="gallery-grid">
+					{gallery.map((item, index) => (
+						<Image
+							src={item.image}
+							alt={item.alt}
+							widths={[400, 700]}
+							sizes="(max-width: 800px) 50vw, 350px"
+							width={700}
+							height={525}
+							loading={index < 2 ? 'eager' : 'lazy'}
+						/>
+					))}
+				</div>
+			</div>
+		)
+	}
+
+	{
+		relatedProjects.length > 0 && (
+			<div id="related-projects" aria-labelledby="related-projects-heading" class="related-section">
+				<SectionHeading id="related-projects-heading" title="مشاريع ذات صلة" />
+				<CardGrid
+					items={relatedProjects.map((related) => ({
+						kind: 'مشروع',
+						title: related.data.title,
+						description: related.data.description,
+						meta: `${related.data.category} · ${formatArabicDate(related.data.publishDate)}`,
+						href: `/projects/${related.id}`,
+						image: related.data.cover,
+						imageAlt: related.data.coverAlt,
+					}))}
+				/>
+			</div>
+		)
+	}
 </PageLayout>
 
 <style>
@@ -174,5 +239,36 @@ const jsonLd = {
 		margin: 0 0 var(--space-2);
 		color: var(--color-text);
 		line-height: 1.8;
+	}
+
+	.gallery-section,
+	.related-section {
+		margin-top: var(--space-6);
+	}
+
+	.gallery-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--space-2);
+	}
+
+	.gallery-grid img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+		border-radius: var(--radius-small);
+	}
+
+	@media (max-width: 800px) {
+		.gallery-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.gallery-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>

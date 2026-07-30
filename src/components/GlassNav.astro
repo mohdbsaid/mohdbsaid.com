@@ -19,9 +19,12 @@ interface NavLink {
 interface Props {
 	logo: NavLink;
 	links: NavLink[];
+	/** Determines the nav landmark's aria-label language — see docs/DECISIONS.md ADR-025. */
+	dir: 'ltr' | 'rtl';
 }
 
-const { logo, links } = Astro.props;
+const { logo, links, dir } = Astro.props;
+const navLabel = dir === 'rtl' ? 'التنقل الرئيسي' : 'Primary';
 
 const normalize = (path: string) => (path.length > 1 ? path.replace(/\/+$/, '') : path);
 const currentPath = normalize(Astro.url.pathname);
@@ -31,7 +34,7 @@ const currentPath = normalize(Astro.url.pathname);
 	<div class="nav-inner">
 		<a class="nav-logo" href={logo.href}>{logo.label}</a>
 		<div class="nav-end">
-			<nav class="nav-links" aria-label="Primary">
+			<nav class="nav-links" aria-label={navLabel}>
 				{
 					links.map((link) => {
 						const isCurrentPage = !link.href.includes('#') && normalize(link.href) === currentPath;

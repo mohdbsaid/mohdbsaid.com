@@ -1,0 +1,60 @@
+---
+// Store listing — architecture only, no ecommerce/checkout (per the
+// project owner's explicit brief — see docs/DECISIONS.md ADR-025). Same
+// pattern as /services: real page, zero real products today, honest empty
+// state instead of fabricated inventory.
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import CardGrid from '../../components/CardGrid.astro';
+import Button from '../../components/Button.astro';
+import { site } from '../../data/site';
+
+const title = 'المتجر';
+const description = 'منتجات مطبوعة ثلاثية الأبعاد وتصاميم جاهزة — قريباً.';
+
+const products = await getCollection('store', ({ data }) => !data.draft);
+products.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+---
+
+<PageLayout title={title} description={description} eyebrow="المتجر">
+	{
+		products.length > 0 ? (
+			<CardGrid
+				items={products.map((product) => ({
+					kind: 'منتج',
+					title: product.data.title,
+					description: product.data.description,
+					meta: product.data.category ?? product.data.status ?? '',
+					href: `/store/${product.id}`,
+					image: product.data.cover,
+					imageAlt: product.data.coverAlt,
+				}))}
+			/>
+		) : (
+			<div class="empty-state">
+				<p>لا توجد منتجات منشورة حالياً.</p>
+				<p>تواصل معي إذا كنت مهتمًا بطلب قطعة مخصصة.</p>
+				<Button href={`mailto:${site.email}`}>تواصل عبر البريد الإلكتروني</Button>
+			</div>
+		)
+	}
+</PageLayout>
+
+<style>
+	.empty-state {
+		max-width: 32rem;
+		padding: var(--space-4);
+		background: var(--color-surface);
+		border-radius: var(--radius-medium);
+	}
+
+	.empty-state p {
+		margin: 0 0 var(--space-2);
+		color: var(--color-muted);
+		line-height: 1.8;
+	}
+
+	.empty-state :global(.btn) {
+		margin-top: var(--space-1);
+	}
+</style>

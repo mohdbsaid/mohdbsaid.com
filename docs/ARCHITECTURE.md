@@ -34,23 +34,28 @@ See `DESIGN_SYSTEM.md` for the CSS/token layer and `CONTENT_STRATEGY.md` for how
 
 ## Routing
 
-Pure file-based routing under `src/pages/`. `index.astro` and `rss.xml.ts` exist today. Every nav link in `Header.astro`/`Footer.astro` still points to a route that doesn't exist yet (`/about`, `/projects`, `/blog`, `/resources`, `/courses`, `/contact`, `/privacy`, `/terms`) — placeholders for `ROADMAP.md`, not implemented pages. `PageLayout.astro` is scaffolding ready for whichever of those gets built first.
+Pure file-based routing under `src/pages/`. Live today: `/`, `/ar` (Home), `/about`, `/ar/about`, `/projects` (+ `[slug]`), `/blog` (+ `[slug]`, `/category/[category]`, `/tags/[tag]`), `/services` (+ `[slug]`), `/store` (+ `[slug]`), `/rss.xml`, `/search-index.json`. `primaryNav`/`legalNav` (`src/data/nav.ts`) still list `/contact`, `/privacy`, `/terms`, and content exists for `resources`/`courses` — none of those four have a page yet; see `ROADMAP.md`/`CONTENT_STRATEGY.md`. `PageLayout.astro` is the shell every one of the live content pages above (except Home/About, which use the glass system) actually renders through.
 
 ## Layout composition
 
 - `Layout.astro` — the base HTML shell: `<html lang dir>`, global CSS, `<SEO />` in `<head>`, renders `<Header />` + `<Footer />` around a `<slot />`. Every page uses this, which means every page automatically gets `<SEO />` — there's no way to render a page without it.
-- `PageLayout.astro` — wraps `Layout` with a standard title/eyebrow/description heading `<Section>`, for future content pages. Not used by the homepage (which has its own `<Hero>` instead of a generic page heading) and not yet consumed by any page since only the homepage exists.
+- `PageLayout.astro` — wraps `Layout` with a standard title/eyebrow/description heading `<Section>`. Consumed by every non-Home/About content page (`/projects`, `/blog`, `/services`, `/store` and their detail routes) — each gets exactly one `<h1>` for free. Not used by Home/About, which have their own bespoke `<Hero>` via the glass system instead.
 - `<Container>` — the one real component providing the page-width constraint (`.container` class), used by `Section`, `Hero`, `Header`, `Footer` instead of each hand-duplicating the width rule.
+- `<CardGrid>` — the shared 3-col→1-col `<Card>` grid used by every listing page (`/projects`, `/blog` + its category/tag pages, `/services`, `/store`, and a project's "Related Projects") — extracted under ADR-025 to remove four copies of the same grid markup/CSS.
 
 ## Content Collections
 
-Six "listing" collections (`blog`, `projects`, `resources`, `courses`, `services`, `store`), each backed by markdown files under `src/content/{name}/` and defined in `content.config.ts` with one shared base Zod schema extended per-collection — see `CONTENT_STRATEGY.md`. `src/lib/content.ts`'s `getFeatured(collection, limit)` is the single query (non-draft, featured, newest-first, capped) every homepage section calls; no page hand-rolls its own filter/sort. `services`/`store` are schema-only today (zero entries, no page/nav yet) — same precedent as ADR-001.
+Six "listing" collections (`blog`, `projects`, `resources`, `courses`, `services`, `store`), each backed by markdown/MDX files under `src/content/{name}/` and defined in `content.config.ts` with one shared base Zod schema extended per-collection — see `CONTENT_STRATEGY.md`. `src/lib/content.ts`'s `getFeatured(collection, limit)` is the single query (non-draft, featured, newest-first, capped) every homepage section calls; `getRelatedProjects()`/`getRelatedPosts()` do the same for each detail page's "related" section. `services`/`store` have real, live pages (`/services`, `/store` + `[slug]`, nav-linked) but zero real entries — see ADR-025's "don't fabricate offerings" reasoning.
 
 A seventh collection, `pages`, holds structured bilingual copy for Home/About (the sections that used to be hardcoded prop objects inside `src/pages/*.astro`) — one `type`-discriminated schema, one entry per `<page>/<section>/<locale>.mdx`. Fetched via `src/lib/content.ts`'s `getPageSection()`. See `DECISIONS.md` ADR-024 and `content-admin/README.md`.
 
+## Search preparation
+
+`src/pages/search-index.json.ts` is a single static JSON endpoint covering every listing collection at once (`blog`/`projects`/`services`/`store`, each entry tagged with a `type`), rather than one index per collection — see ADR-025. No search library is installed; this is the data a future client-side search (Pagefind, Fuse.js, etc.) would consume without needing to touch page code.
+
 ## Image optimization
 
-`Card` and `Hero` both accept an optional `image`/`imageAlt` prop rendering `astro:assets`'s `<Image>`. The content schema's `cover`/`coverAlt` fields are wired to feed this, but no current entry sets them (no real photography/thumbnails exist yet) — the pipeline is prepared, not yet exercised by real assets.
+`Card` and `Hero` both accept an optional `image`/`imageAlt` prop rendering `astro:assets`'s `<Image>`. The content schema's `cover`/`coverAlt` fields are wired to feed this, but no current entry sets them (no real photography/thumbnails exist yet) — the pipeline is prepared, not yet exercised by real assets. `projects`/`store`'s optional `gallery` field is an array of `{ image, alt }` objects (not bare images) — alt text is required per image directly in the schema shape, not bolted on separately, since gallery photos have no single shared caption the way a page-level `coverAlt` does.
 
 ## SEO
 
@@ -63,7 +68,7 @@ A seventh collection, `pages`, holds structured bilingual copy for Home/About (t
 
 ## Known issues (pre-existing, not introduced by this work)
 
-- Several nav routes have no corresponding page yet (see Routing above) — tracked in `ROADMAP.md`.
+- `/contact`, `/privacy`, `/terms` are linked from nav but have no page yet; `resources`/`courses` have content collections but no listing/detail pages yet either (see Routing above) — tracked in `ROADMAP.md`.
 
 ## Explaining architectural decisions
 
@@ -76,7 +81,7 @@ The project owner has set a standing long-term direction, recorded in full in `D
 | Area      | Current                                                                                                                                                                                      | Target                                                                                                                                                                                                                                   |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Styling   | Hand-written CSS: `global.css` tokens + per-component scoped `<style>`                                                                                                                       | Tailwind CSS v4, tokens via `@theme` (CSS variables) — existing hand-written systems (incl. the homepage's dark-glassmorphism system) are recorded exceptions, migrated incrementally, not rewritten wholesale                           |
-| Content   | Markdown + MDX, `blog`/`projects`/`resources`/`courses`/`services`/`store` (services/store schema-only, no entries yet) + `pages` (Home/About structured copy) — see ADR-024                 | `timeline`/`talks`/`notes` remain undefined ahead of real content, per ADR-001's precedent — added only once real content exists                                                                                                         |
+| Content   | Markdown + MDX, `blog`/`projects`/`resources`/`courses`/`services`/`store` (`/services`/`/store` pages live, zero real entries) + `pages` (Home/About structured copy) — see ADR-024/025     | `timeline`/`talks`/`notes` remain undefined ahead of real content, per ADR-001's precedent — added only once real content exists                                                                                                         |
 | Analytics | None                                                                                                                                                                                         | Plausible Analytics — blocked on a real Plausible site/domain being provisioned                                                                                                                                                          |
 | i18n      | Arabic-only sitewide default; homepage (`/`+`/ar`) and About (`/about`+`/ar/about`) each share one template, `<LanguageSwitcher>` deriving the `/ar` URL from the current path (ADR-019/023) | `/en/`/`/ar/`-prefixed routing, shared components, for genuinely bilingual content — existing Arabic-only routes and the homepage/About pairs are not retroactively touched by this alone (see `CLAUDE.md`'s Internationalization rules) |
 | CMS       | None — content lives in Git                                                                                                                                                                  | Sanity, additive via a Content Layer loader (ADR-021) — blocked on a real Sanity project being provisioned                                                                                                                               |

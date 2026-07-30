@@ -6,6 +6,8 @@ export const primaryNav: NavItem[] = [
 	{ label: 'الرئيسية', href: '/ar' },
 	{ label: 'من أنا', href: '/ar/about' },
 	{ label: 'المشاريع', href: '/projects' },
+	{ label: 'الخدمات', href: '/services' },
+	{ label: 'المتجر', href: '/store' },
 	{ label: 'المدونة', href: '/blog' },
 	{ label: 'تواصل', href: '/contact' },
 ];

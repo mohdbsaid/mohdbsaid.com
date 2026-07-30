@@ -113,3 +113,22 @@ export async function getRelatedPosts(
 		.slice(0, limit)
 		.map(({ post }) => post);
 }
+
+/**
+ * Other non-draft projects in the same category, newest-first, excluding the
+ * current one. Projects have no `tags` (unlike blog), so this is a simpler
+ * category-only match — see docs/DECISIONS.md ADR-025.
+ */
+export async function getRelatedProjects(
+	current: CollectionEntry<'projects'>,
+	limit = 3,
+): Promise<CollectionEntry<'projects'>[]> {
+	const projects = await getCollection('projects', ({ data }) => !data.draft);
+
+	return projects
+		.filter(
+			(project) => project.id !== current.id && project.data.category === current.data.category,
+		)
+		.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+		.slice(0, limit);
+}

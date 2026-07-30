@@ -21,7 +21,12 @@
 	--bg-3: #2d1b69;
 	--ink: #ffffff;
 	--ink-muted: rgba(255, 255, 255, 0.72);
-	--ink-subtle: rgba(255, 255, 255, 0.5);
+	/* 0.6 (not the original 0.5) — against the lightest animated gradient
+	   stop (--bg-3) this is ~6:1, a real safety margin over the 4.5:1 AA
+	   minimum for the small (13px) text this token is used for. 0.5 measured
+	   ~4.6:1 there — technically passing but too close to trust against a
+	   continuously animated background. */
+	--ink-subtle: rgba(255, 255, 255, 0.6);
 	--accent: #a78bfa;
 	--accent-strong: #7c3aed;
 	--accent-soft: #c4b5fd;

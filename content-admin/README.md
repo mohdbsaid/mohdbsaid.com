@@ -135,7 +135,19 @@ There are **two different places projects can appear** — know which one you wa
 
   Only fill in the fields you actually know — `client`, `year`, `technologies`, `links`, `status` are all optional. Set `featured: true` only for projects you want highlighted; `draft: true` hides a project until it's ready to publish.
 
-  To add photos, put them in `src/assets/images/projects/` and reference them from the frontmatter, e.g. `cover: '../../assets/images/projects/my-photo.jpg'` (and always set `coverAlt` — a short description of the image — whenever you set `cover`).
+  To add a cover photo, put it in `src/assets/images/projects/` and reference it from the frontmatter, e.g. `cover: '../../assets/images/projects/my-photo.jpg'` (and always set `coverAlt` — a short description of the image — whenever you set `cover`).
+
+  To add a photo gallery (shown near the bottom of the project page), add a `gallery` list — each entry needs both the image and its own alt text:
+
+  ```yaml
+  gallery:
+    - image: '../../assets/images/projects/photo-1.jpg'
+      alt: 'A short, honest description of this specific photo.'
+    - image: '../../assets/images/projects/photo-2.jpg'
+      alt: 'Description of the second photo.'
+  ```
+
+  Projects in the same `category` automatically show up as "Related Projects" at the bottom of each other's pages — you don't need to link them yourself.
 
 ---
 
@@ -164,42 +176,61 @@ Write your article here using normal paragraphs, `##` for headings, and blank li
 
 ## How to add a service
 
-Services aren't shown on the site yet (there's no Services page live), but the structure is ready. Add a file to `src/content/services/`, e.g. `src/content/services/3d-printing-consulting.md`:
+`/services` is live and lists whatever is published here — right now that's nothing, so the page shows a "no services published yet" message with a contact button instead. To publish a real service, add a file to `src/content/services/`, e.g. `src/content/services/3d-printing-consulting.md`:
 
 ```md
 ---
 title: 'Service Title'
-description: 'What this service is.'
+description: 'One or two sentences describing the service — shown on the services listing page.'
 publishDate: 2026-08-01
 icon: 'wrench'
+whoItsFor:
+  - 'Schools adopting 3D printing for STEM programs'
+  - 'Small manufacturers needing occasional prototyping'
+process:
+  - title: 'Initial consultation'
+    description: 'We discuss your goals, constraints, and timeline.'
+  - title: 'Proposal'
+    description: 'You get a scoped plan before any work begins.'
+deliverables:
+  - 'A working prototype or trained team, depending on the engagement'
+technologies: ['FDM', 'Fusion 360']
+faq:
+  - question: 'How long does a typical engagement take?'
+    answer: 'It depends on scope — discussed upfront in the initial consultation.'
 ---
 
-Describe the service here.
+Write the overview/summary of the service here as normal paragraphs.
 ```
 
-**Note:** adding a file here won't make a new page appear by itself — showing services on the site (a new `/services` page and a navigation link) is a small development task a developer needs to do once, the first time you're ready to publish real services.
+Every field except `title`/`description`/`publishDate` is optional — only include a section (`whoItsFor`, `process`, `deliverables`, `technologies`, `faq`) if it's true and you want it shown; the page simply omits any section you leave out. `icon` must be one of the names already used in `Icon.astro` (e.g. `print`, `wrench`, `code`, `book`) — ask a developer if you need a new one.
 
 ---
 
 ## How to add a store product
 
-Same situation as services — the structure exists, but there's no live Store page yet. Add a file to `src/content/store/`:
+`/store` is live the same way `/services` is — currently empty with an honest "nothing published yet" message, since there's no checkout/payment integration (this is a content architecture only, not a working store). Add a file to `src/content/store/` to publish a product:
 
 ```md
 ---
 title: 'Product Name'
-description: 'Product description.'
+description: 'Product description — shown on the store listing page.'
 publishDate: 2026-08-01
+category: 'Category Name'
+status: 'In Stock'
 price: 25
 currency: 'OMR'
-sku: 'SKU-001'
-inStock: true
+specifications:
+  - label: 'Material'
+    value: 'PLA'
+  - label: 'Dimensions'
+    value: '10 × 10 × 5 cm'
 ---
 
-Product details here.
+Write the product overview here as normal paragraphs.
 ```
 
-A developer will need to build the actual `/store` page and checkout flow before this is customer-facing — this just prepares the content side.
+`category`, `status`, `price`/`currency`, `specifications`, and `gallery` (same `image`+`alt` format as a project's gallery) are all optional — only set what's true. Since there's no checkout, the product page's call-to-action is "contact me to inquire or order," not a buy button — that's intentional, not a bug.
 
 ---
 
