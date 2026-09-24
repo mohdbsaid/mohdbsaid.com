@@ -67,9 +67,13 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 			{meta && <p class="card-meta">{meta}</p>}
 		</div>
 
-		<span class="card-action" aria-hidden="true">
-			<Icon name="arrow" />
-		</span>
+		{
+			href && (
+				<span class="card-action" aria-hidden="true">
+					<Icon name="arrow" />
+				</span>
+			)
+		}
 	</Surface>
 </article>
 
@@ -103,8 +107,8 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 		cursor: pointer;
 	}
 
-	.card-surface:hover,
-	.card-surface:focus-visible {
+	a.card-surface:hover,
+	a.card-surface:focus-visible {
 		transform: translateY(-10px);
 		border-color: var(--glass-border-strong, rgba(255, 255, 255, 0.16));
 		background: var(--glass-bg-strong, rgba(255, 255, 255, 0.08));
@@ -113,7 +117,7 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 			0 0 40px -14px var(--accent, #a78bfa);
 	}
 
-	.card-surface:active {
+	a.card-surface:active {
 		transform: translateY(-5px) scale(0.98);
 	}
 
@@ -129,8 +133,8 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 		z-index: 0;
 	}
 
-	.card-surface:hover .card-glow,
-	.card-surface:focus-visible .card-glow {
+	a.card-surface:hover .card-glow,
+	a.card-surface:focus-visible .card-glow {
 		opacity: 1;
 	}
 
@@ -151,8 +155,8 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 		z-index: 1;
 	}
 
-	.card-surface:hover .card-shine,
-	.card-surface:focus-visible .card-shine {
+	a.card-surface:hover .card-shine,
+	a.card-surface:focus-visible .card-shine {
 		opacity: 1;
 		animation: card-shine 3s linear infinite;
 	}
@@ -201,10 +205,10 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 		color: rgba(255, 255, 255, 0.85);
 	}
 
-	.card-surface:hover .card-image,
-	.card-surface:hover .card-media-fallback,
-	.card-surface:focus-visible .card-image,
-	.card-surface:focus-visible .card-media-fallback {
+	a.card-surface:hover .card-image,
+	a.card-surface:hover .card-media-fallback,
+	a.card-surface:focus-visible .card-image,
+	a.card-surface:focus-visible .card-media-fallback {
 		transform: translateY(-5px) scale(1.03);
 	}
 
@@ -240,8 +244,8 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 		border-color: rgba(74, 222, 128, 0.35);
 	}
 
-	.card-surface:hover .card-badge,
-	.card-surface:focus-visible .card-badge {
+	a.card-surface:hover .card-badge,
+	a.card-surface:focus-visible .card-badge {
 		opacity: 1;
 		transform: translateY(-2px) scale(1.05);
 	}
@@ -309,15 +313,15 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 		transition: transform 0.4s var(--ease-premium, cubic-bezier(0.16, 1, 0.3, 1));
 	}
 
-	.card-surface:hover .card-action,
-	.card-surface:focus-visible .card-action {
+	a.card-surface:hover .card-action,
+	a.card-surface:focus-visible .card-action {
 		background: var(--accent, #a78bfa);
 		color: #fff;
 		animation: card-pulse 1.5s ease-in-out infinite;
 	}
 
-	.card-surface:hover .card-action :global(svg),
-	.card-surface:focus-visible .card-action :global(svg) {
+	a.card-surface:hover .card-action :global(svg),
+	a.card-surface:focus-visible .card-action :global(svg) {
 		transform: translate(2px, -2px);
 	}
 
@@ -353,20 +357,20 @@ const linkProps = href ? { href, 'aria-label': `${title} — ${actionLabel}` } :
 		.card-action :global(svg) {
 			transition: none;
 		}
-		.card-surface:hover,
-		.card-surface:focus-visible,
-		.card-surface:active {
+		a.card-surface:hover,
+		a.card-surface:focus-visible,
+		a.card-surface:active {
 			transform: none;
 		}
-		.card-surface:hover .card-image,
-		.card-surface:hover .card-media-fallback,
-		.card-surface:focus-visible .card-image,
-		.card-surface:focus-visible .card-media-fallback {
+		a.card-surface:hover .card-image,
+		a.card-surface:hover .card-media-fallback,
+		a.card-surface:focus-visible .card-image,
+		a.card-surface:focus-visible .card-media-fallback {
 			transform: none;
 		}
 		.card-shine,
-		.card-surface:hover .card-action,
-		.card-surface:focus-visible .card-action {
+		a.card-surface:hover .card-action,
+		a.card-surface:focus-visible .card-action {
 			animation: none;
 		}
 	}

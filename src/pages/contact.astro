@@ -1,0 +1,53 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/Button.astro';
+import { site } from '../data/site';
+
+const title = 'تواصل معي';
+const description = 'ناقش مشروعك في الطباعة ثلاثية الأبعاد أو التصميم أو التدريب مع محمد الجابري.';
+---
+
+<PageLayout title={title} description={description} eyebrow="تواصل">
+	<section aria-labelledby="contact-heading">
+		<h2 id="contact-heading">أرسل تفاصيل فكرتك</h2>
+		<p>
+			اذكر الاستخدام المطلوب، الأبعاد التقريبية، الكمية، والموعد المتوقع. وإذا كان لديك ملف أو صورة
+			مرجعية، أرفقها في رسالتك.
+		</p>
+		<div class="contact-actions">
+			<Button href={`mailto:${site.email}`}>راسلني عبر البريد الإلكتروني</Button>
+			<Button href={site.whatsapp.url} variant="secondary">تواصل عبر واتساب</Button>
+		</div>
+		<p class="contact-details">
+			البريد: <a href={`mailto:${site.email}`}>{site.email}</a><br />واتساب: <a
+				href={site.whatsapp.url}><bdi dir="ltr">{site.whatsapp.display}</bdi></a
+			>
+		</p>
+	</section>
+</PageLayout>
+
+<style>
+	section {
+		max-width: 42rem;
+	}
+	h2 {
+		margin-block: 0 var(--space-2);
+	}
+	p {
+		line-height: 1.9;
+	}
+	.contact-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		margin-block: var(--space-3);
+	}
+	.contact-details {
+		color: var(--color-muted);
+	}
+	.contact-details a {
+		color: var(--color-primary);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+</style>

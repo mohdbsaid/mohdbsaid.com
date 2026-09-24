@@ -28,14 +28,13 @@ export const selectedWork: SelectedWorkItem[] = [
 			category: 'Additive Manufacturing',
 			title: 'Ministry of Defence',
 			description:
-				'Additive manufacturing support for defense-grade parts, where tolerances and reliability leave no room for error.',
+				'Additive manufacturing work for the Ministry of Defence. Project details are not published here.',
 			status: 'Completed',
 		},
 		ar: {
 			category: 'التصنيع الإضافي',
 			title: 'وزارة الدفاع',
-			description:
-				'دعم تصنيعي بتقنية التصنيع الإضافي لقطع دفاعية لا تحتمل أي هامش خطأ في الدقة أو الموثوقية.',
+			description: 'أعمال في التصنيع الإضافي لصالح وزارة الدفاع. تفاصيل المشروع غير منشورة هنا.',
 			status: 'مكتمل',
 		},
 	},
@@ -45,14 +44,14 @@ export const selectedWork: SelectedWorkItem[] = [
 			category: 'Industrial Manufacturing',
 			title: 'Jindal Steel Oman',
 			description:
-				'FDM production integrated into steel manufacturing workflows — from spare-part prototypes to process tooling.',
+				'FDM printing work for Jindal Steel Oman. The scope and outcomes have not been published in detail.',
 			status: 'Completed',
 		},
 		ar: {
 			category: 'التصنيع الصناعي',
 			title: 'جيندال ستيل عُمان',
 			description:
-				'دمج الطباعة بتقنية FDM في مسارات تصنيع الصلب، من نماذج قطع الغيار الأولية إلى أدوات دعم الإنتاج.',
+				'أعمال طباعة بتقنية FDM لصالح جيندال ستيل عُمان. لم تُنشر تفاصيل النطاق والنتائج بعد.',
 			status: 'مكتمل',
 		},
 	},
@@ -62,14 +61,13 @@ export const selectedWork: SelectedWorkItem[] = [
 			category: 'Engineering Support',
 			title: 'OQGN',
 			description:
-				'Manufacturing support for oil & gas infrastructure, producing components built for demanding field conditions.',
+				'Additive manufacturing support for OQGN. Project specifications are not published here.',
 			status: 'Completed',
 		},
 		ar: {
 			category: 'الدعم الهندسي',
 			title: 'OQGN',
-			description:
-				'دعم تصنيعي لمكوّنات بنية النفط والغاز، بما يتحمّل ظروف التشغيل الميدانية الصعبة.',
+			description: 'دعم في التصنيع الإضافي لصالح OQGN. المواصفات الفنية للمشروع غير منشورة هنا.',
 			status: 'مكتمل',
 		},
 	},

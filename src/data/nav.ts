@@ -7,12 +7,6 @@ export const primaryNav: NavItem[] = [
 	{ label: 'من أنا', href: '/ar/about' },
 	{ label: 'المشاريع', href: '/projects' },
 	{ label: 'الخدمات', href: '/services' },
-	{ label: 'المتجر', href: '/store' },
 	{ label: 'المدونة', href: '/blog' },
 	{ label: 'تواصل', href: '/contact' },
-];
-
-export const legalNav: NavItem[] = [
-	{ label: 'سياسة الخصوصية', href: '/privacy' },
-	{ label: 'الشروط', href: '/terms' },
 ];

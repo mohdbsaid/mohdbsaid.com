@@ -2,9 +2,7 @@
 // Service detail — professional-offering case study: Overview, Who it's for,
 // Process, Deliverables, Technologies, FAQ, Contact CTA (docs/DECISIONS.md
 // ADR-025). Same light-token PageLayout/Card system as /projects and /blog.
-// Zero real entries exist today — this template is built and verified, but
-// won't generate any pages until a real service is added (getStaticPaths
-// returns nothing for an empty collection, which is a normal, valid build).
+// Static paths are generated from published service entries.
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
