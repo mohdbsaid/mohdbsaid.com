@@ -98,11 +98,8 @@ const courses = defineCollection({
 	schema: (ctx) => requireAltWithCover(baseSchema(ctx).extend({ level: z.string() })),
 });
 
-// /services and /services/[slug] pages exist (docs/DECISIONS.md ADR-025) but
-// this collection has zero real entries — no actual service offerings have
-// been confirmed by the project owner yet, so none are fabricated here. The
-// pages render an honest "nothing published yet" empty state until a real
-// entry is added; see content-admin/README.md.
+// /services and /services/[slug] use the same collection pattern as projects.
+// Service entries describe areas of work without fixed pricing.
 const services = defineCollection({
 	loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/services' }),
 	schema: (ctx) =>

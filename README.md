@@ -21,17 +21,17 @@ If you just need to change text, images, or add a project/article — not code �
 
 ## Live routes
 
-| Route                                  | Purpose                                                  |
-| -------------------------------------- | -------------------------------------------------------- |
-| `/`, `/ar`                             | Home                                                     |
-| `/about`, `/ar/about`                  | Full professional profile                                |
-| `/projects`, `/projects/[slug]`        | Project write-ups (case studies)                         |
-| `/blog`, `/blog/[slug]` + category/tag | Articles                                                 |
-| `/services`, `/services/[slug]`        | Service offerings (live, currently no entries published) |
-| `/store`, `/store/[slug]`              | Products — architecture only, no checkout                |
-| `/rss.xml`, `/search-index.json`       | Non-HTML feeds — blog RSS, sitewide search-prep data     |
+| Route                                  | Purpose                                              |
+| -------------------------------------- | ---------------------------------------------------- |
+| `/`, `/ar`                             | Home                                                 |
+| `/about`, `/ar/about`                  | Full professional profile                            |
+| `/projects`, `/projects/[slug]`        | Project write-ups (case studies)                     |
+| `/blog`, `/blog/[slug]` + category/tag | Articles                                             |
+| `/services`, `/services/[slug]`        | Service offerings                                    |
+| `/store`, `/store/[slug]`              | Products — architecture only, no checkout            |
+| `/rss.xml`, `/search-index.json`       | Non-HTML feeds — blog RSS, sitewide search-prep data |
 
-`/contact`, `/privacy`, `/terms` are linked from navigation but have no page yet; `resources`/`courses` have content but no listing/detail pages yet either — see `docs/ROADMAP.md`.
+`/contact` offers direct email and WhatsApp links. `/privacy` and `/terms` are not published or linked. `resources`/`courses` have content but no listing/detail pages yet — see `docs/ROADMAP.md`.
 
 ## Project structure
 

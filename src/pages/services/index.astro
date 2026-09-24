@@ -3,12 +3,9 @@
 // /projects and /blog (light token system, not the Home/About glass theme —
 // see docs/DECISIONS.md ADR-025), including the same featured/all split
 // (see docs/DECISIONS.md ADR-026 — this was missing until this pass, the
-// one behavioral inconsistency between the four listing pages). The
-// `services` collection has zero real entries today (no service offerings
-// confirmed by the project owner yet — see content.config.ts's comment),
-// so this renders an honest empty state instead of fabricated offerings.
-// Once a real entry exists, it appears here automatically with no page
-// changes needed.
+// one behavioral inconsistency between the four listing pages). Published
+// entries come from the content collection; the empty state remains for when
+// all entries are unpublished.
 import { getCollection } from 'astro:content';
 import PageLayout from '../../layouts/PageLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
